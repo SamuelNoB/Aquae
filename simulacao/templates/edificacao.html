@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+        <section class="clean-block features" style="border-top-style: solid;padding: 0;background: rgb(207,231,248);">
+            <div class="container" style="background: #eeeeee;padding-bottom: 100px;">
+                <div class="block-heading">
+                    <h2 class="text-info" style="font-weight: 800;">Características gerais</h2>
+                </div>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'core:home' %}"><span>Home</span></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'simulacao:edificacao' %}"><span>Características</span></a></li>
+                </ol>
+                 <form id="edificacaoForm" method="post">
+                     {% csrf_token %}
+                    <div class="form-row" style="margin: 0px 16px;">
+                        <h3 style="font-weight: bold;font-style: normal;">Tipo de edificação</h3>
+                        <div class="form-group col-md-12">
+                            <div class="form-check form-check-inline" id="casa-radio"><input class="form-check-input" type="radio" id="formCheck-1" value="0" name="tipo_residencia" checked=""><label class="form-check-label" for="formCheck-1">Casa</label></div>
+                            <div class="form-check form-check-inline" id="apartamento-radio"><input class="form-check-input" type="radio" id="formCheck-2" value="1" name="tipo_residencia"><label class="form-check-label" for="formCheck-2">Prédio residencial</label></div>
+                        </div>
+                        <div class="border rounded-0 form-row" id="residence-options" style="margin: 0px 0px;">
+                            <div class="form-group col-md-3" id="totalApartamentos" style="padding: 0px 5px;">
+                                <label class="text-left" style="font-weight: bold;">{{ nova_edificacao.n_apts.label }}</label>
+                                {%  render_field nova_edificacao.n_apts class="form-control col-md-10" disabled="" %}<small class="form-text text-muted">Total de pavimentos no prédio</small>
+                            </div>
+                            <div class="form-group col-md-2" style="padding: 0px 5px;"><label class="text-left" id="aptMoradores" style="font-weight: bold;">Total de moradores</label>{%  render_field nova_edificacao.n_pessoas class="form-control col-md-10"  %}</div>
+                            <div class="form-group col-md-3"><label style="font-weight: bold;">{{ nova_edificacao.n_pavimentos.label }}</label>
+                                <div class="input-group">
+                                    {% render_field nova_edificacao.n_pavimentos class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="00" title="Altura total da residencia em número de pavimentos" %}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-2"><label style="font-weight: bold;">Tarifa de esgoto</label>
+                                <div class="input-group">
+
+                                    {% render_field nova_edificacao.tarifa_esgoto class="form-control col-md-8" type="number" value="10" step="0.1" min="0" max="100" %}
+                                    <div class="input-group-append"><span class="input-group-text">%</span></div>
+                                </div><small class="form-text text-muted">Porcentagem da tarifa de esgoto cobrada</small>
+                            </div>
+                            <div class="form-group col-md-4"><label style="font-weight: bold;">Consumo mensal de água</label>
+                                <div class="input-group">
+                                    {% render_field nova_edificacao.consumo_mensal class="form-control col-md-6" value="0" min="0" step="0.1" %}
+                                    <div class="input-group-append"><span class="input-group-text">m³<br></span></div>
+                                </div><small class="form-text text-muted">Consumo mensal médio de água em m³.</small>
+                            </div>
+                            <div class="form-group col-md-3"><label style="font-weight: bold;">Área de Cobertura&nbsp;</label>
+                                <div class="input-group">
+                                    {% render_field nova_edificacao.area_cobertura class="form-control col-md-6" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="00" title="Área de cobertura" step=".01" value="0" %}
+                                    <div class="input-group-append"><span class="input-group-text">m²</span></div>
+                                </div><small class="form-text text-muted">Área de cobertura da residência para coleta.</small>
+                            </div>
+                            <div class="form-group col-md-2"><label style="font-weight: bold;">Área de pisos</label>
+                                <div class="input-group">
+                                    {% render_field nova_edificacao.area_pisos class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="00" title="Área de cobertura" step=".01" value="0" %}
+                                    <div class="input-group-append"><span class="input-group-text">m²<br></span></div>
+                                </div><small class="form-text text-muted">Área de pisos para lavagem da residência em m².</small>
+                            </div>
+                            <div class="form-group col-md-2"><label style="font-weight: bold;">Área de irrigação</label>
+                                <div class="input-group">
+                                    {% render_field nova_edificacao.area_irrigacao class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="00" title="Área de cobertura" step=".01" value="0" %}
+                                    <div class="input-group-append"><span class="input-group-text">m²<br></span></div>
+                                </div><small class="form-text text-muted">Área de irrigação de jardim da residência em m².</small>
+                            </div>
+                    </div>
+                    <h3 style="font-weight: bold;margin: 0px 16px;">Demanda de água não potável</h3>
+                    <div id="consumoAgua" style="margin: 0px 16px;">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th data-toggle="tooltip" data-bss-tooltip="" style="width: 25%;" title="nome da destinação da demanda de água não potável.">Tipo de uso</th>
+                                        <th data-toggle="tooltip" data-bss-tooltip="" style="width: 35%;" title="Quantidade de usos ao mês">Frequência mensal de uso</th>
+                                        <th data-toggle="tooltip" data-bss-tooltip="" style="width: 35%;" title="Quantidade de litros usados em um dia. Preenchido com valores pré definidos de acordo com consumo mensal de água.">Indicador de uso final</th>
+                                        <th data-toggle="tooltip" data-bss-tooltip="" style="width: 5%;" title="Deleta a demanda de água correspondente na tabela ">Deletar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="consumosTable">
+                                {{ novos_consumos.management_form }}
+                                {% for consumo in novos_consumos %}
+                                    <tr>
+                                        <td>{% render_field consumo.nome class="form-control" type="text" readonly="" style="position: relative;font-weight: bold;" %}</td>
+                                        <td>
+                                            <div class="input-group">
+                                                {% render_field consumo.frequencia_mensal class="form-control" type="number" value="1" min="0" %}
+
+                                                <div class="input-group-append"><span class="input-group-text">vezes ao mes</span></div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend"></div>{% render_field consumo.indicador class="form-control" type="number" %}
+                                                {% if consumo.nome.value == "Irrigação de jardins" or consumo.nome.value == "Lavagem de pisos" %}
+                                                    <div class="input-group-append"><span class="input-group-text">litros/m²/dia</span></div>
+                                                {% else %}
+                                                    <div class="input-group-append"><span class="input-group-text">litros/pes/dia</span></div>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td><button class="btn btn-light" type="button" onclick="delete_row(this)">Deletar</button></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin: 1em;"><button class="btn btn-secondary btn-sm" id="addCustomConsumo" type="button">Adicionar</button><span class="d-md-flex align-items-md-center">&nbsp;Outro tipo de uso de água não potável.</span></div>
+                    <div class="text-right col-md-12"><button class="btn btn-light" type="button" data-dismiss="edificacaoForm">Retornar</button><button class="btn btn-primary" type="submit" style="margin: 1em;">próximo</button></div>
+                    </div>
+                </form>
+            </div>
+        </section>
+{% endblock content%}

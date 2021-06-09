@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block content %}
+        <section class="clean-block features" style="border-top-style: solid;padding: 0;background: rgb(207,231,248);">
+            <div class="container" style="background: #eeeeee;padding-bottom: 100px;">
+                <div class="block-heading" style="padding: 40px 0px 0px;">
+                    <h2 class="text-info" style="font-weight: 800;">Aproveitamento de águas pluviais</h2>
+                </div>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'core:home' %}"><span>Home</span></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'simulacao:edificacao' %}"><span>Características gerais</span></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'simulacao:seleciona_simulacao' pk %}"><span>selecionar simulação</span></a></li>
+                    <li class="breadcrumb-item"><a href="#"><span>Simulação AAP</span></a></li>
+                </ol>
+                <div class="row align-content-center" style="border: 1px none rgb(33,37,41);background: #eeeeee;margin-left: 0;margin-right: 0;">
+                    <div class="col-md-5">
+                        <form id="simulacaoForm" method="post">
+                         {% csrf_token %}
+                            <div style="margin-bottom: 1em;padding-bottom: .5em;">
+                                <h4 style="font-weight: bold;">Visualização do gráfico</h4>
+                                <div class="input-group">
+                                    <div class="input-group-prepend"><span class="input-group-text">Intervalo</span></div>
+                                    {% render_field simulacaoForm.intervalos_de_cisterna class="form-control" %}
+                                    <div class="input-group-append"><button id="change_interval" class="btn btn-primary" type="button">Alterar</button></div>
+                                </div><small class="form-text text-muted">Intervalos em m³ da cisterna a ser mostrado na aba financeiro e no gráfico.</small>
+                            </div>
+
+                            <h4 style="font-weight: bold;">Demanda de água pluvial</h4>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th data-checkbox="true">Usar</th>
+                                        <th>Nome</th>
+                                        <th>Cosumo</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {{ demandas_de_agua.management_form }}
+                                    {% for demanda in demandas_de_agua %}
+                                        <tr>
+                                            <td>
+                                                <div class="form-check">
+                                                    {{ demanda.ativo }}
+                                                    <label class="form-check-label"></label>
+                                                </div>
+                                            </td>
+                                            <td>{% render_field demanda.nome_consumo class="form-control" readonly="" size="20" style="font-weight: bold;" %}</td>
+                                            <td>
+                                                <div class="input-group d-md-flex">
+                                                    <div class="input-group-prepend"></div>{% render_field demanda.demanda_mensal  class="form-control" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" readonly=""  %}
+                                                    <div class="input-group-append"><span class="text-break input-group-text">m³/mês<br></span></div>
+                                                </div><br>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h4 style="font-weight: bold;">Análise financeira</h4>
+                            <div class="input-group d-md-flex" style="margin-bottom: 0.8em;">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" style="font-weight: bold;">{{ simulacaoForm.taxa_de_juros.label }}</span>
+                                </div>
+                                {% render_field simulacaoForm.taxa_de_juros class="form-control" type="number" data-toggle="tooltip"  step=".2" %}
+                                <div class="input-group-append">
+                                    <span class="text-break input-group-text" style="font-weight: bold;">
+                                        %
+                                    </span>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    <div class="col-md-7" style="border-top: 1px solid #dee2e6 ;border-left: 1px solid rgb(222,226,230) ;">
+                        <h4 style="font-weight: 700;">Resultados</h4>
+                        <div><canvas id="simulacao_chart"></canvas></div>
+                        <p>O Gráfico relaciona o potêncial de economia de água em m³ com o volume da cisterna</p>
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-toggle="tab" href="#tab-3">Geral</a></li>
+                                <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-4">Dimensionamento</a></li>
+                                <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-5">Financeiro</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" role="tabpanel" id="tab-3" style="background: #ffffff;">
+                                    <ul class="list-group text-capitalize" style="background: var(--secondary);">
+                                        <li class="list-group-item" style="color: var(dark);background: #e1e1e1;border-style: solid;border-left-color: var(--gray);"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Oferta: {{ geral_data.oferta_anual }} <span class="text-lowercase">m³/ano</span></span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Demanda: {{ geral_data.demanda_total }} <span class="text-lowercase">m³/ano</span><br></span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Área de coleta: {{ geral_data.area_cobertura }} <span class="text-lowercase">m²</span><br></span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);">Custo de operação: {{ geral_data.custo_operacional }} R$/ano</span></li>
+                                    </ul>
+                                </div>
+                                <div class="tab-pane" role="tabpanel" id="tab-4">
+                                    <ul class="list-group text-capitalize" style="background: #e1e1e1;">
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);font-weight: 600;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Freio d'água: {{ dimensionamento.freio_dagua }}</span><span class="text-lowercase">mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);font-weight: 600;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Sifão ladrão: {{ dimensionamento.sifao_ladrao }} </span><span class="text-lowercase">mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);font-weight: 600;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Capacidade do filtro: Até {{ dimensionamento.filtro_dagua }}</span><span class="text-lowercase">m² de cobertura</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);font-weight: 600;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Sucção: {{ dimensionamento.succao }}</span><span class="text-lowercase">mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);font-weight: 600;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Recalque: {{ dimensionamento.recalque }}</span><span class="text-lowercase">mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);font-weight: 600;"><span style="background: #e1e1e1;color: var(--dark);">Bomba d'água potência: {{ dimensionamento.potencia }}</span><span class="text-lowercase">cv</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);font-weight: 600;"><span style="background: #e1e1e1;color: var(--dark);">Reservatório de distribuição: {{ dimensionamento.reservatorio }}</span><span class="text-lowercase">l</span></li>
+                                    </ul>
+                                </div>
+                                <div class="tab-pane" role="tabpanel" id="tab-5" style="background: #e1e1e1;">
+                                    <div class="table-responsive" style="border-left-color: var(--secondary);">
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Cisterna (m³)</th>
+                                                    <th>Benefício (R$/ano)</th>
+                                                    <th>Custo (R$)</th>
+                                                    <th>Payback (Ano)</th>
+                                                    <th>VPL (R$)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for volume, beneficio, custo, payback, vpl in tabela_data %}
+                                                {% ifnotequal volume 0 %}
+                                                <tr>
+                                                    <td>{{ volume }}</td>
+                                                    <td>{{ beneficio }}</td>
+                                                    <td>{{ custo }}</td>
+                                                    <td>{{ payback }}</td>
+                                                    <td>{{ vpl }}</td>
+                                                </tr>
+                                                {% endifnotequal %}
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+
+(function() {
+    var ctx = document.getElementById('simulacao_chart');
+    var simulacao_chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [{% for volume in grafico_data.volumes %}'{{ volume }}',{% endfor %}]
+            ,
+            datasets: [{
+                label: 'Economia anual gerada',
+                data: [{% for economia in grafico_data.economias %}{{ economia }},{% endfor %}],
+                fill: false,
+                backgroundColor: 'rgb(65,125,178)',
+                borderColor: 'rgb(65,125,178)',
+                borderWidth: 2
+            }]
+        },
+         options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Economia anual por volume de cisterna'
+          },
+        },
+        interaction: {
+          mode: 'index',
+          intersect: false
+        },
+        scales: {
+          x: {
+            display: true,
+            title: {
+              display: true,
+              text: 'Volume da cisterna'
+            }
+          },
+          y: {
+            display: true,
+            title: {
+              display: true,
+              text: 'Economia anual em m³'
+            }
+          }
+        }
+      },
+    });
+})();
+
+</script>
+{% endblock scripts %}

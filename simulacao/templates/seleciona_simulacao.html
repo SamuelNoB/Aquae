@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+        <section class="clean-block features" style="border-top-style: solid;padding: 0;background: rgb(207,231,248);">
+            <div class="container" style="background: #eeeeee;padding-bottom: 100px;">
+                <div class="block-heading">
+                    <h2 class="text-info" style="font-weight: 800;">Selecione a simulação</h2>
+                </div>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html"><span>Home</span></a></li>
+                    <li class="breadcrumb-item"><a href="#"><span>Características</span></a></li>
+                    <li class="breadcrumb-item"><a href="#"><span>Simulação</span></a></li>
+                </ol>
+                <section>
+                    <p>Selecione AAP para&nbsp; Aproveitamento de água pluvial ou RAC para Reúso de águas cinzas.</p>
+                    <div class="d-md-flex justify-content-md-center align-items-md-center" style="padding: 1em;">
+                        <a class="btn btn-secondary" role="button" href="{% url 'simulacao:edificacao' %}" style="margin: 1em;">Voltar</a>
+                        <a class="btn btn-primary" role="button" href="{% url 'simulacao:simulacao-aap' pk %}" style="margin: 1em;">AAP</a>
+                        <a class="btn btn-primary" role="button" href="#" style="margin: 1em;">RAC</a>
+                    </div>
+                </section>
+            </div>
+        </section>
+{% endblock %}
