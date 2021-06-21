@@ -124,7 +124,6 @@ function addCustomConsumo() {
     tablecells[1] = document.createElement('td');
     tablecells[2] = document.createElement('td');
     tablecells[3] = document.createElement('td');
-    console.log(tablecells);
     tablecells[0].appendChild(createTextInput(consumoid));
 
     tablecells[1].appendChild(createFrequencia(consumoid));
@@ -149,17 +148,7 @@ function delete_row(e)
 function submit_simulacao() {
     $("#simulacaoForm").submit()
 }
-const taxa_de_juros = document.getElementById('id_taxa_de_juros');
-const changeCisternaVolume = document.getElementById('change_interval');
 
-taxa_de_juros.addEventListener('change', submit_simulacao, false)
-
-changeCisternaVolume.addEventListener('click', submit_simulacao, false)
-
-document.querySelectorAll('.form-check-input')
-    .forEach(checkbox => {
-    checkbox.addEventListener('change', submit_simulacao, false)
-})
 
 var consumoid = 7;
 const form = document.getElementById('edificacaoForm');
@@ -169,3 +158,14 @@ const form = document.getElementById('edificacaoForm');
 var newCustomConsumo = document.getElementById('addCustomConsumo');
 newCustomConsumo.addEventListener('click', addCustomConsumo, false);
 
+const taxa_de_juros = document.getElementById('id_taxa_de_juros');
+const changeCisternaVolume = document.getElementById('change_interval');
+
+taxa_de_juros.addEventListener('change', submit_simulacao, false);
+
+changeCisternaVolume.addEventListener('click', submit_simulacao, false)
+
+document.querySelectorAll('.form-check-input')
+    .forEach(checkbox => {
+    checkbox.addEventListener('change', submit_simulacao, false)
+})

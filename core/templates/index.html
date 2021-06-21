@@ -3,61 +3,51 @@
 {% load static %}
 
 {% block content %}
-        <section class="clean-block clean-hero" style="color: rgba(9,162,255,0.14);background: url({% static 'assets/img/tech/artem-militonian-UYW6FZLlnL8-unsplash.jpg' %});background-size: cover;">
-            <div class="text">
-                <h2>Aquae</h2>
-                <p>Simulador de consumo de água em edificações residenciais do Distrito Federal</p><a href="{% url 'simulacao:edificacao' %}"><button class="btn btn-outline-light btn-lg" type="button">Comece a usar</button></a>
+        <section class="clean-block clean-hero" style="color: rgba(9,162,255,0.14);">
+            <div class="text" style="color: black">
+                <h1 style="font-weight: bold;">aquae</h1>
+                <p>Este é um simulador que verifica o potencial de economia de água utilizando dois métodos: o reúso de águas cinzas (disponível em breve) e aproveitamento de águas pluviais baseado em dados da edificação e do consumo de água mensal. É possível extrair informações sobre o dimensionamento do sistema a ser implantado, dados de demanda, além da análise financeira de viabilidade de aplicação. <br> O simulador é indicado para residentes ou profissionais que busquem um disgnóstico rápido e simplificado do potencial econômico da implantação destes sistemas.
+</p><a href="{% url 'simulacao:edificacao' %}"><button style="color: black" class="btn btn-outline-dark btn-lg" type="button">Comece a usar</button></a>
             </div>
         </section>
         <section class="clean-block features">
             <div class="container">
                 <div class="block-heading">
-                    <h2 class="text-info">Features</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo.</p>
+                    <h2 class="text-info">Funcionalidades</h2>
+                    <h4>O simulador de águas pluviais.</h4>
                 </div>
                 <div class="row justify-content-center">
-                    <div class="col-md-5 feature-box"><i class="icon-star icon"></i>
-                        <h4>Bootstrap 4</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo.</p>
+                    <div class="col-md-5 feature-box"><i class="icon-chart icon"></i>
+                        <h4>Dimensionamento dinâmico de cisterna</h4>
+                        <p>Gráfico de cisterna relacionando o potencial de economia de água com o tamanho da cisterna.</p>
                     </div>
-                    <div class="col-md-5 feature-box"><i class="icon-pencil icon"></i>
-                        <h4>Customizable</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo.</p>
+                    <div class="col-md-5 feature-box"><i class="iconify icon" data-icon="bx:bx-dollar"></i>
+                        <h4>Análise de viabilidade financeira</h4>
+                        <p>Relação entre o custo de aplicação do sistema e o retorno monetário para cada volume de cisterna.</p>
                     </div>
-                    <div class="col-md-5 feature-box"><i class="icon-screen-smartphone icon"></i>
-                        <h4>Responsive</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo.</p>
+                    <div class="col-md-5 feature-box"><i class="iconify icon" data-icon="ant-design:control-outlined"></i>
+                        <h4>Resultados de simulação interativos</h4>
+                        <p>Reajuste de intervalo do gráfico, seleção de demandas para aplicação do sistema de economia de água e controle da taxa de juros aplicada.</p>
                     </div>
-                    <div class="col-md-5 feature-box"><i class="icon-refresh icon"></i>
-                        <h4>All Browser Compatibility</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo.</p>
+                    <div class="col-md-5 feature-box"><i class="iconify icon" data-icon="ic:outline-water-damage"></i>
+                        <h4>Dimensionamento do sistema</h4>
+                        <p>Pré-dimensionamento dos componentes necessários à aplicação do sistema (bomba, reservatórios, tubos etc.).</p>
                     </div>
                 </div>
+            </div>
+        <div class="container">
+                <div class="block-heading">
+                    <h4>Simulador de reúso de águas cinzas disponível em breve</h4>
+                </div>
+
             </div>
         </section>
         <section class="clean-block clean-info dark">
             <div class="container">
                 <div class="block-heading">
-                    <h2 class="text-info">Sobre nós</h2>
+                    <h2 class="text-info">Como utilizar</h2>
                 </div>
-                <div class="row align-items-center">
-                    <div class="col-md-6"><img class="img-thumbnail" src="assets/img/scenery/Daniel%20Sant%27Ana%20UnB.jpg"></div>
-                    <div class="col-md-6">
-                        <h3>Daniel Richard Sant'Ana</h3>
-                        <div class="getting-started-info">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-                        </div><button class="btn btn-outline-primary btn-lg" type="button">Join Now</button>
-                    </div>
-                </div>
-                <div class="row align-items-center">
-                    <div class="col-md-6"><img class="img-thumbnail" src="assets/img/scenery/EU.jpg"></div>
-                    <div class="col-md-6">
-                        <h3>Samuel Nogueira Bacelar</h3>
-                        <div class="getting-started-info">
-                            <p>Estudante de engenharia de software na Universidade de Brasília</p>
-                        </div><button class="btn btn-outline-primary btn-lg" type="button">Join Now</button>
-                    </div>
-                </div>
+
             </div>
         </section>
 {% endblock content %}
