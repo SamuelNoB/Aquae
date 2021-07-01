@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
+{% load humanize %}
 {% block content %}
         <section class="clean-block features" style="border-top-style: solid;padding: 0;background: rgb(207,231,248);">
             <div class="container" style="background: #eeeeee;padding-bottom: 100px;">
@@ -23,6 +24,18 @@
                                     {% render_field simulacaoForm.intervalos_de_cisterna class="form-control" %}
                                     <div class="input-group-append"><button id="change_interval" class="btn btn-primary" type="button">Alterar</button></div>
                                 </div><small class="form-text text-muted">Intervalos em m³ da cisterna a ser mostrado na aba financeiro e no gráfico.</small>
+                            </div>
+                            <h4 style="font-weight: bold;">Análise financeira</h4>
+                            <div class="input-group d-md-flex" style="margin-bottom: 0.8em;">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" style="font-weight: bold;">{{ simulacaoForm.taxa_de_juros.label }}</span>
+                                </div>
+                                {% render_field simulacaoForm.taxa_de_juros class="form-control" type="number" data-toggle="tooltip"  step=".2" %}
+                                <div class="input-group-append">
+                                    <span class="text-break input-group-text" style="font-weight: bold;">
+                                        %
+                                    </span>
+                                </div><small>Adicione uma taxa de júros para ser calculada juntamente a simulação financeira</small>
                             </div>
 
                             <h4 style="font-weight: bold;">Demanda de água pluvial</h4>
@@ -56,18 +69,6 @@
                                     {% endfor %}
                                     </tbody>
                                 </table>
-                            </div>
-                            <h4 style="font-weight: bold;">Análise financeira</h4>
-                            <div class="input-group d-md-flex" style="margin-bottom: 0.8em;">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" style="font-weight: bold;">{{ simulacaoForm.taxa_de_juros.label }}</span>
-                                </div>
-                                {% render_field simulacaoForm.taxa_de_juros class="form-control" type="number" data-toggle="tooltip"  step=".2" %}
-                                <div class="input-group-append">
-                                    <span class="text-break input-group-text" style="font-weight: bold;">
-                                        %
-                                    </span>
-                                </div>
                             </div>
                             </form>
                         </div>
@@ -107,10 +108,10 @@
                                             <thead>
                                                 <tr>
                                                     <th>Cisterna (m³)</th>
-                                                    <th>Benefício (R$/ano)</th>
-                                                    <th>Custo (R$)</th>
-                                                    <th>Payback (Ano)</th>
-                                                    <th>VPL (R$)</th>
+                                                    <th data-bss-tooltip data-toggle="tooltip" data-original-title="Valor da economia anual gerada com o sistema">Benefício (R$/ano)</th>
+                                                    <th data-bss-tooltip data-toggle="tooltip" data-original-title="Custo médio de implementação do sistema">Custo (R$)</th>
+                                                    <th data-bss-tooltip data-toggle="tooltip" data-original-title="Razão entre o custo e o benefício anual Custo ÷ Benefício">Payback (Ano)</th>
+                                                    <th data-bss-tooltip data-toggle="tooltip" data-original-title="Valor presente Líquido, ">VPL (R$)</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -118,10 +119,10 @@
                                                 {% ifnotequal volume 0 %}
                                                 <tr>
                                                     <td>{{ volume }}</td>
-                                                    <td>{{ beneficio }}</td>
-                                                    <td>{{ custo }}</td>
+                                                    <td>{{ beneficio|floatformat:2|intcomma }}</td>
+                                                    <td>{{ custo|floatformat:2|intcomma }}</td>
                                                     <td>{{ payback }}</td>
-                                                    <td>{{ vpl }}</td>
+                                                    <td>{{ vpl|floatformat:2|intcomma }}</td>
                                                 </tr>
                                                 {% endifnotequal %}
                                             {% endfor %}
@@ -157,34 +158,38 @@
             }]
         },
          options: {
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: 'Economia anual por volume de cisterna'
-          },
-        },
-        interaction: {
-          mode: 'index',
-          intersect: false
-        },
-        scales: {
-          x: {
-            display: true,
-            title: {
-              display: true,
-              text: 'Volume da cisterna'
+            elements: {
+                line: {
+                    tension: 0 // disables bezier curves
+                }
+	        },
+
+            responsive: true,
+             title: {
+                display: true,
+                text: 'Economia anual por volume de cisterna',
+              },
+            plugins: {
+            },
+            interaction: {
+              mode: 'index',
+              intersect: false
+            },
+            scales: {
+              xAxes: [{
+                  scaleLabel: {
+                      display: true,
+                      labelString: 'Volumes de cisterna'
+                }
+              }],
+              yAxes: [{
+                  scaleLabel: {
+                      display: true,
+                      labelString: 'Economia anual em m³'
+                }
+              }]
             }
-          },
-          y: {
-            display: true,
-            title: {
-              display: true,
-              text: 'Economia anual em m³'
-            }
-          }
-        }
-      },
+         },
     });
 })();
 
