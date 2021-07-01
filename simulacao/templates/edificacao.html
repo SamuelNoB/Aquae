@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load widget_tweaks %}
 {% block content %}
         <section class="clean-block features" style="border-top-style: solid;padding: 0;background: rgb(207,231,248);">
@@ -109,3 +110,6 @@
             </div>
         </section>
 {% endblock content%}
+{% block scripts %}
+    <script src="{% static 'assets/js/theme.js' %}"></script>
+{% endblock %}

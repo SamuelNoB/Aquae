@@ -145,10 +145,6 @@ function delete_row(e)
     e.parentNode.parentNode.parentNode.removeChild(e.parentNode.parentNode);
 }
 
-function submit_simulacao() {
-    $("#simulacaoForm").submit()
-}
-
 
 var consumoid = 7;
 const form = document.getElementById('edificacaoForm');
@@ -157,15 +153,3 @@ const form = document.getElementById('edificacaoForm');
 
 var newCustomConsumo = document.getElementById('addCustomConsumo');
 newCustomConsumo.addEventListener('click', addCustomConsumo, false);
-
-const taxa_de_juros = document.getElementById('id_taxa_de_juros');
-const changeCisternaVolume = document.getElementById('change_interval');
-
-taxa_de_juros.addEventListener('change', submit_simulacao, false);
-
-changeCisternaVolume.addEventListener('click', submit_simulacao, false)
-
-document.querySelectorAll('.form-check-input')
-    .forEach(checkbox => {
-    checkbox.addEventListener('change', submit_simulacao, false)
-})
