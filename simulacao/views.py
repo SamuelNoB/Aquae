@@ -22,42 +22,32 @@ def initial_values():
         {
             'nome': 'Irrigação de jardins',
             'frequencia': 1,
-            'indicador': None
+            'indicador': 1
         },
         {
             'nome': 'Lavagem de pisos',
             'frequencia': 1,
-            'indicador': None
+            'indicador': 1
         },
         {
             'nome': 'Lavagem de roupas',
             'frequencia': 1,
-            'indicador': None
+            'indicador': 31.25
         },
         {
             'nome': 'Descarga sanitária',
             'frequencia': 1,
-            'indicador': None
-        },
-        {
-            'nome': 'Torneira de cozinha',
-            'frequencia': 1,
-            'indicador': None
-        },
-        {
-            'nome': 'Torneira de banheiro',
-            'frequencia': 1,
-            'indicador': None
+            'indicador': 30.75
         },
         {
             'nome': 'Máquina lava louça',
             'frequencia': 1,
-            'indicador': None
+            'indicador': 3
         },
         {
             'nome': 'Tanque',
             'frequencia': 1,
-            'indicador': None
+            'indicador': 19.5
         },
 
     ]
