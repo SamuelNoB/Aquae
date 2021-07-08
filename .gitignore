@@ -4,3 +4,5 @@ Aquae/__pycache__/
 simulacao/__pycache__/
 
 Aquae/local_settings.py
+
+.env
