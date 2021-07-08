@@ -30,19 +30,14 @@ def initial_values():
             'indicador': 1
         },
         {
-            'nome': 'Lavagem de roupas',
-            'frequencia': 1,
-            'indicador': 31
-        },
-        {
             'nome': 'Descarga sanitária',
             'frequencia': 1,
             'indicador': 32
         },
         {
-            'nome': 'Máquina lava louça',
+            'nome': 'Lavagem de roupas',
             'frequencia': 1,
-            'indicador': 3
+            'indicador': 31
         },
         {
             'nome': 'Tanque',
