@@ -1,7 +1,7 @@
 from django import template
 import locale
 
-locale.setlocale(locale.LC_ALL, 'pt_br')
+locale.setlocale(locale.LC_ALL, 'pt_BR')
 register = template.Library()
 
 
