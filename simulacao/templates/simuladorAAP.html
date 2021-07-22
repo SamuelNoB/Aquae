@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load currency %}
 {% load widget_tweaks %}
 {% load humanize %}
 {% block content %}
@@ -75,8 +76,11 @@
                         </div>
                     <div class="col-md-7" style="border-top: 1px solid #dee2e6 ;border-left: 1px solid rgb(222,226,230) ;">
                         <h4 style="font-weight: 700;">Resultados</h4>
-                        <div><canvas id="simulacao_chart"></canvas></div>
-                        <p>O Gráfico relaciona o potêncial de economia de água em m³ com o volume da cisterna</p>
+                        <div>
+                            <div><canvas id="simulacao_chart"></canvas></div>
+                            <p>MEP* - Máxima Economia Possível</p>
+                        </div>
+
                         <div>
                             <ul class="nav nav-tabs" role="tablist">
                                 <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-toggle="tab" href="#tab-3">Geral</a></li>
@@ -86,21 +90,21 @@
                             <div class="tab-content">
                                 <div class="tab-pane active" role="tabpanel" id="tab-3" style="background: #ffffff;">
                                     <ul class="list-group text-capitalize" style="background: var(--secondary);">
-                                        <li class="list-group-item" style="color: var(dark);background: #e1e1e1;border-style: solid;border-left-color: var(--gray);"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Oferta: {{ geral_data.oferta_anual }} <span class="text-lowercase">m³/ano</span></span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Demanda: {{ geral_data.demanda_total }} <span class="text-lowercase">m³/ano</span><br></span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Área de coleta: {{ geral_data.area_cobertura }} <span class="text-lowercase">m²</span><br></span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);">Custo de operação: {{ geral_data.custo_operacional }} R$/ano</span></li>
+                                        <li class="list-group-item" style="color: var(dark);background: #e1e1e1;border-style: solid;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Oferta: </span>{{ geral_data.oferta_anual }} <span class="text-lowercase">m³/ano</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Demanda: </span>{{ geral_data.demanda_total }} <span class="text-lowercase">m³/ano</span><br></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Área de coleta: </span>{{ geral_data.area_cobertura }} <span class="text-lowercase">m²</span><br></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);">Custo de operação: </span>{{ geral_data.custo_operacional | currency }} / ano</li>
                                     </ul>
                                 </div>
                                 <div class="tab-pane" role="tabpanel" id="tab-4">
                                     <ul class="list-group text-capitalize" style="background: #e1e1e1;">
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);font-weight: 600;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Freio d'água: {{ dimensionamento.freio_dagua }}</span><span class="text-lowercase">mm</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);font-weight: 600;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Sifão ladrão: {{ dimensionamento.sifao_ladrao }} </span><span class="text-lowercase">mm</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);font-weight: 600;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Capacidade do filtro: Até {{ dimensionamento.filtro_dagua }}</span><span class="text-lowercase">m² de cobertura</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);font-weight: 600;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Sucção: {{ dimensionamento.succao }}</span><span class="text-lowercase">mm</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);font-weight: 600;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Recalque: {{ dimensionamento.recalque }}</span><span class="text-lowercase">mm</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);font-weight: 600;"><span style="background: #e1e1e1;color: var(--dark);">Bomba d'água potência: {{ dimensionamento.potencia }}</span><span class="text-lowercase">cv</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);font-weight: 600;"><span style="background: #e1e1e1;color: var(--dark);">Reservatório de distribuição: {{ dimensionamento.reservatorio }}</span><span class="text-lowercase">l</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Freio d'água: </span>{{ dimensionamento.freio_dagua }}<span class="text-lowercase">mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Sifão ladrão: </span>{{ dimensionamento.sifao_ladrao }}<span class="text-lowercase">mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Capacidade do filtro: </span>Até {{ dimensionamento.filtro_dagua }}<span class="text-lowercase">m² de cobertura</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Sucção: </span>{{ dimensionamento.succao }}<span class="text-lowercase">mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Recalque: </span>{{ dimensionamento.recalque }}<span class="text-lowercase">mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água potência: </span>{{ dimensionamento.potencia }}<span class="text-lowercase">cv</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Reservatório de distribuição: </span>{{ dimensionamento.reservatorio }}<span class="text-lowercase">l</span></li>
                                     </ul>
                                 </div>
                                 <div class="tab-pane" role="tabpanel" id="tab-5" style="background: #e1e1e1;">
@@ -120,10 +124,10 @@
                                                 {% ifnotequal volume 0 %}
                                                 <tr>
                                                     <td>{{ volume }}</td>
-                                                    <td>{{ beneficio|floatformat:2|intcomma }}</td>
-                                                    <td>{{ custo|floatformat:2|intcomma }}</td>
+                                                    <td>{{ beneficio|currency }}</td>
+                                                    <td>{{ custo|currency }}</td>
                                                     <td>{{ payback }}</td>
-                                                    <td>{{ vpl|floatformat:2|intcomma }}</td>
+                                                    <td>{{ vpl|currency }}</td>
                                                 </tr>
                                                 {% endifnotequal %}
                                             {% endfor %}
@@ -143,22 +147,69 @@
 <script>
 
 (function() {
+var originalLineDraw = Chart.controllers.line.prototype.draw;
+Chart.helpers.extend(Chart.controllers.line.prototype, {
+  draw: function() {
+    originalLineDraw.apply(this, arguments);
+
+    var chart = this.chart;
+    var ctx = chart.chart.ctx;
+
+    var index = chart.config.data.lineAtIndex;
+    if (index) {
+      var xaxis = chart.scales['x-axis-0'];
+      var yaxis = chart.scales['y-axis-0'];
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(xaxis.getPixelForValue(undefined, index), yaxis.top);
+          ctx.strokeStyle = '#0d1f6d';
+      ctx.lineTo(xaxis.getPixelForValue(undefined, index), yaxis.bottom);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+});
+
     var ctx = document.getElementById('simulacao_chart');
+    const labels = [{% for volume in grafico_data.volumes %}'{{ volume }}',{% endfor %}];
+    const data = [{% for economia in grafico_data.economias %}{{ economia }},{% endfor %}];
+    for (let i = 0; i < 3; i++) {
+        const newlabel = parseInt(labels[labels.length-1]) + 5;
+        labels.push(newlabel);
+        data.push(data[data.length-1]);
+    }
     var simulacao_chart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: [{% for volume in grafico_data.volumes %}'{{ volume }}',{% endfor %}]
-            ,
+            labels: labels,
             datasets: [{
-                label: 'Economia anual gerada',
-                data: [{% for economia in grafico_data.economias %}{{ economia }},{% endfor %}],
+                label: 'Economia de agua potável',
+                data: data,
                 fill: false,
                 backgroundColor: 'rgb(65,125,178)',
                 borderColor: 'rgb(65,125,178)',
                 borderWidth: 2
-            }]
+            }],
+        //lineAtIndex: labels.length -2
         },
          options: {
+            annotation: {
+                annotations: [
+                    {
+                        type: "line",
+                        mode: "vertical",
+                        scaleID: "x-axis-0",
+                        value: labels[labels.length -5],
+                        borderColor: '#0d1f6d',
+                        label: {
+                          content: "MEP*",
+                          enabled: true,
+                          position: "center"
+                    }
+                    }
+                ]
+            },
             elements: {
                 line: {
                     tension: 0 // disables bezier curves
@@ -186,14 +237,16 @@
               yAxes: [{
                   scaleLabel: {
                       display: true,
-                      labelString: 'Economia anual em m³'
+                      labelString: 'Economia de agua potável(m³/ano)'
                 }
               }]
             }
          },
     });
+
 })();
 
 </script>
     <script src="{% static "assets/js/simulacaoAAP.js" %}"></script>
+
 {% endblock scripts %}

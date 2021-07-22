@@ -6,3 +6,21 @@ simulacao/__pycache__/
 Aquae/local_settings.py
 
 .env
+
+.idea/
+
+venv/
+
+simulacao/base_de_dados/__pycache__/
+
+simulacao/base_de_dados/migrations/__pycache__/
+
+simulacao/controllers/__pycache__/
+
+simulacao/migrations/__pycache__/
+
+simulacao/templatetags/__pycache__/
+
+core/__pycache__/
+
+core/migrations/__pycache__/

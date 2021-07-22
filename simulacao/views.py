@@ -31,7 +31,7 @@ def initial_values():
         },
         {
             'nome': 'Descarga sanitária',
-            'frequencia': 1,
+            'frequencia': 30,
             'indicador': 32
         },
         {
