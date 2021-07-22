@@ -7,4 +7,6 @@ register = template.Library()
 
 @register.filter()
 def currency(value):
-    return locale.currency(value, grouping=True)
+    moeda = locale.currency(value, grouping=True)
+    moeda = moeda[2:]
+    return moeda
