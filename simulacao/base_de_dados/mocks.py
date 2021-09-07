@@ -2,7 +2,8 @@ from .models import (Cidade,
                      IndicePluviometrico,
                      AreaDeColeta,
                      Equipamentos,
-                     BombaDeAgua
+                     BombaDeAgua,
+                     CaixaDAgua
                      )
 
 indice_pluviometrico_mock = {
@@ -113,6 +114,57 @@ bombas_dagua = [
     }
 ]
 
+caixas_dagua = [
+    {
+        "min": 0,
+        "max": 500,
+        "volume": 500,
+        "valor": 53.05
+    },
+    {
+        "min": 501,
+        "max": 1000,
+        "volume": 1000,
+        "valor": 79.58
+    },
+    {
+        "min": 1001,
+        "max": 1500,
+        "volume": 1500,
+        "valor": 145.89
+    },
+    {
+        "min": 1501,
+        "max": 2000,
+        "volume": 2000,
+        "valor": 204.24
+    },
+    {
+        "min": 2001,
+        "max": 3000,
+        "volume": 3000,
+        "valor": 204.24
+    },
+    {
+        "min": 3001,
+        "max": 5000,
+        "volume": 5000,
+        "valor": 464.19
+    },
+    {
+        "min": 5001,
+        "max": 10000,
+        "volume": 10000,
+        "valor": 1100.8
+    },
+    {
+        "min": 10001,
+        "max": 15000,
+        "volume": 15000,
+        "valor": 1789.41
+    },
+]
+
 def create_indices_pluviometricos():
     for cidade, anos in indice_pluviometrico_mock.items():
         nova_cidade = Cidade.objects.create(nome=cidade)
@@ -162,3 +214,14 @@ def create_bombas_dagua():
                             horas_uso=bomba['horas_uso'],
                             )
         nova_bomba.save()
+
+
+def create_caixas_dagua():
+    for caixa in caixas_dagua:
+        nova_caixa = CaixaDAgua\
+            .objects.create(min=caixa['min'],
+                            max=caixa['max'],
+                            volume=caixa['volume'],
+                            valor=caixa['valor']
+                            )
+        nova_caixa.save()

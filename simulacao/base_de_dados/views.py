@@ -12,4 +12,5 @@ def preenche_base_de_dados(request):
     create_areas_coleta()
     create_equipamentos()
     create_bombas_dagua()
+    create_caixas_dagua()
     return HttpResponse("equipamentos inseridos")
