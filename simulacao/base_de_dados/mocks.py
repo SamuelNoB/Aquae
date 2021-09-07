@@ -3,7 +3,8 @@ from .models import (Cidade,
                      AreaDeColeta,
                      Equipamentos,
                      BombaDeAgua,
-                     CaixaDAgua
+                     CaixaDAgua,
+                     TarifaDeAgua
                      )
 
 indice_pluviometrico_mock = {
@@ -143,7 +144,7 @@ caixas_dagua = [
         "min": 2001,
         "max": 3000,
         "volume": 3000,
-        "valor": 204.24
+        "valor": 344.83
     },
     {
         "min": 3001,
@@ -164,6 +165,36 @@ caixas_dagua = [
         "valor": 1789.41
     },
 ]
+
+tarifas_mock = {
+    "Brasília":
+        [
+            {'min': 0,
+             'max': 7,
+             'tarifa': 2.99
+             },
+            {'min': 8,
+             'max': 13,
+             'tarifa': 3.59
+             },
+            {'min': 14,
+             'max': 20,
+             'tarifa': 7.1
+             },
+            {'min': 21,
+             'max': 30,
+             'tarifa': 10.66
+             },
+            {'min': 31,
+             'max': 45,
+             'tarifa': 17.05
+             },
+            {'min': 46,
+             'max': 99999999,
+             'tarifa': 23.87
+             },
+        ]
+}
 
 def create_indices_pluviometricos():
     for cidade, anos in indice_pluviometrico_mock.items():
@@ -225,3 +256,18 @@ def create_caixas_dagua():
                             valor=caixa['valor']
                             )
         nova_caixa.save()
+
+
+def create_tarifas():
+    for cidade_tarifa in tarifas_mock.items():
+        cidade = Cidade.objects.get(nome=cidade_tarifa[0])
+        for tarifas in cidade_tarifa[1]:
+            nova_tarifa = TarifaDeAgua \
+                .objects.create(cidade=cidade,
+                                min=tarifas['min'],
+                                max=tarifas['max'],
+                                tarifa=tarifas['tarifa']
+                                )
+            nova_tarifa.save()
+
+

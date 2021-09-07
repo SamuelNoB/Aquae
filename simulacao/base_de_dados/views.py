@@ -13,4 +13,5 @@ def preenche_base_de_dados(request):
     create_equipamentos()
     create_bombas_dagua()
     create_caixas_dagua()
+    create_tarifas()
     return HttpResponse("equipamentos inseridos")
