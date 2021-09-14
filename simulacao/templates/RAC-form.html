@@ -1,12 +1,112 @@
 {% extends "base.html" %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <h1>Pagina do RAC</h1>
-</head>
-<body>
+{% load static %}
+{% block content %}
+    <section class="clean-block features" style="border-top-style: solid;padding: 0;background: rgb(207,231,248);">
+        <div class="container" style="background: #eeeeee;padding-bottom: 200px;">
+            <form id="RACform">
+                <h3 style="position: relative; font-weight: bold;margin: 16px 16px;">Oferta de água não potável</h3>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th data-toggle="tooltip" data-bss-tooltip="" style="width: 25%;" title="Nome da fonte da oferta de água cinza.">Tipo de uso</th>
+                        <th data-toggle="tooltip" data-bss-tooltip="" style="width: 35%;" title="Quantidade de usos ao mês.">Frequência mensal de uso</th>
+                        <th data-toggle="tooltip" data-bss-tooltip="" style="width: 35%;" title="Quantidade de litros ofertados em um dia. Preenchido com valores pré definidos de acordo com oferta média mensal de água no Distrito Federal.">Indicador de uso final</th>
+                        <th style="width: 5%;">Deletar</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table_body">
 
-</body>
-</html>
+                    </tbody>
+                </table>
+
+
+                <div class="form-row" style="margin: 1em;">
+                    <button class="btn btn-secondary btn-sm" id="addCustomConsumo" type="button" onclick="addFields(k); k++">Adicionar</button>
+                    <span class="d-md-flex align-items-md-center">&nbsp;Outro tipo de uso de água cinza.</span>
+                </div>
+                <div class="text-right col-md-12">
+                    <button class="btn btn-light" type="button" data-dismiss="RACform">Retornar</button>
+                    <button class="btn btn-primary" type="submit" style="margin: 1em;">Próximo</button>
+                </div>
+            </form>
+        </div>
+    </section>
+    <script>
+        function addFields(k, dados=[], id="table_body", initial=Boolean(false)) {
+            let container = document.getElementById(id);
+            let row = container.appendChild(document.createElement("tr"));
+            row.setAttribute('id', 'oferta' + k)
+
+            let td1 = row.appendChild(document.createElement("td"));
+            let tipo_de_uso = td1.appendChild(document.createElement("input"));
+
+            function numericField(row, padrao='1', escala='Litros/dia'){
+                let td = row.appendChild(document.createElement("td"));
+                let div_in = td.appendChild(document.createElement("div"));
+                let valor = div_in.appendChild(document.createElement("input"));
+                let div_append = div_in.appendChild(document.createElement("div"));
+                let span = div_append.appendChild(document.createElement("span"));
+
+                div_in.setAttribute('class', 'input-group');
+                div_append.setAttribute('class', 'input-group-append');
+                span.innerHTML = escala;
+                span.setAttribute('class', 'input-group-text');
+
+                valor.setAttribute('type', 'numeric');
+                valor.setAttribute('value', padrao);
+                valor.setAttribute('class', 'form-control');
+                valor.setAttribute('min', 1)
+            }
+
+
+
+            tipo_de_uso.setAttribute('type', 'text');
+            tipo_de_uso.setAttribute('class', 'form-control');
+
+            if (initial){
+                tipo_de_uso.setAttribute('readonly', '');
+                tipo_de_uso.setAttribute('style', 'position: relative;font-weight: bold;');
+                tipo_de_uso.setAttribute('value', dados[0])
+                numericField(row, dados[1], dados[3][0])
+                numericField(row, dados[2], dados[3][1])
+
+            } else {
+                tipo_de_uso.setAttribute('placeholder', 'Nome do uso aqui');
+                numericField(row, '1', 'Vezes ao mês');
+                numericField(row, '1', 'Litros/dia');
+            }
+
+
+            function delField(row_id) {
+                let row_to_del = document.getElementById(row_id);
+                row_to_del.parentNode.removeChild(row_to_del)
+            }
+
+            let td4 = row.appendChild(document.createElement("td"))
+            let del_btn = td4.appendChild(document.createElement("button"))
+            del_btn.setAttribute('class', 'btn btn-light')
+            del_btn.setAttribute('type', 'button')
+            del_btn.addEventListener('click', function(){delField('oferta'+k)}, false)
+            del_btn.innerHTML = 'Deletar'
+
+            console.log(k)
+
+        }
+        function InitFields(k, tipo, padrao_freq, padrao_ind, escala, id="table_body"){
+            for (let i=0; i < tipo.length; i++){
+                let padroes = [tipo[i], padrao_freq[i], padrao_ind[i], escala]
+                addFields(k, padroes, id, Boolean(true));
+                k++
+            }
+            return k
+        }
+
+        const oferta = ["Torneira de Banheiro", "Chuveiro", "Máquina de Lavar Roupa", "Tanque"];
+        const Qdiario = ["85", "167", "158", "106"];
+        const freq = ["30", "30", "12", "20"];
+        const escalas = ["Vezes ao mês", "Litros/dia"];
+
+        let k = 0
+        k = InitFields(k, oferta, freq, Qdiario, escalas);
+    </script>
+{% endblock %}

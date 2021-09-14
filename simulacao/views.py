@@ -94,6 +94,11 @@ def seleciona_simulacao(request, pk):
     return render(request, 'seleciona_simulacao.html', {'pk': pk})
 
 
+def RACform(request, pk):
+    if request.method == "GET":
+        return render(request, 'RAC-form.html', {'pk': pk})
+
+
 class SimulacaoAAP(TemplateView):
     template_name = 'simuladorAAP.html'
 
@@ -333,10 +338,3 @@ class SimulacaoAAP(TemplateView):
         }
         return render(request, self.template_name, context)
 
-
-class SimulacaoRAC(TemplateView):
-    template_name = 'RAC-form.html'
-    pk = 'pk'
-
-    def post(self, request):
-        return render(request, self.template_name)
