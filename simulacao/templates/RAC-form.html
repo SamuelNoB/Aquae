@@ -3,7 +3,8 @@
 {% block content %}
     <section class="clean-block features" style="border-top-style: solid;padding: 0;background: rgb(207,231,248);">
         <div class="container" style="background: #eeeeee;padding-bottom: 200px;">
-            <form id="RACform">
+            <form id="RACform" method="POST">
+                {% csrf_token %}
                 <h3 style="position: relative; font-weight: bold;margin: 16px 16px;">Oferta de água não potável</h3>
                 <table class="table">
                     <thead>
@@ -18,7 +19,10 @@
 
                     </tbody>
                 </table>
-
+                <input type="hidden" name="ofertas-INITIAL_FORMS" id="id_ofertas-INITIAL_FORMS" value="0">
+                <input type="hidden" name="ofertas-TOTAL_FORMS" id="id_ofertas-TOTAL_FORMS" value="3">
+                <input type="hidden" name="ofertas-MIN_NUM_FORMS" id="id_ofertas-MIN_NUM_FORMS" value="1">
+                <input type="hidden" name="ofertas-MAX_NUM_FORMS" id="id_ofertas-MAX_NUM_FORMS" value="100">
 
                 <div class="form-row" style="margin: 1em;">
                     <button class="btn btn-secondary btn-sm" id="addCustomConsumo" type="button" onclick="addFields(k); k++">Adicionar</button>
@@ -26,7 +30,7 @@
                 </div>
                 <div class="text-right col-md-12">
                     <button class="btn btn-light" type="button" data-dismiss="RACform">Retornar</button>
-                    <button class="btn btn-primary" type="submit" style="margin: 1em;">Próximo</button>
+                    <button id="submit" class="btn btn-primary" type="submit" style="margin: 1em;">Próximo</button>
                 </div>
             </form>
         </div>
@@ -40,7 +44,7 @@
             let td1 = row.appendChild(document.createElement("td"));
             let tipo_de_uso = td1.appendChild(document.createElement("input"));
 
-            function numericField(row, padrao='1', escala='Litros/dia'){
+            function numericField(row, k, id, padrao='1', escala='Litros/dia'){
                 let td = row.appendChild(document.createElement("td"));
                 let div_in = td.appendChild(document.createElement("div"));
                 let valor = div_in.appendChild(document.createElement("input"));
@@ -56,24 +60,31 @@
                 valor.setAttribute('value', padrao);
                 valor.setAttribute('class', 'form-control');
                 valor.setAttribute('min', 1)
+                valor.setAttribute('name', 'ofertas-' + k + "-" + id)
+                valor.setAttribute('id', 'id_ofertas-' + k + "-" + id)
+                valor.setAttribute('required', '')
             }
 
 
 
             tipo_de_uso.setAttribute('type', 'text');
             tipo_de_uso.setAttribute('class', 'form-control');
+            tipo_de_uso.setAttribute('maxlength', '100')
+            tipo_de_uso.setAttribute('id', 'id_ofertas' + k + '-nome')
+            tipo_de_uso.setAttribute('name', 'ofertas-' + k + '-nome')
+            tipo_de_uso.setAttribute('required', '')
 
             if (initial){
                 tipo_de_uso.setAttribute('readonly', '');
                 tipo_de_uso.setAttribute('style', 'position: relative;font-weight: bold;');
                 tipo_de_uso.setAttribute('value', dados[0])
-                numericField(row, dados[1], dados[3][0])
-                numericField(row, dados[2], dados[3][1])
+                numericField(row, k, 'frequencia_mensal', dados[1], dados[3][0])
+                numericField(row, k, 'indicador', dados[2], dados[3][1])
 
             } else {
                 tipo_de_uso.setAttribute('placeholder', 'Nome do uso aqui');
-                numericField(row, '1', 'Vezes ao mês');
-                numericField(row, '1', 'Litros/dia');
+                numericField(row, k, 'frequencia_mensal', '1', 'Vezes ao mês');
+                numericField(row, k, 'indicador', '1', 'Litros/dia');
             }
 
 
@@ -88,10 +99,8 @@
             del_btn.setAttribute('type', 'button')
             del_btn.addEventListener('click', function(){delField('oferta'+k)}, false)
             del_btn.innerHTML = 'Deletar'
-
-            console.log(k)
-
         }
+
         function InitFields(k, tipo, padrao_freq, padrao_ind, escala, id="table_body"){
             for (let i=0; i < tipo.length; i++){
                 let padroes = [tipo[i], padrao_freq[i], padrao_ind[i], escala]
@@ -101,6 +110,30 @@
             return k
         }
 
+        function readdres (id='table_body') {
+            let tab_user = document.getElementById(id)
+            let rows = tab_user.getElementsByTagName('tr')
+            let k_true = rows.length
+            let total_forms = document.getElementById('id_ofertas-TOTAL_FORMS')
+            total_forms.setAttribute('value', k_true)
+
+            const attr = ['-nome', '-frequencia_mensal', '-indicador']
+            let inputs = tab_user.getElementsByTagName('input')
+            let k_array = []
+            for (let i = 0; i < k_true; i++){
+                k_array.push(i)
+                k_array.push(i)
+                k_array.push(i)
+            }
+            for (let i=0; i < inputs.length; i++){
+                inputs[i].setAttribute('name', 'ofertas-' + k_array[i] + attr[i % 3])
+                inputs[i].setAttribute('id', 'id_ofertas-' + k_array[i] + attr[i % 3])
+            }
+
+        }
+
+
+
         const oferta = ["Torneira de Banheiro", "Chuveiro", "Máquina de Lavar Roupa", "Tanque"];
         const Qdiario = ["85", "167", "158", "106"];
         const freq = ["30", "30", "12", "20"];
@@ -108,5 +141,9 @@
 
         let k = 0
         k = InitFields(k, oferta, freq, Qdiario, escalas);
+
+        let btn = document.getElementById("RACform")
+        btn.addEventListener("submit", function (){readdres()}, false)
+
     </script>
 {% endblock %}

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Simulacao, DemandasDeAgua
+from .models import Simulacao, DemandasDeAgua, OfertasDeAgua
 
 
 class EdificacaoForm(forms.ModelForm):
@@ -11,6 +11,12 @@ class EdificacaoForm(forms.ModelForm):
 class DemandasForm(forms.ModelForm):
     class Meta:
         model = DemandasDeAgua
+        fields = '__all__'
+
+
+class OfertasForm(forms.ModelForm):
+    class Meta:
+        model = OfertasDeAgua
         fields = '__all__'
 
 

@@ -52,3 +52,20 @@ class Simulacao(models.Model):
     class Meta:
         verbose_name = 'Simulação'
         verbose_name_plural = 'Simulações'
+
+
+class OfertasDeAgua(models.Model):
+
+    def __str__(self):
+        return f"{self.nome} {str(self.simulacao)}"
+
+    nome = models.CharField(verbose_name="Nome da oferta", max_length=100)
+    frequencia_mensal = models.IntegerField(verbose_name='Frequencia mensal de uso')
+    indicador = models.FloatField(verbose_name='Indicador de uso final', blank=True)
+
+    simulacao = models.ForeignKey(
+        Simulacao,
+        verbose_name='Simulacao pertencente',
+        related_name='ofertas',
+        on_delete=models.CASCADE
+    )

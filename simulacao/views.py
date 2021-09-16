@@ -3,8 +3,8 @@ from django.views.generic import TemplateView
 from django.forms import inlineformset_factory, formset_factory
 
 
-from .forms import EdificacaoForm, DemandasForm, DemandaSimulacaoAAPForm, SimulacaoAAPForm
-from .models import DemandasDeAgua, Simulacao
+from .forms import EdificacaoForm, DemandasForm, DemandaSimulacaoAAPForm, SimulacaoAAPForm, OfertasForm
+from .models import DemandasDeAgua, Simulacao, OfertasDeAgua
 from .base_de_dados.models import IndicePluviometrico, CaixaDAgua
 from .utils import get_dollar
 
@@ -95,8 +95,17 @@ def seleciona_simulacao(request, pk):
 
 
 def RACform(request, pk):
-    if request.method == "GET":
-        return render(request, 'RAC-form.html', {'pk': pk})
+    oferta_factory = inlineformset_factory(Simulacao,
+                                           OfertasDeAgua,
+                                           fields='__all__')
+    simul_id = Simulacao.objects.get(id=pk)
+    oferta_factory(instance=simul_id)
+    if request.method == "POST":
+        novas_ofertas = oferta_factory(request.POST, instance=simul_id)
+        if novas_ofertas.is_valid():
+            novas_ofertas.save()
+
+    return render(request, 'RAC-form.html', {'pk': pk})
 
 
 class SimulacaoAAP(TemplateView):
