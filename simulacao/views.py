@@ -21,27 +21,27 @@ def initial_values():
     return [
         {
             'nome': 'Irrigação de jardins',
-            'frequencia': 1,
+            'frequencia_mensal': 30,
             'indicador': 1
         },
         {
             'nome': 'Lavagem de pisos',
-            'frequencia': 1,
+            'frequencia_mensal': 4,
             'indicador': 1
         },
         {
             'nome': 'Descarga sanitária',
-            'frequencia': 30,
+            'frequencia_mensal': 30,
             'indicador': 32
         },
         {
             'nome': 'Lavagem de roupas',
-            'frequencia': 1,
+            'frequencia_mensal': 8,
             'indicador': 31
         },
         {
             'nome': 'Tanque',
-            'frequencia': 1,
+            'frequencia_mensal': 30,
             'indicador': 19
         },
 
