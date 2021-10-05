@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, reverse, HttpResponse
+from django.shortcuts import render, redirect, reverse, HttpResponse, get_object_or_404
 from django.views.generic import TemplateView
 from django.forms import inlineformset_factory, formset_factory
 
@@ -104,6 +104,7 @@ def RACform(request, pk):
         novas_ofertas = oferta_factory(request.POST, instance=simul_id)
         if novas_ofertas.is_valid():
             novas_ofertas.save()
+            return redirect('simulacao:simulacao-rac', pk=pk)
 
     return render(request, 'RAC-form.html', {'pk': pk})
 
@@ -347,3 +348,44 @@ class SimulacaoAAP(TemplateView):
         }
         return render(request, self.template_name, context)
 
+class SimulacaoRAC(TemplateView):
+    template_name = 'simuladorRAC.html'
+
+    def get_simulacao(self):
+        pk = self.kwargs.get("pk")
+        return {
+            'simulacao': Simulacao.objects.get(pk=pk),
+            'demandas_de_agua': DemandasDeAgua.objects.filter(simulacao=pk),
+            'ofertas_de_agua': OfertasDeAgua.objects.filter(simulacao=pk)
+        }
+        
+    
+    def calc_oferta_demanda(self, interesse):
+        ofertas = self.get_simulacao()[interesse]
+        individual = {}
+        geral = 0
+        for oferta in ofertas:
+            agua = (oferta.indicador * oferta.frequencia_mensal)/1000
+            geral += agua
+            individual[oferta.nome] = agua
+
+        geral = geral*12 # m³/ano
+        # individual em m³/mes
+        return individual, geral 
+    
+
+    def get(self, request, *args, **kwargs):
+        
+        individual_oferta, geral_oferta = self.calc_oferta_demanda('ofertas_de_agua')
+        individual_demanda, geral_demanda = self.calc_oferta_demanda('demandas_de_agua')
+
+
+        context = {
+            'pk': self.kwargs.get("pk"),
+            'individual_o' : individual_oferta,
+            'geral_o' : round(geral_oferta, 3),
+            'individual_d' : individual_demanda,
+            'geral_d' : round(geral_demanda, 3)
+        }
+
+        return render(request, self.template_name, context)
