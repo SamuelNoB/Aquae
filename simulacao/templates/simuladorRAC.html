@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block content %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+    <section class="clean-block features" style="border-top-style: solid;padding: 0;background: rgb(207,231,248);">
+        <div class="container" style="background: #eeeeee;padding-bottom: 100px;">
+            <div class="row align-content-center" style="border: 1px none rgb(33,37,41);background: #eeeeee;margin-left: 0;margin-right: 0;">
+                <div class="col-md-6">
+                    <h4>Oferta de água cinza</h4>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th data-checkbox="true"></th>
+                                <th>Nome</th>
+                                <th>Consumo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="oferta-items">
+                        {% for i in individual_o.items %}
+                            <tr>
+                                <td><input type="checkbox" checked style="margin: 0px;transform: scale(0.8)" class="form-check-input"></td>
+                                <td><input type='text' value="{{i.0}}" class="form-control" readonly="" style="font-weight: bold;" ></td>
+                                <td>
+                                    <div class="input-group">
+                                    
+                                        <input type='text' value="{{i.1}}" class="form-control" readonly="">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">m³/mês</span>
+                                        </div>
+                                    
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tbody>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <h4>Demanda de água cinza</h4>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th data-checkbox="true"></th>
+                                <th>Nome</th>
+                                <th>Demanda</th>
+                            </tr>
+                        </thead>
+                        <tbody id="demanda-items">
+                        {% for i in individual_d.items %}
+                            <tr>
+                                <td><input type="checkbox" checked style="margin: 0px;transform: scale(0.8)" class="form-check-input"></td>
+                                <td><input type='text' value="{{i.0}}" class="form-control" readonly="" style="font-weight: bold;" ></td>
+                                <td>
+                                    <div class="input-group">
+                                    
+                                        <input type='text' value="{{i.1}}" class="form-control" readonly="">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">m³/mês</span>
+                                        </div>
+                                    
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row align-content-center" style="border: 1px none rgb(33,37,41);background: #eeeeee;margin-left: 0;margin-right: 0;">
+                <div class="col-md-6" id="ChartDiv">
+                    <canvas id="myChart" width="400" height="400"></canvas>
+                </div>
+                <div class="col-md-6">
+                    
+                        <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-toggle="tab" href="#tab-3">Geral</a></li>
+                                <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-4">Dimensionamento</a></li>
+                                <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-5">Financeiro</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" role="tabpanel" id="tab-3" style="background: #ffffff;">
+                                    <ul class="list-group text-capitalize" style="background: var(--secondary);">
+                                        <li class="list-group-item" style="color: var(dark);background: #e1e1e1;border-style: solid;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Oferta: </span><span class="text-lowercase" id="oferta_geral">{{ geral_o}} m³/ano</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Demanda: </span><span class="text-lowercase" id="demanda_geral">{{geral_d}} m³/ano</span><br></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);">Custo de operação: </span> ano</li>
+                                    </ul>
+                                </div>
+                                <div class="tab-pane" role="tabpanel" id="tab-4">
+                                    <ul class="list-group text-capitalize" style="background: #e1e1e1;">
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Freio d'água: </span><span class="text-lowercase">mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Sifão ladrão: </span><span class="text-lowercase">mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Capacidade do filtro: </span>Até <span class="text-lowercase">m² de cobertura</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Sucção: </span><span class="text-lowercase">mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Recalque: </span><span class="text-lowercase">mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água potência: </span><span class="text-lowercase">cv</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Reservatório de distribuição: </span>ff<span>L</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        /*Soma elementos de um array*/
+        function add(accumulator, a) {
+            return accumulator + a;
+        }
+        
+        /*Faz o enderecamento das tabelas de demanda e oferta,
+        alem de criar os EventListener's que tornam o grafico interativo*/
+        function address(parent_id, child_tag, id_names, type) {
+            let parent = document.getElementById(parent_id)
+            let child = parent.getElementsByTagName(child_tag)
+            
+            const nomes = []
+            const indicadores = []
+            const n = child.length/3
+            for (let i = 0; i < n*3; i++){
+                child[i].setAttribute('id', 'id_' + type + "-" + Math.floor(i / 3) + "-" + id_names[(i%3)])
+                child[i].setAttribute('name', type + "-" + Math.floor(i / 3) + "-" + id_names[(i%3)])
+                
+                if (id_names[(i%3)] == 'indicador') {
+                    indicadores.push( parseFloat(child[i].value.replace(',', '.')))
+                } else if (id_names[(i%3)] == 'nome') {
+                    nomes.push(child[i].value)
+                } else if(id_names[(i%3)] == 'check') {
+                    child[i].addEventListener('click', function () {re_plot(child[i].id)}, false)
+                }
+            }
+
+            return({n, nomes, indicadores})
+        }
+
+        /*Retorna casos diferentes de zero para que o grafico nao apresente o dado zerado*/
+        function clean_data(labels, values) {
+            
+            if (values.includes(0)) {
+                var cleaned_values = []
+                var cleaned_labels = []
+                for (let i = 0; i < values.length; i++) {
+                    if (values[i] != 0) {
+                        cleaned_values.push(values[i])
+                        cleaned_labels.push(labels[i])
+                    }
+                } 
+            } else {
+                var cleaned_labels = labels
+                var cleaned_values = values
+            }
+
+            return ({cleaned_labels, cleaned_values})
+        }
+
+
+        function plot(x, y, ticks_config = {}) {
+            const clean = clean_data(labels = x, values = y)
+            
+            /*Deleta a canvas antiga para nao bugar a visualizacao*/
+            document.getElementById('myChart').remove()
+
+            /*Nova canvas*/
+            const ChartDiv =  document.getElementById('ChartDiv')
+
+            const canvas = ChartDiv.appendChild(document.createElement("canvas"))
+            canvas.setAttribute('width', '400')
+            canvas.setAttribute('height', '400')
+            canvas.setAttribute('id', 'myChart')
+            const ctx = canvas.getContext('2d');
+            
+            const myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: clean.cleaned_labels,
+                    
+                    datasets: [{
+                        label: 'Economia de Água m³/ano',
+                        data: clean.cleaned_values,
+                        backgroundColor: 'rgba(54, 162, 235, 1)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: { 
+                    scales: {
+                        x: {
+                            ticks: ticks_config
+                        }
+                    }
+                }
+            });
+        }
+
+        /*Retorna a possivel economia de cada demanda*/
+        function data_adjust(oferta_indicadores, demanda_indicadores) {
+            const economia = []
+            const oferta_total = oferta_indicadores.reduce(add, 0) * 12
+            for (let i = 0; i < demanda_indicadores.length; i++) {
+                economia.push(Math.min(demanda_indicadores[i] * 12, oferta_total))
+            }
+            return economia
+        }
+
+        /*Refaz o grafico, e outros elementos da pagina, toda vez que ocorre uma interacao com checkbox*/
+        function re_plot(id) {
+            const index = id.replace(/[^0-9]/g, '')
+            const checkbox = document.getElementById(id)
+            const indicador = document.getElementById(id.replace('check', 'indicador')).value
+
+            if (id.includes('demanda')) {
+                /*Cria novo indicador, valor do formulario ou zero, dependendo se o usuario acabou de marcar ou desmarcar a checkbox*/
+                data_demanda.indicadores[index] = checkbox.checked * parseFloat(indicador.replace(',', '.'))
+
+                /*Recalcula soma total dos novos indicadores*/
+                const total = Math.round((data_demanda.indicadores.reduce(add, 0) + Number.EPSILON) * 1000 * 12) / 1000 
+                document.getElementById("demanda_geral").innerHTML = String(total).replace('.', ',') + ' m³/ano'
+            } else if (id.includes('oferta')) {
+                data_oferta.indicadores[index] = checkbox.checked * parseFloat(indicador.replace(',', '.'))
+                
+                const total = Math.round((data_oferta.indicadores.reduce(add, 0) + Number.EPSILON) * 1000 * 12) / 1000
+                document.getElementById("oferta_geral").innerHTML = String(total).replace('.', ',') + ' m³/ano'
+            } 
+
+            const re_economia = data_adjust(data_oferta.indicadores, data_demanda.indicadores)
+
+            plot(x = data_demanda.nomes, y = re_economia)
+        }
+
+
+        const main_ids = ['check', 'nome', 'indicador']
+        const data_oferta = address(parent_id="oferta-items", child_tag="input", id_names=main_ids, type="oferta")
+        const data_demanda = address(parent_id="demanda-items", child_tag="input", id_names=main_ids, type="demanda")
+        const economia = data_adjust(data_oferta.indicadores, data_demanda.indicadores)
+        
+        plot(x = data_demanda.nomes, y = economia)
+        
+
+    </script>
+
+{% endblock %}
