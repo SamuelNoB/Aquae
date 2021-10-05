@@ -14,6 +14,8 @@ from .controllers.ofertaController import OfertaController
 from .controllers.economiaDeAguaController import EconomiaDeAguaController
 from .controllers.beneficioController import BeneficioController
 
+
+import simulacao
 # Create your views here.
 
 
@@ -98,7 +100,11 @@ def RACform(request, pk):
     oferta_factory = inlineformset_factory(Simulacao,
                                            OfertasDeAgua,
                                            fields='__all__')
-    simul_id = Simulacao.objects.get(id=pk)
+    try:
+        simul_id = Simulacao.objects.get(id=pk)
+    except simulacao.models.Simulacao.DoesNotExist:
+        return redirect('simulacao:edificacao')
+
     oferta_factory(instance=simul_id)
     if request.method == "POST":
         novas_ofertas = oferta_factory(request.POST, instance=simul_id)
@@ -350,18 +356,18 @@ class SimulacaoAAP(TemplateView):
 
 class SimulacaoRAC(TemplateView):
     template_name = 'simuladorRAC.html'
+    
 
-    def get_simulacao(self):
-        pk = self.kwargs.get("pk")
+    def get_simulacao(self, pk):
         return {
             'simulacao': Simulacao.objects.get(pk=pk),
             'demandas_de_agua': DemandasDeAgua.objects.filter(simulacao=pk),
             'ofertas_de_agua': OfertasDeAgua.objects.filter(simulacao=pk)
         }
-        
+
     
-    def calc_oferta_demanda(self, interesse):
-        ofertas = self.get_simulacao()[interesse]
+    def calc_oferta_demanda(self, interesse, pk):
+        ofertas = self.get_simulacao(pk)[interesse]
         individual = {}
         geral = 0
         for oferta in ofertas:
@@ -375,10 +381,10 @@ class SimulacaoRAC(TemplateView):
     
 
     def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk') 
         
-        individual_oferta, geral_oferta = self.calc_oferta_demanda('ofertas_de_agua')
-        individual_demanda, geral_demanda = self.calc_oferta_demanda('demandas_de_agua')
-
+        individual_demanda, geral_demanda = self.calc_oferta_demanda('demandas_de_agua', pk)
+        individual_oferta, geral_oferta = self.calc_oferta_demanda('ofertas_de_agua', pk)
 
         context = {
             'pk': self.kwargs.get("pk"),
