@@ -382,9 +382,18 @@ class SimulacaoRAC(TemplateView):
 
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk') 
-        
-        individual_demanda, geral_demanda = self.calc_oferta_demanda('demandas_de_agua', pk)
+
+        # A demanda faz-se precedente ao formulario da oferta        
+        try:
+            individual_demanda, geral_demanda = self.calc_oferta_demanda('demandas_de_agua', pk)
+        except simulacao.models.Simulacao.DoesNotExist:
+            return redirect('simulacao:edificacao')
+
+        # Buscar uma oferta em uma simulacao existente nao retorna erro
         individual_oferta, geral_oferta = self.calc_oferta_demanda('ofertas_de_agua', pk)
+        if not individual_oferta:
+            return redirect('simulacao:formulario-rac', pk=pk)
+
 
         context = {
             'pk': self.kwargs.get("pk"),
