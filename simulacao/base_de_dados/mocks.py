@@ -4,7 +4,8 @@ from .models import (Cidade,
                      Equipamentos,
                      BombaDeAgua,
                      CaixaDAgua,
-                     TarifaDeAgua
+                     TarifaDeAgua,
+                     CapacidadeDeTratamento
                      )
 
 indice_pluviometrico_mock = {
@@ -196,6 +197,58 @@ tarifas_mock = {
         ]
 }
 
+# RAC
+capacidades_de_tratamento = [
+    {
+        "min": 0,
+        "max": 3000,
+        "volume": 3000,
+        "valor": 6631
+    },
+    {
+        "min": 3001,
+        "max": 6000,
+        "volume": 6000,
+        "valor": 8090
+    },
+    {
+        "min": 6001,
+        "max": 10000,
+        "volume": 10000,
+        "valor": 11008
+    },
+    {
+        "min": 10001,
+        "max": 15000,
+        "volume": 15000,
+        "valor": 13342
+    },
+    {
+        "min": 15001,
+        "max": 20000,
+        "volume": 20000,
+        "valor": 13926
+    },
+    {
+        "min": 20001,
+        "max": 30000,
+        "volume": 30000,
+        "valor": 17242
+    },
+    {
+        "min": 30001,
+        "max": 50000,
+        "volume": 50000,
+        "valor": 23077
+    },
+    {
+        "min": 50001,
+        "max": 80000,
+        "volume": 80000,
+        "valor": 26764
+    }
+]
+
 def create_indices_pluviometricos():
     for cidade, anos in indice_pluviometrico_mock.items():
         nova_cidade = Cidade.objects.create(nome=cidade)
@@ -271,3 +324,12 @@ def create_tarifas():
             nova_tarifa.save()
 
 
+def create_capacidades_de_tratamento():
+    for capacidade in capacidades_de_tratamento:
+        nova_capacidade = CapacidadeDeTratamento\
+            .objects.create(min=capacidade['min'],
+                            max=capacidade['max'],
+                            volume=capacidade['volume'],
+                            valor=capacidade['valor']
+                            )
+        nova_capacidade.save()

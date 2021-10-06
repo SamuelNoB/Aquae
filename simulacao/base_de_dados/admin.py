@@ -34,4 +34,5 @@ admin.site.register(Equipamentos)
 admin.site.register(BombaDeAgua)
 admin.site.register(TarifaDeAgua)
 admin.site.register(CaixaDAgua)
+admin.site.register(CapacidadeDeTratamento)
 
