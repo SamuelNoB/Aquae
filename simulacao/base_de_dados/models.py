@@ -137,3 +137,18 @@ class CaixaDAgua(models.Model):
         verbose_name = "Caixa D'água"
         verbose_name_plural = "Caixas D'água"
         ordering = ['min']
+
+
+class CapacidadeDeTratamento(models.Model):
+    min = models.IntegerField(verbose_name='Mínimo', default=0)
+    max = models.IntegerField(verbose_name='Máximo', default=3000)
+    volume = models.IntegerField(verbose_name='Volume', default=500)
+    valor = models.FloatField(verbose_name='Valor em dólares', default=6631) # Em dólares
+
+    def __str__(self):
+        return f"Capacidade de Tratamento {self.volume}l    USD: {self.valor}"
+
+    class Meta:
+        verbose_name = "Capacidade de Tratamento"
+        verbose_name_plural = "Capacidades de Tratamento"
+        ordering = ['min']
