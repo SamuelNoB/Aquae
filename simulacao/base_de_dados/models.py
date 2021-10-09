@@ -144,6 +144,7 @@ class CapacidadeDeTratamento(models.Model):
     max = models.IntegerField(verbose_name='Máximo', default=3000)
     volume = models.IntegerField(verbose_name='Volume', default=500)
     valor = models.FloatField(verbose_name='Valor em dólares', default=6631) # Em dólares
+    custo_operacional = models.FloatField(verbose_name='Custo Operacional ($)', default=0.4)
 
     def __str__(self):
         return f"Capacidade de Tratamento {self.volume}l    USD: {self.valor}"

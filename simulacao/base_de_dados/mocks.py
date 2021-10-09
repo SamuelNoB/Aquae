@@ -203,49 +203,57 @@ capacidades_de_tratamento = [
         "min": 0,
         "max": 3000,
         "volume": 3000,
-        "valor": 6631
+        "valor": 6631,
+        "custo_o": 0.4
     },
     {
         "min": 3001,
         "max": 6000,
         "volume": 6000,
-        "valor": 8090
+        "valor": 8090,
+        "custo_o": 0.8
     },
     {
         "min": 6001,
         "max": 10000,
         "volume": 10000,
-        "valor": 11008
+        "valor": 11008,
+        "custo_o": 1.33
     },
     {
         "min": 10001,
         "max": 15000,
         "volume": 15000,
-        "valor": 13342
+        "valor": 13342,
+        "custo_o": 1.99
     },
     {
         "min": 15001,
         "max": 20000,
         "volume": 20000,
-        "valor": 13926
+        "valor": 13926,
+        "custo_o": 2.65
     },
     {
         "min": 20001,
         "max": 30000,
         "volume": 30000,
-        "valor": 17242
+        "valor": 17242,
+        "custo_o": 3.98
     },
     {
         "min": 30001,
         "max": 50000,
         "volume": 50000,
-        "valor": 23077
+        "valor": 23077,
+        "custo_o": 6.63
     },
     {
         "min": 50001,
         "max": 80000,
         "volume": 80000,
-        "valor": 26764
+        "valor": 26764,
+        "custo_o": 10.61
     }
 ]
 
@@ -330,6 +338,7 @@ def create_capacidades_de_tratamento():
             .objects.create(min=capacidade['min'],
                             max=capacidade['max'],
                             volume=capacidade['volume'],
-                            valor=capacidade['valor']
+                            valor=capacidade['valor'],
+                            custo_operacional=capacidade['custo_o']
                             )
         nova_capacidade.save()
