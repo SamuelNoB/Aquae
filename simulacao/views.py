@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, reverse, HttpResponse, get_object_or_404
 from django.views.generic import TemplateView
 from django.forms import inlineformset_factory, formset_factory
+from requests.api import get
 
 
 from .forms import EdificacaoForm, DemandasForm, DemandaSimulacaoAAPForm, SimulacaoAAPForm, OfertasForm
 from .models import DemandasDeAgua, Simulacao, OfertasDeAgua
-from .base_de_dados.models import IndicePluviometrico, CaixaDAgua
+from .base_de_dados.models import IndicePluviometrico, CaixaDAgua, CapacidadeDeTratamento
 from .utils import get_dollar
 
 from .controllers.dimensionamentoController import DimensionamentoController
@@ -380,6 +381,23 @@ class SimulacaoRAC(TemplateView):
         return individual, geral 
     
 
+    def get_equip(self, demanda):
+        todas = CapacidadeDeTratamento.objects.all()
+        
+        # Capacidades suficientes para uma demanda menor que a especificada no formulario
+        possiveis = list(todas.filter(volume__lt = demanda))
+        print(possiveis)
+
+        if len(possiveis) < len(todas):
+            # Capacidade suficiente para a demanda especificada no formulario
+            possiveis.append(todas[len(possiveis)])
+
+        capacidade_dict = {capacidade.volume: (capacidade.valor, capacidade.custo_operacional) for capacidade in possiveis}
+
+        return list(capacidade_dict.keys()), capacidade_dict
+
+
+
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk') 
 
@@ -394,13 +412,19 @@ class SimulacaoRAC(TemplateView):
         if not individual_oferta:
             return redirect('simulacao:formulario-rac', pk=pk)
 
+        # m³ para litros
+        volumes, financeiro = self.get_equip(geral_demanda*1000)
 
         context = {
             'pk': self.kwargs.get("pk"),
             'individual_o' : individual_oferta,
             'geral_o' : round(geral_oferta, 3),
             'individual_d' : individual_demanda,
-            'geral_d' : round(geral_demanda, 3)
+            'geral_d' : round(geral_demanda, 3),
+            'tratamento': {
+                'Volumes': volumes,
+                'Financeiro': financeiro
+            }
         }
 
         return render(request, self.template_name, context)
