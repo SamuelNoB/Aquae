@@ -381,21 +381,27 @@ class SimulacaoRAC(TemplateView):
         return individual, geral 
     
 
-    def get_equip(self, demanda):
+    def get_capacidade(self, demanda, dolar):
         todas = CapacidadeDeTratamento.objects.all()
         
         # Capacidades suficientes para uma demanda menor que a especificada no formulario
         possiveis = list(todas.filter(volume__lt = demanda))
-        print(possiveis)
 
         if len(possiveis) < len(todas):
             # Capacidade suficiente para a demanda especificada no formulario
             possiveis.append(todas[len(possiveis)])
 
-        capacidade_dict = {capacidade.volume: (capacidade.valor, capacidade.custo_operacional) for capacidade in possiveis}
+        capacidade_dict = {capacidade.volume: [capacidade.valor * dolar, capacidade.custo_operacional * dolar] for capacidade in possiveis}
 
         return list(capacidade_dict.keys()), capacidade_dict
 
+
+    def get_bomba_e_co(self, n_pavimentos):
+        # Area de coleta faz-se desprezivel para o RAC
+        Dimensionamento = DimensionamentoController(area_coleta=0, pavimentos=n_pavimentos)
+        bomba = Dimensionamento.get_bomba_dagua()
+        co = Dimensionamento.get_custo_operacional()
+        return bomba, co
 
 
     def get(self, request, *args, **kwargs):
@@ -412,9 +418,15 @@ class SimulacaoRAC(TemplateView):
         if not individual_oferta:
             return redirect('simulacao:formulario-rac', pk=pk)
 
-        # m³ para litros
-        volumes, financeiro = self.get_equip(geral_demanda*1000)
+        dolar = get_dollar()
 
+        n_pavimentos = self.get_simulacao(pk=pk)['simulacao'].n_pavimentos
+        bomba, custo_op = self.get_bomba_e_co(n_pavimentos=n_pavimentos)
+   
+
+        # m³ para litros / dia
+        volumes, financeiro = self.get_capacidade(geral_demanda * 1000 / (12 * 30), dolar=dolar)
+        print(financeiro)
         context = {
             'pk': self.kwargs.get("pk"),
             'individual_o' : individual_oferta,
@@ -423,7 +435,10 @@ class SimulacaoRAC(TemplateView):
             'geral_d' : round(geral_demanda, 3),
             'tratamento': {
                 'Volumes': volumes,
-                'Financeiro': financeiro
+                'Financeiro': financeiro},
+            'bomba': {
+                'Dimensoes': bomba,
+                'Custo_op': [custo_op]
             }
         }
 

@@ -82,22 +82,26 @@
                                     <ul class="list-group text-capitalize" style="background: var(--secondary);">
                                         <li class="list-group-item" style="color: var(dark);background: #e1e1e1;border-style: solid;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Oferta: </span><span class="text-lowercase" id="oferta_geral">{{ geral_o}} m³/ano</span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Demanda: </span><span class="text-lowercase" id="demanda_geral">{{geral_d}} m³/ano</span><br></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);">Custo de operação: </span> ano</li>
+                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);">Custo Operacional: </span> <span id="custo_operacional"></span> </li>
                                     </ul>
                                 </div>
                                 <div class="tab-pane" role="tabpanel" id="tab-4">
                                     <ul class="list-group text-capitalize" style="background: #e1e1e1;">
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Freio d'água: </span><span class="text-lowercase">mm</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Sifão ladrão: </span><span class="text-lowercase">mm</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Capacidade do filtro: </span>Até <span class="text-lowercase">m² de cobertura</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Sucção: </span><span class="text-lowercase">mm</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Recalque: </span><span class="text-lowercase">mm</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água potência: </span><span class="text-lowercase">cv</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Reservatório de distribuição: </span>ff<span>L</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Sucção: </span><span class="text-lowercase"> {{ bomba.Dimensoes.succao }} mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Recalque: </span><span class="text-lowercase"> {{ bomba.Dimensoes.recalque }} mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água potência: </span><span class="text-lowercase"> {{ bomba.Dimensoes.potencia }} cv</span></li>
+                                    </ul>
+                                </div>
+                                <div class="tab-pane" role="tabpanel" id="tab-5">
+                                    <ul class="list-group text-capitalize" style="background: #e1e1e1;">
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Capacidade de tratamento (L): </span><span class="text-lowercase" id="Capacidade"> </span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Custo (R$): </span><span class="text-lowercase" id="Custo_cap"> </span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Benefício (R$) </span><span class="text-lowercase" id="Beneficio"> </span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Payback (Anos): </span><span class="text-lowercase" id="Payback"> </span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">VPL (R$): </span><span class="text-lowercase" id="VPL"> </span></li>
                                     </ul>
                                 </div>
                             </div>
-                    
                 </div>
             </div>
         </div>
@@ -227,13 +231,41 @@
             plot(x = data_demanda.nomes, y = re_economia)
         }
 
+        /*Cria elementos da parte financeira e capacidade necessaria*/
+        function create_tabs(demanda) {
+
+            /*Seletor de capacidade minima*/
+            let volume = Math.max(volumes)
+            for (let i = 0; i < volumes.length; i++) {
+                if (volumes[i] > demanda) {
+                    volume = volumes[i]
+                    break
+                }
+            }
+
+            const custo_op_span = document.getElementById("custo_operacional") 
+            const custo_op_final = Math.round(financeiro[volume][1] + custo_op_bomba*100)/100
+            custo_op_span.innerHTML = "R$ " + String(custo_op_final).replace('.', ',') + " / Ano"
+
+
+
+        }
 
         const main_ids = ['check', 'nome', 'indicador']
         const data_oferta = address(parent_id="oferta-items", child_tag="input", id_names=main_ids, type="oferta")
         const data_demanda = address(parent_id="demanda-items", child_tag="input", id_names=main_ids, type="demanda")
         const economia = data_adjust(data_oferta.indicadores, data_demanda.indicadores)
+
+
+        const volumes = {{ tratamento.Volumes }}
+        const financeiro = {{ tratamento.Financeiro }}
         
+
+        const custo_op_bomba = {{ bomba.Custo_op }}
+
+
         plot(x = data_demanda.nomes, y = economia)
+        create_tabs(data_demanda.indicadores.reduce(add, 0)*1000)
         
 
     </script>
