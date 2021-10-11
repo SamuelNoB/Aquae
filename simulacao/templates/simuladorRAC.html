@@ -97,8 +97,8 @@
                                     <ul class="list-group text-capitalize" style="background: #e1e1e1;">
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Capacidade de tratamento (L): </span><span class="text-lowercase" id="Capacidade"> </span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Custo (R$): </span><span class="text-lowercase" id="Custo_cap"> </span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Benefício (R$): </span><span class="text-lowercase" id="Beneficio"> </span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Payback (Anos): </span><span class="text-lowercase" id="Payback"> </span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Benefício (R$/Ano): </span><span class="text-lowercase" id="Beneficio"> </span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Payback (Anos): </span><span class="text-uppercase" id="Payback"> </span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">VPL (R$): </span><span id="VPL"> </span></li>
                                     </ul>
                                 </div>
@@ -264,6 +264,30 @@
             
             const Beneficio = Math.round((tarifa * demanda * 30 * 12 / 1000 - custo_op_final + Number.EPSILON)*100) / 100
             document.getElementById("Beneficio").innerHTML = String(Beneficio).replace('.', ',')
+
+            let Payback = Math.ceil(custo_cap / Beneficio)
+            Payback_span = document.getElementById("Payback")
+            if (Payback < 0) {
+                Payback = 'Inviável!';
+                Payback_span.setAttribute("style", "color:red")
+            } else {
+                Payback_span.setAttribute("style", "color:black")
+            }
+            Payback_span.innerHTML = Payback
+
+
+            /*Determina VPL*/
+            const VPL_parcelas = []
+            for (let i = 1; i <= 30; i++) {
+                const parcela = Beneficio / ((1 + juros)**i)
+                VPL_parcelas.push(parcela)
+            }
+            const VPL = Math.round((VPL_parcelas.reduce(add, 0) - custo_cap + Number.EPSILON)*100)/100
+            const vpl_span = document.getElementById("VPL")
+            vpl_span.innerHTML = String(VPL).replace('.', ',')            
+            if (VPL < 0) {vpl_span.setAttribute("style", "color:red")}
+            else {vpl_span.setAttribute("style", "color:black")}
+
         }
 
         const main_ids = ['check', 'nome', 'indicador']
