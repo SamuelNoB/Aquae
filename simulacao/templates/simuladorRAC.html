@@ -228,15 +228,16 @@
             } 
 
             const re_economia = data_adjust(data_oferta.indicadores, data_demanda.indicadores)
-
             plot(x = data_demanda.nomes, y = re_economia)
+
+            const re_demanda_possivel = Math.min(data_demanda.indicadores.reduce(add, 0), data_oferta.indicadores.reduce(add, 0))
+            create_tabs(re_demanda_possivel * 1000 / 30)
         }
 
         /*Cria elementos da parte financeira e capacidade necessaria*/
         function create_tabs(demanda) {
-
             /*Seletor de capacidade minima*/
-            let volume_cap = Math.max(volumes_cap)
+            let volume_cap = Math.max(...volumes_cap)
             for (let i = 0; i < volumes_cap.length; i++) {
                 if (volumes_cap[i] > demanda) {
                     volume_cap = volumes_cap[i]
@@ -244,7 +245,7 @@
                 }
             }
             /*Seletor de caixa minima*/
-            let volume_caixa = Math.max(volumes_caixa)
+            let volume_caixa = Math.max(...volumes_caixa)
             for (let i = 0; i < volumes_caixa.length; i++) {
                 if (volumes_caixa[i] > demanda) {
                     volume_caixa = volumes_caixa[i]
@@ -253,12 +254,14 @@
             }
             document.getElementById("Caixa_volume").innerHTML = String(volume_caixa)
 
-            const custo_op_final = Math.round((financeiro_cap[volume_cap][1] + custo_op_bomba)*100)/100
+
+            const custo_op_final = Math.round((financeiro_cap[volume_cap][1] + custo_op_bomba + Number.EPSILON)*100)/100
             document.getElementById("custo_operacional").innerHTML = "R$ " + String(custo_op_final).replace('.', ',') + " / Ano"
 
-            
-            const custo_cap = Math.round((financeiro_cap[volume_cap][0] + custo_bomba + financeiro_caixa[volumes_caixa])*100)/100
-            document.getElementById("Custo_cap").innerHTML = custo_cap
+
+            const custo_cap = Math.round((financeiro_cap[volume_cap][0] + custo_bomba + financeiro_caixa[volume_caixa] + Number.EPSILON)*100)/100
+            document.getElementById("Custo_cap").innerHTML = String(custo_cap).replace('.', ',')
+
 
             document.getElementById("Capacidade").innerHTML = volume_cap
 
@@ -278,9 +281,13 @@
 
         const volumes_caixa = {{ caixa.Volumes }}
         const financeiro_caixa = {{ caixa.Financeiro }}
+    
 
         plot(x = data_demanda.nomes, y = economia)
-        create_tabs(data_demanda.indicadores.reduce(add, 0)*1000/30)
+
+
+        const demanda_possivel = Math.min(data_demanda.indicadores.reduce(add, 0), data_oferta.indicadores.reduce(add, 0))
+        create_tabs(demanda_possivel * 1000 / 30)
         
 
     </script>
