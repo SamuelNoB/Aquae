@@ -370,15 +370,17 @@ class SimulacaoRAC(TemplateView):
     def calc_oferta_demanda(self, interesse, pk):
         ofertas = self.get_simulacao(pk)[interesse]
         individual = {}
+        indicadores = []
         geral = 0
         for oferta in ofertas:
+            indicadores.append(oferta.indicador)
             agua = (oferta.indicador * oferta.frequencia_mensal)/1000
             geral += agua
             individual[oferta.nome] = agua
 
         geral = geral*12 # m³/ano
         # individual em m³/mes
-        return individual, geral 
+        return individual, geral, indicadores 
     
 
     def get_capacidade(self, demanda, dolar):
@@ -404,17 +406,28 @@ class SimulacaoRAC(TemplateView):
         return bomba, co
 
 
+    def get_caixa_dagua(self, demanda_diaria, dolar):
+        todas = CaixaDAgua.objects.all()
+        possiveis = list(todas.filter(volume__lt=demanda_diaria))
+        
+        if len(possiveis) < len(todas):
+            possiveis.append(todas[len(possiveis)])
+        
+        caixas_dict = {caixa.volume: caixa.valor * dolar for caixa in possiveis}
+        return list(caixas_dict.keys()), caixas_dict
+
+
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk') 
 
         # A demanda faz-se precedente ao formulario da oferta        
         try:
-            individual_demanda, geral_demanda = self.calc_oferta_demanda('demandas_de_agua', pk)
+            individual_demanda, geral_demanda, indicadores_demanda = self.calc_oferta_demanda('demandas_de_agua', pk)
         except simulacao.models.Simulacao.DoesNotExist:
             return redirect('simulacao:edificacao')
 
         # Buscar uma oferta em uma simulacao existente nao retorna erro
-        individual_oferta, geral_oferta = self.calc_oferta_demanda('ofertas_de_agua', pk)
+        individual_oferta, geral_oferta, _ = self.calc_oferta_demanda('ofertas_de_agua', pk)
         if not individual_oferta:
             return redirect('simulacao:formulario-rac', pk=pk)
 
@@ -425,8 +438,11 @@ class SimulacaoRAC(TemplateView):
    
 
         # m³ para litros / dia
-        volumes, financeiro = self.get_capacidade(geral_demanda * 1000 / (12 * 30), dolar=dolar)
-        print(financeiro)
+        demanda_g_ld = geral_demanda * 1000 / (12 * 30)
+        volumes_cap, financeiro_cap = self.get_capacidade(demanda_g_ld, dolar=dolar)
+        volumes_caixa, financeiro_caixa = self.get_caixa_dagua(demanda_g_ld, dolar=dolar)
+        
+
         context = {
             'pk': self.kwargs.get("pk"),
             'individual_o' : individual_oferta,
@@ -434,11 +450,16 @@ class SimulacaoRAC(TemplateView):
             'individual_d' : individual_demanda,
             'geral_d' : round(geral_demanda, 3),
             'tratamento': {
-                'Volumes': volumes,
-                'Financeiro': financeiro},
+                'Volumes': volumes_cap,
+                'Financeiro': financeiro_cap},
             'bomba': {
                 'Dimensoes': bomba,
-                'Custo_op': [custo_op]
+                'Custo_op': [custo_op],
+                'Custo': [bomba.preco]
+            },
+            'caixa': {
+                'Volumes': volumes_caixa,
+                'Financeiro': financeiro_caixa
             }
         }
 
