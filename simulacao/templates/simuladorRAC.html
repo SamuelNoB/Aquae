@@ -235,19 +235,24 @@
         function create_tabs(demanda) {
 
             /*Seletor de capacidade minima*/
-            let volume = Math.max(volumes)
-            for (let i = 0; i < volumes.length; i++) {
-                if (volumes[i] > demanda) {
-                    volume = volumes[i]
+            let volume_cap = Math.max(volumes_cap)
+            for (let i = 0; i < volumes_cap.length; i++) {
+                if (volumes_cap[i] > demanda) {
+                    volume_cap = volumes_cap[i]
                     break
                 }
             }
 
-            const custo_op_span = document.getElementById("custo_operacional") 
-            const custo_op_final = Math.round(financeiro[volume][1] + custo_op_bomba*100)/100
+
+            const custo_op_span = document.getElementById("custo_operacional")
+            const custo_op_final = Math.round((financeiro_cap[volume_cap][1] + custo_op_bomba)*100)/100
             custo_op_span.innerHTML = "R$ " + String(custo_op_final).replace('.', ',') + " / Ano"
 
+            
+            const custo_cap = Math.round((financeiro_cap[volume_cap][0] + custo_bomba)*100)/100
+            document.getElementById("Custo_cap").innerHTML = custo_cap
 
+            document.getElementById("Capacidade").innerHTML = volume_cap
 
         }
 
@@ -257,11 +262,12 @@
         const economia = data_adjust(data_oferta.indicadores, data_demanda.indicadores)
 
 
-        const volumes = {{ tratamento.Volumes }}
-        const financeiro = {{ tratamento.Financeiro }}
+        const volumes_cap = {{ tratamento.Volumes }}
+        const financeiro_cap = {{ tratamento.Financeiro }}
         
-
-        const custo_op_bomba = {{ bomba.Custo_op }}
+        
+        const custo_op_bomba = {{ bomba.Custo_op }}[0]
+        const custo_bomba = {{ bomba.Custo }}[0]
 
 
         plot(x = data_demanda.nomes, y = economia)
