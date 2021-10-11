@@ -438,8 +438,8 @@ class SimulacaoRAC(TemplateView):
 
         dolar = get_dollar()
 
-        simulacao = self.get_simulacao(pk=pk)['simulacao']
-        n_pavimentos = simulacao.n_pavimentos
+        simul = self.get_simulacao(pk=pk)['simulacao']
+        n_pavimentos = simul.n_pavimentos
         bomba, custo_op = self.get_bomba_e_co(n_pavimentos=n_pavimentos)
    
 
@@ -448,8 +448,8 @@ class SimulacaoRAC(TemplateView):
         volumes_cap, financeiro_cap = self.get_capacidade(demanda_g_ld, dolar=dolar)
         volumes_caixa, financeiro_caixa = self.get_caixa_dagua(demanda_g_ld, dolar=dolar)
         
-        consumo = simulacao.consumo_mensal
-        esgoto = simulacao.tarifa_esgoto / 100
+        consumo = simul.consumo_mensal
+        esgoto = simul.tarifa_esgoto / 100
         tarifa = self.get_tarifa(consumo) * (1 + esgoto)
 
 
