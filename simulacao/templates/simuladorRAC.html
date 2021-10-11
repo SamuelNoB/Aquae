@@ -97,7 +97,7 @@
                                     <ul class="list-group text-capitalize" style="background: #e1e1e1;">
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Capacidade de tratamento (L): </span><span class="text-lowercase" id="Capacidade"> </span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Custo (R$): </span><span class="text-lowercase" id="Custo_cap"> </span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Benefício (R$) </span><span class="text-lowercase" id="Beneficio"> </span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Benefício (R$): </span><span class="text-lowercase" id="Beneficio"> </span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Payback (Anos): </span><span class="text-lowercase" id="Payback"> </span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">VPL (R$): </span><span id="VPL"> </span></li>
                                     </ul>
@@ -231,11 +231,11 @@
             plot(x = data_demanda.nomes, y = re_economia)
 
             const re_demanda_possivel = Math.min(data_demanda.indicadores.reduce(add, 0), data_oferta.indicadores.reduce(add, 0))
-            create_tabs(re_demanda_possivel * 1000 / 30)
+            create_tabs(re_demanda_possivel * 1000 / 30, tarifa, juros)
         }
 
         /*Cria elementos da parte financeira e capacidade necessaria*/
-        function create_tabs(demanda) {
+        function create_tabs(demanda, tarifa, juros) {
             /*Seletor de capacidade minima*/
             let volume_cap = Math.max(...volumes_cap)
             for (let i = 0; i < volumes_cap.length; i++) {
@@ -254,17 +254,16 @@
             }
             document.getElementById("Caixa_volume").innerHTML = String(volume_caixa)
 
-
             const custo_op_final = Math.round((financeiro_cap[volume_cap][1] + custo_op_bomba + Number.EPSILON)*100)/100
             document.getElementById("custo_operacional").innerHTML = "R$ " + String(custo_op_final).replace('.', ',') + " / Ano"
-
 
             const custo_cap = Math.round((financeiro_cap[volume_cap][0] + custo_bomba + financeiro_caixa[volume_caixa] + Number.EPSILON)*100)/100
             document.getElementById("Custo_cap").innerHTML = String(custo_cap).replace('.', ',')
 
-
             document.getElementById("Capacidade").innerHTML = volume_cap
-
+            
+            const Beneficio = Math.round((tarifa * demanda * 30 * 12 / 1000 - custo_op_final + Number.EPSILON)*100) / 100
+            document.getElementById("Beneficio").innerHTML = String(Beneficio).replace('.', ',')
         }
 
         const main_ids = ['check', 'nome', 'indicador']
@@ -286,8 +285,10 @@
         plot(x = data_demanda.nomes, y = economia)
 
 
+        const tarifa = {{ tarifa }}[0]
+        const juros = 3 / 100
         const demanda_possivel = Math.min(data_demanda.indicadores.reduce(add, 0), data_oferta.indicadores.reduce(add, 0))
-        create_tabs(demanda_possivel * 1000 / 30)
+        create_tabs(demanda_possivel * 1000 / 30, tarifa, juros)
         
 
     </script>

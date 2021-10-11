@@ -6,7 +6,7 @@ from requests.api import get
 
 from .forms import EdificacaoForm, DemandasForm, DemandaSimulacaoAAPForm, SimulacaoAAPForm, OfertasForm
 from .models import DemandasDeAgua, Simulacao, OfertasDeAgua
-from .base_de_dados.models import IndicePluviometrico, CaixaDAgua, CapacidadeDeTratamento
+from .base_de_dados.models import IndicePluviometrico, CaixaDAgua, CapacidadeDeTratamento, TarifaDeAgua
 from .utils import get_dollar
 
 from .controllers.dimensionamentoController import DimensionamentoController
@@ -417,6 +417,11 @@ class SimulacaoRAC(TemplateView):
         return list(caixas_dict.keys()), caixas_dict
 
 
+    def get_tarifa(self, consumo):
+        tarifa = TarifaDeAgua.objects.filter(min__lte=consumo,
+                                             max__gte=consumo)
+        return list(tarifa)[0].tarifa
+
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk') 
 
@@ -433,7 +438,8 @@ class SimulacaoRAC(TemplateView):
 
         dolar = get_dollar()
 
-        n_pavimentos = self.get_simulacao(pk=pk)['simulacao'].n_pavimentos
+        simulacao = self.get_simulacao(pk=pk)['simulacao']
+        n_pavimentos = simulacao.n_pavimentos
         bomba, custo_op = self.get_bomba_e_co(n_pavimentos=n_pavimentos)
    
 
@@ -442,6 +448,10 @@ class SimulacaoRAC(TemplateView):
         volumes_cap, financeiro_cap = self.get_capacidade(demanda_g_ld, dolar=dolar)
         volumes_caixa, financeiro_caixa = self.get_caixa_dagua(demanda_g_ld, dolar=dolar)
         
+        consumo = simulacao.consumo_mensal
+        esgoto = simulacao.tarifa_esgoto / 100
+        tarifa = self.get_tarifa(consumo) * (1 + esgoto)
+
 
         context = {
             'pk': self.kwargs.get("pk"),
@@ -460,7 +470,8 @@ class SimulacaoRAC(TemplateView):
             'caixa': {
                 'Volumes': volumes_caixa,
                 'Financeiro': financeiro_caixa
-            }
+            },
+            'tarifa': [tarifa]
         }
 
         return render(request, self.template_name, context)
