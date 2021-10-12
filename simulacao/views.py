@@ -367,20 +367,24 @@ class SimulacaoRAC(TemplateView):
         }
 
     
-    def calc_oferta_demanda(self, interesse, pk):
+    def calc_oferta_demanda(self, pk, interesse, **kwargs):
         ofertas = self.get_simulacao(pk)[interesse]
+
         individual = {}
-        indicadores = []
         geral = 0
+
         for oferta in ofertas:
-            indicadores.append(oferta.indicador)
             agua = (oferta.indicador * oferta.frequencia_mensal)/1000
+            if oferta.nome == "Irrigação de jardins":
+                agua = agua / 12 * 5 * kwargs['area_irrigacao']
+            elif oferta.nome == "Lavagem de pisos":
+                agua = agua * kwargs['area_pisos'] 
             geral += agua
             individual[oferta.nome] = agua
 
         geral = geral*12 # m³/ano
         # individual em m³/mes
-        return individual, geral, indicadores 
+        return individual, geral
     
 
     def get_capacidade(self, demanda, dolar):
@@ -425,20 +429,27 @@ class SimulacaoRAC(TemplateView):
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk') 
 
-        # A demanda faz-se precedente ao formulario da oferta        
         try:
-            individual_demanda, geral_demanda, indicadores_demanda = self.calc_oferta_demanda('demandas_de_agua', pk)
+            simul = self.get_simulacao(pk=pk)['simulacao']
         except simulacao.models.Simulacao.DoesNotExist:
             return redirect('simulacao:edificacao')
+        area_i = simul.area_irrigacao
+        area_p = simul.area_pisos
+        consumo = simul.consumo_mensal
+        esgoto = simul.tarifa_esgoto / 100
+
+        # Se a simulacao foi encontrada, entao o form da demanda foi preenchido
+        individual_demanda, geral_demanda = self.calc_oferta_demanda(pk, 'demandas_de_agua', 
+                                                                     area_irrigacao=area_i,
+                                                                     area_pisos=area_p)
 
         # Buscar uma oferta em uma simulacao existente nao retorna erro
-        individual_oferta, geral_oferta, _ = self.calc_oferta_demanda('ofertas_de_agua', pk)
+        individual_oferta, geral_oferta = self.calc_oferta_demanda(pk, 'ofertas_de_agua')
         if not individual_oferta:
             return redirect('simulacao:formulario-rac', pk=pk)
 
         dolar = get_dollar()
 
-        simul = self.get_simulacao(pk=pk)['simulacao']
         n_pavimentos = simul.n_pavimentos
         bomba, custo_op = self.get_bomba_e_co(n_pavimentos=n_pavimentos)
    
@@ -448,8 +459,6 @@ class SimulacaoRAC(TemplateView):
         volumes_cap, financeiro_cap = self.get_capacidade(demanda_g_ld, dolar=dolar)
         volumes_caixa, financeiro_caixa = self.get_caixa_dagua(demanda_g_ld, dolar=dolar)
         
-        consumo = simul.consumo_mensal
-        esgoto = simul.tarifa_esgoto / 100
         tarifa = self.get_tarifa(consumo) * (1 + esgoto)
 
 
