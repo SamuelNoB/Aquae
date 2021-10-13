@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% load widget_tweaks %}
 {% block content %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
@@ -80,8 +81,8 @@
                             <div class="tab-content">
                                 <div class="tab-pane active" role="tabpanel" id="tab-3" style="background: #ffffff;">
                                     <ul class="list-group text-capitalize" style="background: var(--secondary);">
-                                        <li class="list-group-item" style="color: var(dark);background: #e1e1e1;border-style: solid;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Oferta (m³/Ano): </span><span class="text-lowercase" id="oferta_geral">{{ geral_o }}</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Demanda (m³/Ano): </span><span class="text-lowercase" id="demanda_geral">{{ geral_d }}</span><br></li>
+                                        <li class="list-group-item" style="color: var(dark);background: #e1e1e1;border-style: solid;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;" class="normal">Oferta (m³/Ano): </span><span class="text-lowercase" id="oferta_geral">{{ geral_o }}</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;" class="normal">Demanda (m³/Ano): </span><span class="text-lowercase" id="demanda_geral">{{ geral_d }}</span><br></li>
                                         <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);">Custo Operacional (R$/Ano): </span> <span id="custo_operacional"></span> </li>
                                     </ul>
                                 </div>
@@ -90,12 +91,12 @@
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Sucção: </span><span class="text-lowercase"> {{ bomba.Dimensoes.succao }} mm</span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Recalque: </span><span class="text-lowercase"> {{ bomba.Dimensoes.recalque }} mm</span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água potência: </span><span class="text-lowercase"> {{ bomba.Dimensoes.potencia }} cv</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Reservatório de Distribuição: </span><span class="text-lowercase" id="Caixa_volume" > </span> <span> L</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" class="normal">Reservatório de Distribuição: </span><span class="normal" id="Caixa_volume" > </span> </li>
                                     </ul>
                                 </div>
                                 <div class="tab-pane" role="tabpanel" id="tab-5">
                                     <ul class="list-group text-capitalize" style="background: #e1e1e1;">
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Capacidade de tratamento (L): </span><span class="text-lowercase" id="Capacidade"> </span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" class="normal">Capacidade de Tratamento (L): </span><span class="text-lowercase" id="Capacidade"> </span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" data-bss-tooltip data-toggle="tooltip" data-original-title="Custo médio de implementação do sistema">Custo (R$): </span><span class="text-lowercase" id="Custo_cap"> </span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" data-bss-tooltip data-toggle="tooltip" data-original-title="Valor da economia anual gerada com o sistema">Benefício (R$/Ano): </span><span class="text-lowercase" id="Beneficio"> </span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" data-bss-tooltip data-toggle="tooltip" data-original-title="Razão entre o custo e o benefício anual. Custo ÷ Benefício">Payback (Anos): </span><span class="text-uppercase" id="Payback"> </span></li>
@@ -272,7 +273,7 @@
                     break
                 }
             }
-            document.getElementById("Caixa_volume").innerHTML = String(volume_caixa)
+            document.getElementById("Caixa_volume").innerHTML = `${String(volume_caixa)} L`
 
             const custo_op_final = Math.round((financeiro_cap[volume_cap][1] + custo_op_bomba + Number.EPSILON)*100)/100
             document.getElementById("custo_operacional").innerHTML = parseReal(custo_op_final)

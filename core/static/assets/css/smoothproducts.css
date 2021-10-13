@@ -205,3 +205,6 @@ tr td input {
   font-weight: bold;
 }
 
+span.normal {
+    text-transform: none;
+}
