@@ -265,7 +265,7 @@
 
             const demanda_possivel = Math.min(data_demanda.indicadores.reduce(add, 0), data_oferta.indicadores.reduce(add, 0))
 
-            create_tabs(demanda_possivel * 1000 / 30, tarifa, juros)
+            create_tabs(demanda_possivel * 1000 / 30, tarifa, document.getElementById("juros").value / 100)
         }
 
         /*Cria elementos da parte financeira e capacidade necessaria*/
