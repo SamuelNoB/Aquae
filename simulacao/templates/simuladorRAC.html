@@ -135,7 +135,7 @@
 
             let inteiro_refactor = ""
             for (let i=-1; Math.abs(i) <= inteiro.length; i--) {
-                if ((Math.abs(i) % 4) == 0) {
+                if ((Math.abs(i) % 4) == 0 & inteiro.at(i) != "-") {
                     inteiro_refactor = '.' + inteiro_refactor
                 }
                 inteiro_refactor = inteiro.at(i) + inteiro_refactor
