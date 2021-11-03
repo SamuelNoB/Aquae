@@ -265,7 +265,7 @@
 
             const demanda_possivel = Math.min(data_demanda.indicadores.reduce(add, 0), data_oferta.indicadores.reduce(add, 0))
 
-            create_tabs(demanda_possivel * 1000 / 30, tarifa, document.getElementById("juros").value / 100)
+            create_tabs(demanda_possivel * 1000 / 30, tarifa, juros)
         }
 
         /*Cria elementos da parte financeira e capacidade necessaria*/
@@ -345,12 +345,13 @@
 
         const tarifa = {{ tarifa }}[0]
 
-        const juros = document.getElementById("juros").value / 100
+        var juros = document.getElementById("juros").value / 100
         const demanda_possivel = Math.min(data_demanda.indicadores.reduce(add, 0), data_oferta.indicadores.reduce(add, 0))
         create_tabs(demanda_possivel * 1000 / 30, tarifa, juros)
         
         const juros_btn = document.getElementById("juros-btn")
-        juros_btn.addEventListener('click', function () {create_tabs(demanda_possivel * 1000 / 30, tarifa, document.getElementById("juros").value / 100)}, false)
+        juros_btn.addEventListener('click', function () {juros = document.getElementById("juros").value / 100; 
+                                                         create_tabs(demanda_possivel * 1000 / 30, tarifa, juros)}, false)
 
     </script>
 
