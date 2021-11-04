@@ -208,3 +208,9 @@ tr td input {
 span.normal {
     text-transform: none;
 }
+
+@media print {
+  .tab-content > .tab-pane {
+    display: block;
+  }
+}
