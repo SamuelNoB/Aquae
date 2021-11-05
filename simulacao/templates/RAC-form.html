@@ -29,7 +29,7 @@
                     <span class="d-md-flex align-items-md-center">&nbsp;Outro tipo de oferta de água cinza.</span>
                 </div>
                 <div class="text-right col-md-12">
-                    <button class="btn btn-light" type="button" data-dismiss="RACform">Retornar</button>
+                    <button class="btn btn-danger" type="button" data-dismiss="RACform" id="restaurar">Restaurar</button>
                     <button id="submit" class="btn btn-primary" type="submit" style="margin: 1em;">Próximo</button>
                 </div>
             </form>
@@ -132,7 +132,15 @@
 
         }
 
+        function reset_fields (tipo, padrao_freq, padrao_ind, escala, id='table_body') {
+            const table = document.getElementById(id)
+            const rows = table.getElementsByTagName('tr')
+            const rows_arr = [...rows]
+            rows_arr.map(n => n && n.remove());
 
+            let k = 0
+            InitFields(k, tipo, padrao_freq, padrao_ind, escala)
+        }
 
         const oferta = ["Chuveiro", "Lavatório", "Máquina de Lavar Roupa", "Tanque"];
         const Qdiario = ["167", "85", "158", "106"];
@@ -145,5 +153,7 @@
         let btn = document.getElementById("RACform")
         btn.addEventListener("submit", function (){readdres()}, false)
 
+        const reset = document.getElementById("restaurar")
+        reset.addEventListener("click", function (){reset_fields(oferta, freq, Qdiario, escalas)}, false)
     </script>
 {% endblock %}
