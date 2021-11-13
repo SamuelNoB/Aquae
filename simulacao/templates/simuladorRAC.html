@@ -93,9 +93,9 @@
                         <div class="tab-content">
                             <div class="tab-pane active" role="tabpanel" id="tab-3" style="background: #ffffff;">
                                 <ul class="list-group text-capitalize" style="background: var(--secondary);">
-                                    <li class="list-group-item" style="color: var(dark);background: #e1e1e1;border-style: solid;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;" class="normal">Oferta (m³/Ano): </span><span class="text-lowercase" id="oferta_geral">{{ geral_o }}</span></li>
-                                    <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;" class="normal">Demanda (m³/Ano): </span><span class="text-lowercase" id="demanda_geral">{{ geral_d }}</span><br></li>
-                                    <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);">Custo Operacional (R$/Ano): </span> <span id="custo_operacional"></span> </li>
+                                    <li class="list-group-item" style="color: var(dark);background: #e1e1e1;border-style: solid;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;" class="normal">Oferta: </span><span class="text-lowercase" id="oferta_geral">{{ geral_o }} m³/ano</span></li>
+                                    <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;" class="normal">Demanda: </span><span class="text-lowercase" id="demanda_geral">{{ geral_d }} m³/ano</span><br></li>
+                                    <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);">Custo Operacional: </span> <span id="custo_operacional"></span> </li>
                                 </ul>
                             </div>
                             <div class="tab-pane" role="tabpanel" id="tab-4">
@@ -110,8 +110,8 @@
                                 <ul class="list-group text-capitalize" style="background: #e1e1e1;">
                                     <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" class="normal">Capacidade de Tratamento (L): </span><span class="text-lowercase" id="Capacidade"> </span></li>
                                     <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" data-bss-tooltip data-toggle="tooltip" data-original-title="Custo médio de implementação do sistema">Custo (R$): </span><span class="text-lowercase" id="Custo_cap"> </span></li>
-                                    <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" data-bss-tooltip data-toggle="tooltip" data-original-title="Valor da economia anual gerada com o sistema">Benefício (R$/Ano): </span><span class="text-lowercase" id="Beneficio"> </span></li>
-                                    <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" data-bss-tooltip data-toggle="tooltip" data-original-title="Razão entre o custo e o benefício anual. Custo ÷ Benefício">Payback (Anos): </span><span class="text-uppercase" id="Payback"> </span></li>
+                                    <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" data-bss-tooltip data-toggle="tooltip" data-original-title="Valor da economia anual gerada com o sistema">Benefício (R$/ano): </span><span class="text-lowercase" id="Beneficio"> </span></li>
+                                    <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" data-bss-tooltip data-toggle="tooltip" data-original-title="Razão entre o custo e o benefício anual. Custo ÷ Benefício">Payback (anos): </span><span class="text-uppercase" id="Payback"> </span></li>
                                     <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" data-bss-tooltip data-toggle="tooltip" data-original-title="Valor presente Líquido, calculado para 30 anos">VPL (R$): </span><span id="VPL"> </span></li>
                                 </ul>
                             </div>
@@ -267,12 +267,12 @@
 
                 /*Recalcula soma total dos novos indicadores*/
                 const total = Math.round((data_demanda.indicadores.reduce(add, 0) + Number.EPSILON) * 1000 * 12) / 1000 
-                document.getElementById("demanda_geral").innerHTML = String(total).replace('.', ',') 
+                document.getElementById("demanda_geral").innerHTML = String(total).replace('.', ',') + " m³/ano"
             } else if (id.includes('oferta')) {
                 data_oferta.indicadores[index] = checkbox.checked * parseFloat(indicador.replace(',', '.'))
                 
                 const total = Math.round((data_oferta.indicadores.reduce(add, 0) + Number.EPSILON) * 1000 * 12) / 1000
-                document.getElementById("oferta_geral").innerHTML = String(total).replace('.', ',')
+                document.getElementById("oferta_geral").innerHTML = String(total).replace('.', ',') + " m³/ano"
             } 
 
             const re_economia = data_adjust(data_oferta.indicadores, data_demanda.indicadores)
@@ -304,7 +304,7 @@
             document.getElementById("Caixa_volume").innerHTML = `${String(volume_caixa)} L`
 
             const custo_op_final = Math.round((financeiro_cap[volume_cap][1] + custo_op_bomba + Number.EPSILON)*100)/100
-            document.getElementById("custo_operacional").innerHTML = parseReal(custo_op_final)
+            document.getElementById("custo_operacional").innerHTML = parseReal(custo_op_final) + ' R$/ano'
 
             const custo_cap = Math.round((financeiro_cap[volume_cap][0] + custo_bomba + financeiro_caixa[volume_caixa] + Number.EPSILON)*100)/100
             document.getElementById("Custo_cap").innerHTML = parseReal(custo_cap)
