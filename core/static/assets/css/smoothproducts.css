@@ -217,7 +217,7 @@ span.normal {
   .tab-content > .tab-pane {
     display: block;
   }
-  .page-footer-dark{
+  footer {
     display: none;
   }
   
