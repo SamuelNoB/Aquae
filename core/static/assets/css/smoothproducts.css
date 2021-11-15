@@ -258,3 +258,17 @@ span.normal {
 	width: 100%;
 	height: 100%;
 }
+
+.flex-site {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.flex-content {
+  flex: 1;
+}
+
+.flex-calc {
+  min-height: calc(100vh - 215px);
+}

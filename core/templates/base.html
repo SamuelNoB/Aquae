@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/smoothproducts.css' %}">
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="flex-site">
 
     <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
         <div class="container"><a class="navbar-brand logo" href="{% url 'core:home' %}">Aquae</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
@@ -28,10 +28,9 @@
             </div>
         </div>
     </nav>
-    <main class="page landing-page">
+    <main class="page landing-page flex-content">
         {% block content %} {% endblock %}
     </main>
-    <div class="wrapper flex-grow-1"></div>
     <footer class="page-footer dark">
         <div class="footer-copyright">
             <p>© 2021 Copyright AAC</p>
