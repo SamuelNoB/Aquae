@@ -373,13 +373,18 @@ class SimulacaoRAC(TemplateView):
         individual = {}
         geral = 0
 
+        # Gambiarra para nao alterar o resultado da demanda
+        if interesse == "demandas_de_agua":
+            kwargs["residentes"] = 1
+
+
         for oferta in ofertas:
-            agua = (oferta.indicador * oferta.frequencia_mensal)/1000
+            agua = (oferta.indicador * oferta.frequencia_mensal)/1000 * kwargs['residentes']
             if oferta.nome == "Irrigação de jardins":
                 agua = agua / 12 * 5 * kwargs['area_irrigacao']
             elif oferta.nome == "Lavagem de pisos":
                 agua = agua * kwargs['area_pisos'] 
-            geral += agua
+            geral += agua 
             individual[oferta.nome] = agua
 
         geral = geral*12 # m³/ano
@@ -437,6 +442,7 @@ class SimulacaoRAC(TemplateView):
         area_p = simul.area_pisos
         consumo = simul.consumo_mensal
         esgoto = simul.tarifa_esgoto / 100
+        pessoas = simul.n_pessoas
 
         # Se a simulacao foi encontrada, entao o form da demanda foi preenchido
         individual_demanda, geral_demanda = self.calc_oferta_demanda(pk, 'demandas_de_agua', 
@@ -444,7 +450,8 @@ class SimulacaoRAC(TemplateView):
                                                                      area_pisos=area_p)
 
         # Buscar uma oferta em uma simulacao existente nao retorna erro
-        individual_oferta, geral_oferta = self.calc_oferta_demanda(pk, 'ofertas_de_agua')
+        individual_oferta, geral_oferta = self.calc_oferta_demanda(pk, 'ofertas_de_agua', 
+                                                                   residentes=pessoas)
         if not individual_oferta:
             return redirect('simulacao:formulario-rac', pk=pk)
 
