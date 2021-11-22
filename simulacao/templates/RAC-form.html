@@ -41,12 +41,12 @@
         const oferta = ["Chuveiro", "Lavatório", "Máquina de Lavar Roupa", "Tanque"];
         const Qdiario = ["167", "85", "158", "106"];
         const freq = ["30", "30", "12", "20"];
-        const escalas = ["Vezes ao mês", "Litros/pessoa/dia"];
+        const escalas = Array(4).fill("Litros/pessoa/dia");
 
         let k = 0
         k = InitFields(k, oferta, freq, Qdiario, escalas, id="table_body", interesse="ofertas");
         let btn = document.getElementById("RACform")
-        btn.addEventListener("submit", function (){readdres()}, false)
+        btn.addEventListener("submit", function (){readdres(id="table_body", interesse="ofertas")}, false)
 
         const reset = document.getElementById("restaurar")
         reset.addEventListener("click", function (){reset_fields(oferta, freq, Qdiario, escalas)}, false)

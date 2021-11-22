@@ -41,8 +41,8 @@ function addFields(k, dados=[], id="table_body", initial=Boolean(false), interes
         tipo_de_uso.setAttribute('readonly', '');
         tipo_de_uso.setAttribute('style', 'position: relative;font-weight: bold;');
         tipo_de_uso.setAttribute('value', dados[0])
-        numericField(row, k, 'frequencia_mensal', dados[1], dados[3][0])
-        numericField(row, k, 'indicador', dados[2], dados[3][1])
+        numericField(row, k, 'frequencia_mensal', dados[1], 'Vezes ao mês')
+        numericField(row, k, 'indicador', dados[2], dados[3])
 
     } else {
         tipo_de_uso.setAttribute('placeholder', 'Nome do uso aqui');
@@ -66,14 +66,14 @@ function addFields(k, dados=[], id="table_body", initial=Boolean(false), interes
 
 function InitFields(k, tipo, padrao_freq, padrao_ind, escala, id="table_body", interesse="ofertas"){
     for (let i=0; i < tipo.length; i++){
-        let padroes = [tipo[i], padrao_freq[i], padrao_ind[i], escala]
+        let padroes = [tipo[i], padrao_freq[i], padrao_ind[i], escala[i]]
         addFields(k, padroes, id, Boolean(true), interesse);
         k++
     }
     return k
 }
 
-function readdres (id='table_body') {
+function readdres (id='table_body', interesse='ofertas') {
     let tab_user = document.getElementById(id)
     let rows = tab_user.getElementsByTagName('tr')
     let k_true = rows.length
@@ -89,8 +89,8 @@ function readdres (id='table_body') {
         k_array.push(i)
     }
     for (let i=0; i < inputs.length; i++){
-        inputs[i].setAttribute('name', 'ofertas-' + k_array[i] + attr[i % 3])
-        inputs[i].setAttribute('id', 'id_ofertas-' + k_array[i] + attr[i % 3])
+        inputs[i].setAttribute('name', `${interesse}-${k_array[i]}${attr[i % 3]}`)
+        inputs[i].setAttribute('id', `id_${interesse}-${k_array[i]}${attr[i % 3]}`)
     }
 
 }
