@@ -74,42 +74,40 @@
                                         <th style="width: 5%;">Deletar</th>
                                     </tr>
                                 </thead>
-                                <tbody id="consumosTable">
-                                {{ novos_consumos.management_form }}
-                                {% for consumo in novos_consumos %}
-                                    <tr>
-                                        <td>{% render_field consumo.nome class="form-control" type="text" readonly="" style="position: relative;font-weight: bold;" %}</td>
-                                        <td>
-                                            <div class="input-group">
-                                                {% render_field consumo.frequencia_mensal class="form-control" type="number" value="1" min="0" %}
+                                <tbody id="table_body">
 
-                                                <div class="input-group-append"><span class="input-group-text">vezes ao mes</span></div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend"></div>{% render_field consumo.indicador class="form-control" type="number" %}
-                                                {% if consumo.nome.value == "Irrigação de jardins" or consumo.nome.value == "Lavagem de pisos" %}
-                                                    <div class="input-group-append"><span class="input-group-text">litros/m²/dia</span></div>
-                                                {% else %}
-                                                    <div class="input-group-append"><span class="input-group-text">litros/pes/dia</span></div>
-                                                {% endif %}
-                                            </div>
-                                        </td>
-                                        <td><button class="btn btn-light" type="button" onclick="delete_row(this)">Deletar</button></td>
-                                    </tr>
-                                {% endfor %}
                                 </tbody>
                             </table>
+                            <input type="hidden" name="demandas-INITIAL_FORMS" id="id_demandas-INITIAL_FORMS" value="0">
+                            <input type="hidden" name="demandas-TOTAL_FORMS" id="id_demandas-TOTAL_FORMS" value="3">
+                            <input type="hidden" name="demandas-MIN_NUM_FORMS" id="id_demandas-MIN_NUM_FORMS" value="1">
+                            <input type="hidden" name="demandas-MAX_NUM_FORMS" id="id_demandas-MAX_NUM_FORMS" value="100">
                         </div>
                     </div>
-                    <div class="form-row" style="margin: 1em;"><button class="btn btn-secondary btn-sm" id="addCustomConsumo" type="button">Adicionar</button><span class="d-md-flex align-items-md-center">&nbsp;Outro tipo de uso de água não potável.</span></div>
-                    <div class="text-right col-md-12"><button class="btn btn-light" type="button" data-dismiss="edificacaoForm">Retornar</button><button class="btn btn-primary" type="submit" style="margin: 1em;">Próximo</button></div>
+                    <div class="form-row" style="margin: 1em;"><button class="btn btn-secondary btn-sm" id="addCustomConsumo" type="button" onclick="addFields(k); k++">Adicionar</button><span class="d-md-flex align-items-md-center">&nbsp;Outro tipo de uso de água não potável.</span></div>
+                    <div class="text-right col-md-12">
+                        <button class="btn btn-danger" type="button" data-dismiss="edificacaoForm" id="restaurar">Restaurar</button>
+                        <button id="submit" class="btn btn-primary" type="submit" style="margin: 1em;">Próximo</button></div>
                     </div>
                 </form>
             </div>
         </section>
 {% endblock content%}
 {% block scripts %}
-    <script src="{% static 'assets/js/theme.js' %}"></script>
+    <script src={% static 'assets/js/formulario.js' %}>
+    </script>
+    <script>
+        const demanda = ["Irrigação de jardins", "Lavagem de pisos", "Descarga sanitária", "Lavagem de roupas", "Tanque"];
+        const Ddiario = ["1", "1", "32", "31", "19"];
+        const freq =  ["30", "4", "30", "8", "30"];
+        const escalas = ["Litros/m²/dia", "Litros/m²/dia", "Litros/pessoa/dia", "Litros/pessoa/dia", "Litros/pessoa/dia"]
+
+        let k = 0
+        k = InitFields(k, demanda, freq, Ddiario, escalas, id="table_body", interesse="demandas");
+        let btn = document.getElementById("edificacaoForm")
+        btn.addEventListener("submit", function (){readdres(id="table_body", interesse="demandas"); console.log(2000); console.log(2); console.log(3); console.log(5)}, false)
+
+        const reset = document.getElementById("restaurar")
+        reset.addEventListener("click", function (){reset_fields(demanda, freq, Ddiario, escalas)}, false)
+    </script>
 {% endblock %}
