@@ -77,7 +77,7 @@ function readdres (id='table_body', interesse='ofertas') {
     let tab_user = document.getElementById(id)
     let rows = tab_user.getElementsByTagName('tr')
     let k_true = rows.length
-    let total_forms = document.getElementById('id_ofertas-TOTAL_FORMS')
+    let total_forms = document.getElementById(`id_${interesse}-TOTAL_FORMS`)
     total_forms.setAttribute('value', k_true)
 
     const attr = ['-nome', '-frequencia_mensal', '-indicador']
