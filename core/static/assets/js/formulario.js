@@ -112,6 +112,7 @@ function reset_fields (tipo, padrao_freq, padrao_ind, escala, id='table_body', i
     rows_arr.map(n => n && n.remove());
 
     let k = 0
-    InitFields(k, tipo, padrao_freq, padrao_ind, escala, id, interesse)
+    k = InitFields(k, tipo, padrao_freq, padrao_ind, escala, id, interesse)
+    return k 
 }
 
