@@ -1,13 +1,11 @@
-
+/*Funcao que adiciona todos os campos de uma linha do formulario*/
 function addFields(k, dados=[], id="table_body", initial=Boolean(false), interesse) {
     let container = document.getElementById(id);
     let row = container.appendChild(document.createElement("tr"));
     row.setAttribute('id', interesse + k)
 
-    let td1 = row.appendChild(document.createElement("td"));
-    let tipo_de_uso = td1.appendChild(document.createElement("input"));
-
-    function numericField(row, k, id, padrao='1', escala='Litros/dia'){
+    /*Campos de frequencia e indicador de uso final tem propriedades dos campos de nome do uso*/
+    function numericField(row, k, id, padrao='1', escala='Litros/pessoa/dia'){
         let td = row.appendChild(document.createElement("td"));
         let div_in = td.appendChild(document.createElement("div"));
         let valor = div_in.appendChild(document.createElement("input"));
@@ -28,8 +26,9 @@ function addFields(k, dados=[], id="table_body", initial=Boolean(false), interes
         valor.setAttribute('required', '')
     }
 
-
-
+ 
+    let td1 = row.appendChild(document.createElement("td"));
+    let tipo_de_uso = td1.appendChild(document.createElement("input"));
     tipo_de_uso.setAttribute('type', 'text');
     tipo_de_uso.setAttribute('class', 'form-control');
     tipo_de_uso.setAttribute('maxlength', '100')
@@ -37,6 +36,8 @@ function addFields(k, dados=[], id="table_body", initial=Boolean(false), interes
     tipo_de_uso.setAttribute('name', `${interesse}-${k}-nome`)
     tipo_de_uso.setAttribute('required', '')
 
+    /*No caso de gerar o formulario, deve-se ter que os nomes podem apenas ser lidos*/
+    /*Entre outras caracteristicas diferentes*/
     if (initial){
         tipo_de_uso.setAttribute('readonly', '');
         tipo_de_uso.setAttribute('style', 'position: relative;font-weight: bold;');
@@ -51,6 +52,8 @@ function addFields(k, dados=[], id="table_body", initial=Boolean(false), interes
     }
 
 
+    /*Todas as linhas tem "4 elementos", nao 3*/
+    /*O quarto elemento trata-se to botao de deletar a linha*/
     function delField(row_id) {
         let row_to_del = document.getElementById(row_id);
         row_to_del.parentNode.removeChild(row_to_del)
@@ -58,12 +61,14 @@ function addFields(k, dados=[], id="table_body", initial=Boolean(false), interes
 
     let td4 = row.appendChild(document.createElement("td"))
     let del_btn = td4.appendChild(document.createElement("button"))
-    del_btn.setAttribute('class', 'btn btn-light')
+    del_btn.setAttribute('class', 'btn btn-warning')
     del_btn.setAttribute('type', 'button')
     del_btn.addEventListener('click', function(){delField(interesse+k)}, false)
     del_btn.innerHTML = 'Deletar'
 }
 
+
+/*Funcao para gerar o formulario ao usario fazer GET na pagina*/
 function InitFields(k, tipo, padrao_freq, padrao_ind, escala, id="table_body", interesse="ofertas"){
     for (let i=0; i < tipo.length; i++){
         let padroes = [tipo[i], padrao_freq[i], padrao_ind[i], escala[i]]
@@ -73,6 +78,10 @@ function InitFields(k, tipo, padrao_freq, padrao_ind, escala, id="table_body", i
     return k
 }
 
+
+/*Funcao que reendereca os campos da tabela pelo id e nome certo*/
+/*A necessidade dessa funcao se faz no Django, que ao saber que tem X formularios procura os X primeiros formularios (no formset)*/
+/*Em outras palavras, se o total de forms for 5 entao ele procura id_ofertas-0, id_ofertas-1, ..., id_ofertas-4*/
 function readdres (id='table_body', interesse='ofertas') {
     let tab_user = document.getElementById(id)
     let rows = tab_user.getElementsByTagName('tr')
@@ -95,6 +104,7 @@ function readdres (id='table_body', interesse='ofertas') {
 
 }
 
+/*Funcao que reinicia o formulario, deletando os campos existentes e chamando InitFields outra vez*/
 function reset_fields (tipo, padrao_freq, padrao_ind, escala, id='table_body', interesse="ofertas") {
     const table = document.getElementById(id)
     const rows = table.getElementsByTagName('tr')
