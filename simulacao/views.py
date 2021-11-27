@@ -105,6 +105,12 @@ def RACform(request, pk):
         simul_id = Simulacao.objects.get(id=pk)
     except simulacao.models.Simulacao.DoesNotExist:
         return redirect('simulacao:edificacao')
+    
+    ofertas_avancado = OfertasDeAgua.objects.filter(simulacao=pk)
+    if ofertas_avancado:
+        return redirect('simulacao:simulacao-rac', pk=pk)
+   
+
 
     oferta_factory(instance=simul_id)
     if request.method == "POST":
