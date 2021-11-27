@@ -3,6 +3,15 @@
 {% block content %}
     <section class="clean-block features" style="border-top-style: solid;padding: 0;background: rgb(207,231,248);">
         <div class="container flex-calc" style="background: #eeeeee;padding-top:16px">
+            <div class="block-heading">
+                <h2 class="text-info" style="font-weight: 800;">Características RAC</h2>
+            </div>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:home' %}"><span>Home</span></a></li>
+                <li class="breadcrumb-item"><a href="{% url 'simulacao:edificacao' %}"><span>Características gerais</span></a></li>
+                <li class="breadcrumb-item"><a href="{% url 'simulacao:seleciona_simulacao' pk %}"><span>Selecionar simulação</span></a></li>
+                <li class="breadcrumb-item"><a href="#"><span>Características RAC</span></a></li>
+            </ol>
             <form id="RACform" method="POST">
                 {% csrf_token %}
                 <h3 style="position: relative; font-weight: bold;margin: 16px 16px;">Oferta de água cinza</h3>
