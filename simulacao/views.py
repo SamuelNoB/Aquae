@@ -20,78 +20,32 @@ import simulacao
 # Create your views here.
 
 
-def initial_values():
-    return [
-        {
-            'nome': 'Irrigação de jardins',
-            'frequencia_mensal': 30,
-            'indicador': 1
-        },
-        {
-            'nome': 'Lavagem de pisos',
-            'frequencia_mensal': 4,
-            'indicador': 1
-        },
-        {
-            'nome': 'Descarga sanitária',
-            'frequencia_mensal': 30,
-            'indicador': 32
-        },
-        {
-            'nome': 'Lavagem de roupas',
-            'frequencia_mensal': 8,
-            'indicador': 31
-        },
-        {
-            'nome': 'Tanque',
-            'frequencia_mensal': 30,
-            'indicador': 19
-        },
-
-    ]
-
-
-def fill_novos_consumos(novos_consumos, initial_values):
-    for subform, data in zip(novos_consumos.forms, initial_values()):
-        subform.initial = data
-
-
 def edificacao(request):
     context = {}
     consumo_factory = inlineformset_factory(Simulacao,
                                             DemandasDeAgua,
                                             form=DemandasForm,
                                             can_delete=True,
-                                            extra=len(initial_values())
                                             )
     novos_consumos = consumo_factory
     nova_edificacao = EdificacaoForm
-    if request.method == "GET":
-        nova_edificacao = nova_edificacao()
-        novos_consumos = novos_consumos()
-        fill_novos_consumos(novos_consumos, initial_values)
-        context['nova_edificacao'] = nova_edificacao
-        context['novos_consumos'] = novos_consumos
+    context['nova_edificacao'] = nova_edificacao
 
-        return render(request, 'edificacao.html', context)
 
-    elif request.method == 'POST':
+    if request.method == 'POST':
         nova_edificacao = nova_edificacao(request.POST)
         novos_consumos = novos_consumos(request.POST)
         if nova_edificacao.is_valid() and novos_consumos.is_valid():
             uma_edificacao = nova_edificacao.save()
             novos_consumos.instance = uma_edificacao
             novos_consumos.save()
-
-            context['nova_edificacao'] = nova_edificacao
-            context['novos_consumos'] = novos_consumos
             return redirect('simulacao:seleciona_simulacao', pk=uma_edificacao.pk)
         else:
             context['nova_edificacao'] = nova_edificacao
-            context['novos_consumos'] = novos_consumos
-
             return render(request, 'edificacao.html', context)
 
+
+    return render(request, 'edificacao.html', context)
 
 def seleciona_simulacao(request, pk):
     return render(request, 'seleciona_simulacao.html', {'pk': pk})
