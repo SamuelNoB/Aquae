@@ -61,7 +61,7 @@ function addFields(k, dados=[], id="table_body", initial=Boolean(false), interes
 
     let td4 = row.appendChild(document.createElement("td"))
     let del_btn = td4.appendChild(document.createElement("button"))
-    del_btn.setAttribute('class', 'btn btn-warning')
+    del_btn.setAttribute('class', 'btn btn-light')
     del_btn.setAttribute('type', 'button')
     del_btn.addEventListener('click', function(){delField(interesse+k)}, false)
     del_btn.innerHTML = 'Deletar'
