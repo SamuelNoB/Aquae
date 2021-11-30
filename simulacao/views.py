@@ -344,6 +344,7 @@ class SimulacaoRAC(TemplateView):
                 agua = agua / 12 * 5 * kwargs['area_irrigacao']
             elif oferta.nome == "Lavagem de pisos":
                 agua = agua * kwargs['area_pisos'] 
+            agua = round(agua, 2)
             geral += agua 
             individual[oferta.nome] = agua
 
@@ -432,9 +433,9 @@ class SimulacaoRAC(TemplateView):
         context = {
             'pk': self.kwargs.get("pk"),
             'individual_o' : individual_oferta,
-            'geral_o' : round(geral_oferta, 3),
+            'geral_o' : round(geral_oferta, 2),
             'individual_d' : individual_demanda,
-            'geral_d' : round(geral_demanda, 3),
+            'geral_d' : round(geral_demanda, 2),
             'tratamento': {
                 'Volumes': volumes_cap,
                 'Financeiro': financeiro_cap},
