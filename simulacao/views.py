@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, reverse, HttpResponse, get_object_or_404
 from django.views.generic import TemplateView
 from django.forms import inlineformset_factory, formset_factory
+from numpy.lib.function_base import diff
 from requests.api import get
 
 
 from .forms import EdificacaoForm, DemandasForm, DemandaSimulacaoAAPForm, SimulacaoAAPForm, OfertasForm
 from .models import DemandasDeAgua, Simulacao, OfertasDeAgua
-from .base_de_dados.models import IndicePluviometrico, CaixaDAgua, CapacidadeDeTratamento, TarifaDeAgua
+from .base_de_dados.models import IndicePluviometrico, CaixaDAgua, CapacidadeDeTratamento, TarifaDeAgua, Cidade
 from .utils import get_dollar
 
 from .controllers.dimensionamentoController import DimensionamentoController
@@ -14,9 +15,12 @@ from .controllers.demandaController import DemandaController
 from .controllers.ofertaController import OfertaController
 from .controllers.economiaDeAguaController import EconomiaDeAguaController
 from .controllers.beneficioController import BeneficioController
-
+from .controllers import simuladorController
 
 import simulacao
+
+from math import ceil
+import numpy as np
 # Create your views here.
 
 
@@ -77,6 +81,78 @@ def RACform(request, pk):
 
 
 class SimulacaoAAP(TemplateView):
+    template_name = 'simuladorAAP.html' 
+
+
+    def get_pluviometria(self, cidade="Brasília"):
+        local = Cidade.objects.get(nome=cidade)
+        pluviometria = IndicePluviometrico.objects.filter(ano=2019, cidade=local)
+        pluviometria = pluviometria.values_list('media_pluviometrica')
+        pluviometria = list(map(lambda x:x[0], pluviometria))
+        return pluviometria
+
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+
+        try:
+            simul = simuladorController.get_simulacao(pk=pk)['simulacao']
+        except simulacao.models.Simulacao.DoesNotExist:
+            return redirect('simulacao:edificacao')
+        area_i = simul.area_irrigacao
+        area_p = simul.area_pisos
+        area_c = simul.area_cobertura
+        consumo = simul.consumo_mensal
+        esgoto = simul.tarifa_esgoto / 100
+        pessoas = simul.n_pessoas
+        coeficiente_esc = 0.9
+        coeficiente_filt = 0.9
+
+
+        individual_d, geral_d, irrigacao = simuladorController.calc_oferta_demanda(pk, 'demandas_de_agua',
+                                                                                   residentes=pessoas,
+                                                                                   area_irrigacao=area_i,
+                                                                                   area_pisos=area_p)
+        geral_d = round(geral_d, 2)
+        irrigacao = round(irrigacao, 2)
+
+
+        # TODO Versoes futuras devem especificar cidade
+        pluviometria = np.array(self.get_pluviometria())
+        area_ideal = ceil(geral_d / (pluviometria.sum() * coeficiente_esc * coeficiente_filt) * 1000)
+        area_coleta = min(area_ideal, area_c)
+        
+        oferta_mensal = pluviometria * area_coleta * coeficiente_esc * coeficiente_filt / 1000
+        oferta_mensal = np.around(oferta_mensal, decimals=2)
+        oferta_total = round(oferta_mensal.sum(), 2)
+
+        demanda_sest = round((geral_d - irrigacao*5)/12, 2) # periodo sem estiagem
+        demanda_est = demanda_sest + irrigacao # periodo de estiagem
+        demanda_mensal = np.array([demanda_sest for i in range(12)])
+        meses_est = np.where(pluviometria < 50)
+        demanda_mensal[meses_est] = demanda_est
+
+
+
+        diff_ofe_dem = list(oferta_mensal - demanda_mensal) # JS nao recebe np arrray
+        demanda_mensal = list(demanda_mensal)
+        oferta_mensal = list(oferta_mensal)
+        meses_est = list(meses_est[0])
+
+
+        context = {
+            'pk' : pk,
+            'individual_d' : individual_d,
+            'geral_d' : geral_d,
+            'oferta_total': oferta_total,
+            'diff_ofe_dem': diff_ofe_dem,
+            'demanda_mensal': demanda_mensal,
+            'oferta_mensal': oferta_mensal,
+            'meses_estiagem': meses_est
+        }
+        return render(request, self.template_name, context)
+
+class SimulacaoAAP_old(TemplateView):
     template_name = 'simuladorAAP.html'
 
     def calcula_vpl(self, c_capital, c_operacional, beneficio, juros=0):
@@ -333,10 +409,6 @@ class SimulacaoRAC(TemplateView):
         individual = {}
         geral = 0
 
-        # Gambiarra para nao alterar o resultado da demanda
-        if interesse == "demandas_de_agua":
-            kwargs["residentes"] = 1
-
 
         for oferta in ofertas:
             agua = (oferta.indicador * oferta.frequencia_mensal)/1000 * kwargs['residentes']
@@ -408,10 +480,13 @@ class SimulacaoRAC(TemplateView):
         # Se a simulacao foi encontrada, entao o form da demanda foi preenchido
         individual_demanda, geral_demanda = self.calc_oferta_demanda(pk, 'demandas_de_agua', 
                                                                      area_irrigacao=area_i,
-                                                                     area_pisos=area_p)
+                                                                     area_pisos=area_p,
+                                                                     residentes=pessoas)
 
         # Buscar uma oferta em uma simulacao existente nao retorna erro
         individual_oferta, geral_oferta = self.calc_oferta_demanda(pk, 'ofertas_de_agua', 
+                                                                   area_irrigacao=area_i,
+                                                                   area_pisos=area_p,
                                                                    residentes=pessoas)
         if not individual_oferta:
             return redirect('simulacao:formulario-rac', pk=pk)
