@@ -227,33 +227,9 @@
             function re_plot_cisterna() {
                 intervalo_cisterna = document.getElementById('id_intervalos_de_cisterna').value
                 const new_simulados = create_values(intervalo_cisterna)
-                /*Deleta a canvas antiga para nao bugar a visualizacao*/
-                document.getElementById('SimulChart').remove()
                 
-                /*Nova canvas*/
-                const ChartDiv =  document.getElementById('ChartDiv')
-
-                const canvas = ChartDiv.appendChild(document.createElement("canvas"))
-
-                canvas.setAttribute('id', 'SimulChart')
-                const ctx = canvas.getContext('2d');
-                
-                const SimulChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: new_simulados.x_values,
-                        
-                        datasets: [{
-                            label: 'Economia de Água m³/ano',
-                            data: new_simulados.y_values,
-                            fill: false,
-                            backgroundColor: 'rgba(54, 162, 235, 1)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        }],
-                    },
-                    options: plot_options   
-                });
+                removeData(SimulChart)
+                addData(SimulChart, labels=new_simulados.x_values, data=new_simulados.y_values)
             }
 
 
