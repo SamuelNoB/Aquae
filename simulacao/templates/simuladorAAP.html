@@ -179,8 +179,8 @@
             function create_values(interval) {
                 const y_values = []
                 const gastos = []
-                let mep_patch = false
-                index_max = 20
+                mep_patch = false
+                index_max = 19
                 for (let i = 1; i <= 20; i++) {
                     if (interval*i >= mep + 4*interval) {
                         index_max = i-1
@@ -222,14 +222,16 @@
                 
                 removeData(SimulChart)
                 addData(SimulChart, labels=new_simulados.x_values, data=new_simulados.y_values)
+                fixMEP(SimulChart, index_max, mep_patch)
             }
 
             function re_plot_cisterna() {
                 intervalo_cisterna = document.getElementById('id_intervalos_de_cisterna').value
                 const new_simulados = create_values(intervalo_cisterna)
-                
+
                 removeData(SimulChart)
                 addData(SimulChart, labels=new_simulados.x_values, data=new_simulados.y_values)
+                fixMEP(SimulChart, index_max, mep_patch)
             }
 
 
@@ -241,6 +243,7 @@
             const oferta_mensal = {{ oferta_mensal }}
             const meses_estiagem = {{ meses_estiagem }}
             
+            let mep_patch = false
             let mep = 200
             let index_max = 20
             let intervalo_cisterna = 10
@@ -313,6 +316,7 @@
             const canvas = document.getElementById('SimulChart')
             const ctx = canvas.getContext('2d')
             const SimulChart = new Chart(ctx, config)
+            
             
 
             cist_interv_btn = document.getElementById('change_interval')
