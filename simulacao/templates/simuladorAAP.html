@@ -220,13 +220,40 @@
                 
                 const new_simulados = create_values(intervalo_cisterna)
                 
-                plot(new_simulados.x_values, new_simulados.y_values, 'line', options)
+                removeData(SimulChart)
+                addData(SimulChart, labels=new_simulados.x_values, data=new_simulados.y_values)
             }
 
             function re_plot_cisterna() {
                 intervalo_cisterna = document.getElementById('id_intervalos_de_cisterna').value
                 const new_simulados = create_values(intervalo_cisterna)
-                plot(new_simulados.x_values, new_simulados.y_values, 'line', options)
+                /*Deleta a canvas antiga para nao bugar a visualizacao*/
+                document.getElementById('SimulChart').remove()
+                
+                /*Nova canvas*/
+                const ChartDiv =  document.getElementById('ChartDiv')
+
+                const canvas = ChartDiv.appendChild(document.createElement("canvas"))
+
+                canvas.setAttribute('id', 'SimulChart')
+                const ctx = canvas.getContext('2d');
+                
+                const SimulChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: new_simulados.x_values,
+                        
+                        datasets: [{
+                            label: 'Economia de Água m³/ano',
+                            data: new_simulados.y_values,
+                            fill: false,
+                            backgroundColor: 'rgba(54, 162, 235, 1)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }],
+                    },
+                    options: plot_options   
+                });
             }
 
 
@@ -244,7 +271,7 @@
             const simulados = create_values(intervalo_cisterna)
 
             
-            var options = { 
+            const plot_options = { 
                 elements: {
                     line: {
                         tension: 0 // disables bezier curves
@@ -283,15 +310,34 @@
                         } 
                     },
                     y: {
-                    title: {
-                        display: true,
-                        text: 'Economia de agua potável (m³/ano)'
-                    } 
+                        title: {
+                            display: true,
+                            text: 'Economia de agua potável (m³/ano)'
+                        }
                     }
                 }
             }
             
-            plot(simulados.x_values, simulados.y_values, 'line', options)
+            const config = {
+                type: 'line',
+                data: {
+                    labels: simulados.x_values,
+                    datasets: [{
+                        label: 'Economia de Água m³/ano',
+                        data: simulados.y_values,
+                        fill: false,
+                        backgroundColor: 'rgb(65,125,178)',
+                        borderColor: 'rgb(65,125,178)',
+                        borderWidth: 2
+                    }],
+                },
+                options: plot_options   
+            }
+
+            const canvas = document.getElementById('SimulChart')
+            const ctx = canvas.getContext('2d')
+            const SimulChart = new Chart(ctx, config)
+            
 
             cist_interv_btn = document.getElementById('change_interval')
             cist_interv_btn.addEventListener('click', function () { re_plot_cisterna() })

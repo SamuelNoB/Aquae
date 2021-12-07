@@ -180,3 +180,18 @@ function create_tabs(demanda, tarifa, juros) {
 
 }
 
+function addData(chart, labels, data) {
+    chart.data.labels.push(...labels);
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.push(...data);
+    })
+    chart.update('none');
+}
+
+function removeData(chart) {
+    chart.data.labels.length = 0;
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.length = 0;
+    });
+    chart.update('none');
+}
