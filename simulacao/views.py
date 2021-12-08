@@ -133,8 +133,7 @@ class SimulacaoAAP(TemplateView):
         demanda_mensal[meses_est] = demanda_est
 
 
-
-        diff_ofe_dem = list(oferta_mensal - demanda_mensal) # JS nao recebe np arrray
+        # JS nao recebe np arrray
         demanda_mensal = list(demanda_mensal)
         oferta_mensal = list(oferta_mensal)
         meses_est = list(meses_est[0])
@@ -145,7 +144,6 @@ class SimulacaoAAP(TemplateView):
             'individual_d' : individual_d,
             'geral_d' : geral_d,
             'oferta_total': oferta_total,
-            'diff_ofe_dem': diff_ofe_dem,
             'demanda_mensal': demanda_mensal,
             'oferta_mensal': oferta_mensal,
             'meses_estiagem': meses_est
