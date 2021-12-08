@@ -78,20 +78,20 @@
                         </div>
                         <div>
                             <ul class="nav nav-tabs" role="tablist">
-                                <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-toggle="tab" href="#tab-3">Geral</a></li>
-                                <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-4">Dimensionamento</a></li>
-                                <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-5">Financeiro</a></li>
+                                <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-toggle="tab" href="#tab-1">Geral</a></li>
+                                <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-2">Dimensionamento</a></li>
+                                <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-3">Financeiro</a></li>
                             </ul>
                             <div class="tab-content">
-                                <div class="tab-pane active" role="tabpanel" id="tab-3" style="background: #ffffff;">
+                                <div class="tab-pane active" role="tabpanel" id="tab-1" style="background: #ffffff;">
                                     <ul class="list-group text-capitalize" style="background: var(--secondary);">
-                                        <li class="list-group-item" style="color: var(dark);background: #e1e1e1;border-style: solid;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Oferta: </span>{{ oferta_total }} <span class="text-lowercase">m³/ano</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Demanda: </span>{{ geral_d }} <span class="text-lowercase">m³/ano</span><br></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;" class="normal">Área de Coleta: </span>1 <span class="text-lowercase">m²</span><br></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);" class="normal">Custo de Operação: </span><span class="normal">1 R$ / ano</span></li>
+                                        <li class="list-group-item" style="color: var(dark);background: #e1e1e1;border-style: solid;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Oferta: </span><span class="text-lowercase" id="oferta__total"> m³/ano</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Demanda: </span><span class="text-lowercase" id="demanda__total"> m³/ano</span><br></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;" class="normal">Área de Coleta: </span> <span class="text-lowercase" id="area__coleta">m²</span><br></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);" class="normal">Custo de Operação: </span><span class="normal" id="custo_operacional">R$ / ano</span></li>
                                     </ul>
                                 </div>
-                                <div class="tab-pane" role="tabpanel" id="tab-4">
+                                <div class="tab-pane" role="tabpanel" id="tab-2">
                                     <ul class="list-group text-capitalize" style="background: #e1e1e1;">
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Freio d'água: </span>1<span class="text-lowercase">mm</span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Sifão ladrão: </span>1<span class="text-lowercase">mm</span></li>
@@ -102,7 +102,7 @@
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" class="normal">Reservatório de Distribuição: </span>1<span>L</span></li>
                                     </ul>
                                 </div>
-                                <div class="tab-pane" role="tabpanel" id="tab-5" style="background: #e1e1e1;">
+                                <div class="tab-pane" role="tabpanel" id="tab-3" style="background: #e1e1e1;">
                                     <div class="table-responsive" style="border-left-color: var(--secondary);">
                                         <table class="table table-striped table-hover">
                                             <thead>
@@ -234,13 +234,32 @@
                 fixMEP(SimulChart, index_max, mep_patch)
             }
 
+            function calc_area_oferta(coef_esc = 0.9, coef_filt = 0.9) {
+                demanda_anual = add(demanda_mensal)
+                const area_ideal = Math.ceil(demanda_anual/(pluviometria_total * coef_esc * coef_filt) * 1000)
+                area_coleta = Math.min(area_ideal, area_disponivel)
+                oferta_mensal = pluviometria_mensal.map(function(pp) {return pp * area_coleta * coef_filt * coef_esc})
+                
+            }
+
+            function create_table() {
+                document.getElementById('oferta__total').innerHTML = `${oferta_anual} m³/ano`
+                document.getElementById('demanda__total').innerHTML = `${demanda_anual} m³/ano`
+                document.getElementById('area__coleta').innerHTML = `${area_coleta} m²`
+            }
+
 
             const main_ids = ['check', 'nome', 'indicador']
             const data_demanda = address(parent_id="demanda-items", child_tag="input", id_names=main_ids, type="demanda")
-
-
+            
+            const area_disponivel = {{ area_disponivel }}[0]
+            const pluviometria_mensal = {{ pluviometria_mensal }}
+            const pluviometria_total = {{ pluviometria_total }}
+            let area_coleta = {{ area_coleta }}
             let demanda_mensal = {{ demanda_mensal }}
-            const oferta_mensal = {{ oferta_mensal }}
+            let demanda_anual = {{ geral_d }}[0]
+            let oferta_mensal = {{ oferta_mensal }}
+            let oferta_anual = {{ oferta_total }}[0]
             const meses_estiagem = {{ meses_estiagem }}
             
             let mep_patch = false
@@ -322,7 +341,8 @@
             cist_interv_btn = document.getElementById('change_interval')
             cist_interv_btn.addEventListener('click', function () { re_plot_cisterna() })
 
-            
+            create_table()
+            document.getElementById('custo_operacional').innerHTML = `${parseReal({{ bomba.custo_op }}[0])} R$/ano`
 
 
         </script>

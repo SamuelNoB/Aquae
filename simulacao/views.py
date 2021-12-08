@@ -120,7 +120,8 @@ class SimulacaoAAP(TemplateView):
 
         # TODO Versoes futuras devem especificar cidade
         pluviometria = np.array(self.get_pluviometria())
-        area_ideal = ceil(geral_d / (pluviometria.sum() * coeficiente_esc * coeficiente_filt) * 1000)
+        pluviometria_total = pluviometria.sum()
+        area_ideal = ceil(geral_d / (pluviometria_total * coeficiente_esc * coeficiente_filt) * 1000)
         area_coleta = min(area_ideal, area_c)
         
         oferta_mensal = pluviometria * area_coleta * coeficiente_esc * coeficiente_filt / 1000
@@ -137,19 +138,23 @@ class SimulacaoAAP(TemplateView):
         demanda_mensal = list(demanda_mensal)
         oferta_mensal = list(oferta_mensal)
         meses_est = list(meses_est[0])
+        pluviometria = list(pluviometria)
 
 
         bomba, co = simuladorController.get_bomba_e_co(n_pavimentos)
         
-        
         context = {
             'pk' : pk,
             'individual_d' : individual_d,
-            'geral_d' : geral_d,
-            'oferta_total': oferta_total,
+            'geral_d' : [geral_d],
+            'oferta_total': [oferta_total],
             'demanda_mensal': demanda_mensal,
             'oferta_mensal': oferta_mensal,
             'meses_estiagem': meses_est,
+            'area_disponivel': [area_c],
+            'area_coleta': area_coleta,
+            'pluviometria_mensal': pluviometria,
+            'pluviometria_total': pluviometria_total,
             'bomba': {
                 'dimensoes': bomba,
                 'custo_op': [co],
