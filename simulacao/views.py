@@ -105,6 +105,7 @@ class SimulacaoAAP(TemplateView):
         consumo = simul.consumo_mensal
         esgoto = simul.tarifa_esgoto / 100
         pessoas = simul.n_pessoas
+        n_pavimentos = simul.n_pavimentos
         coeficiente_esc = 0.9
         coeficiente_filt = 0.9
 
@@ -132,13 +133,15 @@ class SimulacaoAAP(TemplateView):
         meses_est = np.where(pluviometria < 50)
         demanda_mensal[meses_est] = demanda_est
 
-
         # JS nao recebe np arrray
         demanda_mensal = list(demanda_mensal)
         oferta_mensal = list(oferta_mensal)
         meses_est = list(meses_est[0])
 
 
+        bomba, co = simuladorController.get_bomba_e_co(n_pavimentos)
+        
+        
         context = {
             'pk' : pk,
             'individual_d' : individual_d,
@@ -146,7 +149,13 @@ class SimulacaoAAP(TemplateView):
             'oferta_total': oferta_total,
             'demanda_mensal': demanda_mensal,
             'oferta_mensal': oferta_mensal,
-            'meses_estiagem': meses_est
+            'meses_estiagem': meses_est,
+            'bomba': {
+                'dimensoes': bomba,
+                'custo_op': [co],
+                'preco': [bomba.preco]
+            },
+            
         }
         return render(request, self.template_name, context)
 
