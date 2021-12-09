@@ -235,7 +235,7 @@
             }
 
             function calc_area_oferta(coef_esc = 0.9, coef_filt = 0.9) {
-                demanda_anual = add(demanda_mensal)
+                demanda_anual = demanda_mensal.reduce(add, 0)
                 const area_ideal = Math.ceil(demanda_anual/(pluviometria_total * coef_esc * coef_filt) * 1000)
                 area_coleta = Math.min(area_ideal, area_disponivel)
                 oferta_mensal = pluviometria_mensal.map(function(pp) {return pp * area_coleta * coef_filt * coef_esc})
@@ -257,6 +257,7 @@
 
             function create_table() {
                 /*Tabela 1*/
+                calc_area_oferta()
                 document.getElementById('oferta__total').innerHTML = `${oferta_anual} m³/ano`
                 document.getElementById('demanda__total').innerHTML = `${demanda_anual} m³/ano`
                 document.getElementById('area__coleta').innerHTML = `${area_coleta} m²`
