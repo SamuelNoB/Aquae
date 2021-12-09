@@ -181,6 +181,7 @@
                 const gastos = []
                 mep_patch = false
                 index_max = 19
+                index_mep = 19
                 for (let i = 1; i <= 20; i++) {
                     if (interval*i >= mep + 4*interval) {
                         index_max = i-1
@@ -193,6 +194,7 @@
                         if (y_values[i-2] == y_values[i-1] && !mep_patch) {    
                             mep = interval*i
                             mep_patch = true
+                            index_mep = i-2
                         }
                     }
                     
@@ -222,7 +224,7 @@
                 
                 removeData(SimulChart)
                 addData(SimulChart, labels=new_simulados.x_values, data=new_simulados.y_values)
-                fixMEP(SimulChart, index_max, mep_patch)
+                fixMEP(SimulChart, index_mep)
             }
 
             function re_plot_cisterna() {
@@ -231,7 +233,8 @@
 
                 removeData(SimulChart)
                 addData(SimulChart, labels=new_simulados.x_values, data=new_simulados.y_values)
-                fixMEP(SimulChart, index_max, mep_patch)
+                console.log(index_mep)
+                fixMEP(SimulChart, index_mep)
             }
 
             function calc_area_oferta(coef_esc = 0.9, coef_filt = 0.9) {
@@ -293,6 +296,7 @@
             let mep_patch = false
             let mep = 200
             let index_max = 20
+            let index_mep = 19
             let intervalo_cisterna = 10
             const simulados = create_values(intervalo_cisterna)
 

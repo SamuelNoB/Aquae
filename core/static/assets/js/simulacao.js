@@ -196,17 +196,9 @@ function removeData(chart) {
     chart.update('none');
 }
 
-function fixMEP(chart, index, MEP) {
+function fixMEP(chart, index) {
     const annotation_opt = chart.options.plugins.annotation.annotations[0]
-    let true_index = 19
-    if (MEP) {
-        if (index > 14) {
-            true_index = index    
-        } else {
-            true_index = index - 5
-        }
-    }
-    annotation_opt.xMin = true_index
-    annotation_opt.xMax = true_index
+    annotation_opt.xMin = index
+    annotation_opt.xMax = index
     chart.update('none')
 }
