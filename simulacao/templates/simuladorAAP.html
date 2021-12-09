@@ -238,8 +238,7 @@
                 demanda_anual = demanda_mensal.reduce(add, 0)
                 const area_ideal = Math.ceil(demanda_anual/(pluviometria_total * coef_esc * coef_filt) * 1000)
                 area_coleta = Math.min(area_ideal, area_disponivel)
-                oferta_mensal = pluviometria_mensal.map(function(pp) {return pp * area_coleta * coef_filt * coef_esc})
-                
+                oferta_mensal = pluviometria_mensal.map(function(pp) {return pp * area_coleta * coef_filt * coef_esc / 1000})
             }
 
             function get_equips(area_utilizada) {
