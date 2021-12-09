@@ -7,7 +7,7 @@ from requests.api import get
 
 from .forms import EdificacaoForm, DemandasForm, DemandaSimulacaoAAPForm, SimulacaoAAPForm, OfertasForm
 from .models import DemandasDeAgua, Simulacao, OfertasDeAgua
-from .base_de_dados.models import IndicePluviometrico, CaixaDAgua, CapacidadeDeTratamento, TarifaDeAgua, Cidade
+from .base_de_dados.models import Equipamentos, IndicePluviometrico, CaixaDAgua, CapacidadeDeTratamento, TarifaDeAgua, Cidade
 from .utils import get_dollar
 
 from .controllers.dimensionamentoController import DimensionamentoController
@@ -21,6 +21,7 @@ import simulacao
 
 from math import ceil
 import numpy as np
+import json
 # Create your views here.
 
 
@@ -92,6 +93,22 @@ class SimulacaoAAP(TemplateView):
         return pluviometria
 
 
+    def get_equips(self, area_coleta):
+        todas = Equipamentos.objects.all()
+
+        possiveis = list(todas.filter(area_de_coleta__lt=area_coleta))
+        if len(possiveis) < len(todas):
+                possiveis.append(todas[len(possiveis)])
+        
+        equips_dict = {equip.area_de_coleta.area_max: {
+                                                        'filtro': equip.filtro_dagua,
+                                                        'freio': equip.freio_dagua,
+                                                        'sifao': equip.sifao_ladrao
+                                                        }  for equip in possiveis}
+
+        return equips_dict
+
+
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk')
 
@@ -110,25 +127,25 @@ class SimulacaoAAP(TemplateView):
         coeficiente_filt = 0.9
 
 
-        individual_d, geral_d, irrigacao = simuladorController.calc_oferta_demanda(pk, 'demandas_de_agua',
+        individual_d, geral_demanda, irrigacao = simuladorController.calc_oferta_demanda(pk, 'demandas_de_agua',
                                                                                    residentes=pessoas,
                                                                                    area_irrigacao=area_i,
                                                                                    area_pisos=area_p)
-        geral_d = round(geral_d, 2)
+        geral_demanda = round(geral_demanda, 2)
         irrigacao = round(irrigacao, 2)
 
 
         # TODO Versoes futuras devem especificar cidade
         pluviometria = np.array(self.get_pluviometria())
         pluviometria_total = pluviometria.sum()
-        area_ideal = ceil(geral_d / (pluviometria_total * coeficiente_esc * coeficiente_filt) * 1000)
+        area_ideal = ceil(geral_demanda / (pluviometria_total * coeficiente_esc * coeficiente_filt) * 1000)
         area_coleta = min(area_ideal, area_c)
         
         oferta_mensal = pluviometria * area_coleta * coeficiente_esc * coeficiente_filt / 1000
         oferta_mensal = np.around(oferta_mensal, decimals=2)
         oferta_total = round(oferta_mensal.sum(), 2)
 
-        demanda_sest = round((geral_d - irrigacao*5)/12, 2) # periodo sem estiagem
+        demanda_sest = round((geral_demanda - irrigacao*5)/12, 2) # periodo sem estiagem
         demanda_est = demanda_sest + irrigacao # periodo de estiagem
         demanda_mensal = np.array([demanda_sest for i in range(12)])
         meses_est = np.where(pluviometria < 50)
@@ -142,11 +159,17 @@ class SimulacaoAAP(TemplateView):
 
 
         bomba, co = simuladorController.get_bomba_e_co(n_pavimentos)
+        equips = self.get_equips(area_coleta)
+        # m³ para litros / dia
+        demanda_g_ld = demanda_est * 1000 / 30
+        volumes_caixa, financeiro_caixa = simuladorController.get_caixa_dagua(demanda_g_ld, dolar=1)
+        
+        
         
         context = {
             'pk' : pk,
             'individual_d' : individual_d,
-            'geral_d' : [geral_d],
+            'geral_demanda' : [geral_demanda],
             'oferta_total': [oferta_total],
             'demanda_mensal': demanda_mensal,
             'oferta_mensal': oferta_mensal,
@@ -155,10 +178,15 @@ class SimulacaoAAP(TemplateView):
             'area_coleta': area_coleta,
             'pluviometria_mensal': pluviometria,
             'pluviometria_total': pluviometria_total,
+            'equipamentos': json.dumps(equips),
             'bomba': {
                 'dimensoes': bomba,
                 'custo_op': [co],
                 'preco': [bomba.preco]
+            },
+            'caixa': {
+                'volumes': volumes_caixa,
+                'financeiro': financeiro_caixa
             },
             
         }
@@ -475,6 +503,7 @@ class SimulacaoRAC(TemplateView):
         tarifa = TarifaDeAgua.objects.filter(min__lte=consumo,
                                              max__gte=consumo)
         return list(tarifa)[0].tarifa
+
 
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk') 

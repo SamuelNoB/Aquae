@@ -88,18 +88,18 @@
                                         <li class="list-group-item" style="color: var(dark);background: #e1e1e1;border-style: solid;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Oferta: </span><span class="text-lowercase" id="oferta__total"> m³/ano</span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Demanda: </span><span class="text-lowercase" id="demanda__total"> m³/ano</span><br></li>
                                         <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;" class="normal">Área de Coleta: </span> <span class="text-lowercase" id="area__coleta">m²</span><br></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);" class="normal">Custo de Operação: </span><span class="normal" id="custo_operacional">R$ / ano</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);" class="normal">Custo Operacional: </span><span class="normal" id="custo_operacional">R$ / ano</span></li>
                                     </ul>
                                 </div>
                                 <div class="tab-pane" role="tabpanel" id="tab-2">
                                     <ul class="list-group text-capitalize" style="background: #e1e1e1;">
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Freio d'água: </span>1<span class="text-lowercase">mm</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Sifão ladrão: </span>1<span class="text-lowercase">mm</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" class="normal">Capacidade do Filtro: </span>Até 1<span class="text-lowercase">m² de cobertura</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Sucção: </span>{{ bomba.dimensoes.succao }} <span class="text-lowercase">mm</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Recalque: </span>{{ bomba.dimensoes.recalque }} <span class="text-lowercase">mm</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água potência: </span>{{ bomba.dimensoes.potencia }} <span class="text-lowercase">cv</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" class="normal">Reservatório de Distribuição: </span>1<span>L</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Freio d'água: </span><span class="text-lowercase" id="freio__dagua">mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Sifão ladrão: </span><span class="text-lowercase" id="sifao__ladrao">mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" class="normal">Capacidade do Filtro: </span><span class="text-lowercase" id="filtro__dagua">m² de cobertura</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Sucção: </span><span class="text-lowercase">{{ bomba.dimensoes.succao }} mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Recalque: </span><span class="text-lowercase">{{ bomba.dimensoes.recalque }} mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água potência: </span><span class="text-lowercase">{{ bomba.dimensoes.potencia }} cv</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" class="normal">Reservatório de Distribuição: </span><span id="reservatorio__volume"> L</span></li>
                                     </ul>
                                 </div>
                                 <div class="tab-pane" role="tabpanel" id="tab-3" style="background: #e1e1e1;">
@@ -242,22 +242,50 @@
                 
             }
 
+            function get_equips(area_utilizada) {
+                for (const [area, equip] of Object.entries(equipamentos)) {
+                    if (area > area_utilizada) return equip
+                }
+            }
+
+            function choose_caixa_dagua() {
+                const demanda_estiagem = demanda_mensal[meses_estiagem[0]] * 1000 / 30
+                for (capacidade of caixa_volumes) {
+                    if (capacidade > demanda_estiagem) return capacidade
+                }
+            }
+
             function create_table() {
+                /*Tabela 1*/
                 document.getElementById('oferta__total').innerHTML = `${oferta_anual} m³/ano`
                 document.getElementById('demanda__total').innerHTML = `${demanda_anual} m³/ano`
                 document.getElementById('area__coleta').innerHTML = `${area_coleta} m²`
+
+
+                /*Tabela 2*/
+                const equipamentos_adequados = get_equips(area_coleta)
+                document.getElementById('freio__dagua').innerHTML = `${equipamentos_adequados.freio} mm`
+                document.getElementById('sifao__ladrao').innerHTML = `${equipamentos_adequados.sifao} mm`
+                document.getElementById('filtro__dagua').innerHTML = `${equipamentos_adequados.filtro} m² de cobertura`
+                
+                const reservatorio = choose_caixa_dagua()
+                document.getElementById('reservatorio__volume').innerHTML = `${reservatorio} L`
             }
 
 
             const main_ids = ['check', 'nome', 'indicador']
             const data_demanda = address(parent_id="demanda-items", child_tag="input", id_names=main_ids, type="demanda")
             
+            const equipamentos = {{ equipamentos|safe }}
+            const caixa_volumes = {{ caixa.volumes }}
+            const caixa_financeiro = {{ caixa.financeiro }}
+
             const area_disponivel = {{ area_disponivel }}[0]
             const pluviometria_mensal = {{ pluviometria_mensal }}
             const pluviometria_total = {{ pluviometria_total }}
             let area_coleta = {{ area_coleta }}
             let demanda_mensal = {{ demanda_mensal }}
-            let demanda_anual = {{ geral_d }}[0]
+            let demanda_anual = {{ geral_demanda }}[0]
             let oferta_mensal = {{ oferta_mensal }}
             let oferta_anual = {{ oferta_total }}[0]
             const meses_estiagem = {{ meses_estiagem }}

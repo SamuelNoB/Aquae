@@ -1,5 +1,6 @@
 from simulacao.controllers.dimensionamentoController import DimensionamentoController
 from simulacao.models import Simulacao, DemandasDeAgua, OfertasDeAgua
+from simulacao.base_de_dados.models import CaixaDAgua
 
 
 def get_bomba_e_co(n_pavimentos):
@@ -44,3 +45,14 @@ def calc_oferta_demanda(pk, interesse, **kwargs):
     geral = geral*12 # m³/ano
     # individual em m³/mes
     return individual, geral, irrigacao
+
+
+def get_caixa_dagua(demanda_diaria, dolar):
+        todas = CaixaDAgua.objects.all()
+        possiveis = list(todas.filter(volume__lt=demanda_diaria))
+        
+        if len(possiveis) < len(todas):
+            possiveis.append(todas[len(possiveis)])
+        
+        caixas_dict = {caixa.volume: caixa.valor * dolar for caixa in possiveis}
+        return list(caixas_dict.keys()), caixas_dict
