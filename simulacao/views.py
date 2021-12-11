@@ -52,6 +52,7 @@ def edificacao(request):
 
     return render(request, 'edificacao.html', context)
 
+
 def seleciona_simulacao(request, pk):
     return render(request, 'seleciona_simulacao.html', {'pk': pk})
 
@@ -103,9 +104,10 @@ class SimulacaoAAP(TemplateView):
         equips_dict = {equip.area_de_coleta.area_max: {
                                                         'filtro': equip.filtro_dagua,
                                                         'freio': equip.freio_dagua,
-                                                        'sifao': equip.sifao_ladrao
+                                                        'sifao': equip.sifao_ladrao,
+                                                        'custo': equip.custo_implementacao
                                                         }  for equip in possiveis}
-
+        
         return equips_dict
 
 
@@ -157,15 +159,16 @@ class SimulacaoAAP(TemplateView):
         meses_est = list(meses_est[0])
         pluviometria = list(pluviometria)
 
-
+        dolar = get_dollar()
         bomba, co = simuladorController.get_bomba_e_co(n_pavimentos)
         equips = self.get_equips(area_coleta)
         # m³ para litros / dia
         demanda_g_ld = demanda_est * 1000 / 30
-        volumes_caixa, financeiro_caixa = simuladorController.get_caixa_dagua(demanda_g_ld, dolar=1)
+        volumes_caixa, financeiro_caixa = simuladorController.get_caixa_dagua(demanda_g_ld, dolar)
         
+        tarifa = simuladorController.get_tarifa(consumo)* (1 + esgoto)
         
-        
+
         context = {
             'pk' : pk,
             'individual_d' : individual_d,
@@ -181,15 +184,17 @@ class SimulacaoAAP(TemplateView):
             'equipamentos': json.dumps(equips),
             'bomba': {
                 'dimensoes': bomba,
-                'custo_op': [co],
-                'preco': [bomba.preco]
+                'custo_op': co,
+                'preco': bomba.preco/3.77
             },
             'caixa': {
                 'volumes': volumes_caixa,
                 'financeiro': financeiro_caixa
             },
-            
+            'tarifa': tarifa,
+            'dolar': dolar
         }
+
         return render(request, self.template_name, context)
 
 class SimulacaoAAP_old(TemplateView):

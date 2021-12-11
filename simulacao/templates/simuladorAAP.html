@@ -88,7 +88,7 @@
                                         <li class="list-group-item" style="color: var(dark);background: #e1e1e1;border-style: solid;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Oferta: </span><span class="text-lowercase" id="oferta__total"> m³/ano</span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;">Demanda: </span><span class="text-lowercase" id="demanda__total"> m³/ano</span><br></li>
                                         <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;" class="normal">Área de Coleta: </span> <span class="text-lowercase" id="area__coleta">m²</span><br></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);" class="normal">Custo Operacional: </span><span class="normal" id="custo_operacional">R$ / ano</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);" class="normal">Custo Operacional: </span><span class="normal" id="custo__operacional">R$ / ano</span></li>
                                     </ul>
                                 </div>
                                 <div class="tab-pane" role="tabpanel" id="tab-2">
@@ -114,7 +114,7 @@
                                                     <th data-bss-tooltip data-toggle="tooltip" data-original-title="Valor presente Líquido, calculado para 30 anos">VPL<br>(R$)</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody id="tab__financeiro">
                                             
                                             </tbody>
                                         </table>
@@ -225,6 +225,8 @@
                 removeData(SimulChart)
                 addData(SimulChart, labels=new_simulados.x_values, data=new_simulados.y_values)
                 fixMEP(SimulChart, index_mep)
+
+                return new_simulados.y_values, new_simulados.gastos
             }
 
             function re_plot_cisterna() {
@@ -233,8 +235,9 @@
 
                 removeData(SimulChart)
                 addData(SimulChart, labels=new_simulados.x_values, data=new_simulados.y_values)
-                console.log(index_mep)
                 fixMEP(SimulChart, index_mep)
+
+                return new_simulados.y_values, new_simulados.gastos
             }
 
             function calc_area_oferta(coef_esc = 0.9, coef_filt = 0.9) {
@@ -266,22 +269,82 @@
 
 
                 /*Tabela 2*/
-                const equipamentos_adequados = get_equips(area_coleta)
+                equipamentos_adequados = get_equips(area_coleta)
                 document.getElementById('freio__dagua').innerHTML = `${equipamentos_adequados.freio} mm`
                 document.getElementById('sifao__ladrao').innerHTML = `${equipamentos_adequados.sifao} mm`
                 document.getElementById('filtro__dagua').innerHTML = `${equipamentos_adequados.filtro} m² de cobertura`
                 
-                const reservatorio = choose_caixa_dagua()
+                reservatorio = choose_caixa_dagua()
                 document.getElementById('reservatorio__volume').innerHTML = `${reservatorio} L`
+                    
             }
 
+            /*Tabela 3*/
+            function create_table_financeiro(volumes, economia, gastos, dolar, juros = 3/100) {
+                const preco_cisterna_por_m3 = 324.95
+                const custo_op = document.getElementById('custo__operacional').innerHTML.replace('.', '').replace(',', '.')
 
+                const preco_geral = bomba_preco + caixa_financeiro[reservatorio] + equipamentos_adequados['custo']
+                let custo = volumes.map(function(vol) {return (preco_geral + vol * preco_cisterna_por_m3) * dolar})
+                
+                
+
+
+                let beneficio = economia.map(function(x){return x*tarifa})
+                const gasto_adicional = gastos.map(function(x){return x*tarifa})
+
+
+                const beneficio_true = beneficio.map(function(eco, index) {
+                    return eco - gasto_adicional[index] - parseFloat(custo_op)})
+
+
+                const payback = custo.map(function(preco, index) {
+                    return Math.ceil(preco/beneficio_true[index])
+                })
+
+                
+                let VPL = Array(beneficio_true.length)
+                for (let j=0; j < beneficio_true.length; j++) {
+                    const VPL_parcelas = Array(30)
+                    const econ = beneficio_true[j]
+                    for (let i=1; i <= 30; i++) {
+                        VPL_parcelas[i-1] = econ / (1+juros)**i
+                    }
+                    VPL[j] = VPL_parcelas.reduce(add, 0) - custo[j]
+                }
+                
+
+                beneficio = beneficio.map(function(x) {return Math.round((x + Number.EPSILON)*100)/100})
+                beneficio = beneficio.map(parseReal)
+                custo = custo.map(function(x) {return Math.round((x + Number.EPSILON)*100)/100})
+                custo = custo.map(parseReal)
+                VPL = VPL.map(function(x) {return Math.round((x + Number.EPSILON)*100)/100})
+                VPL = VPL.map(parseReal)
+                const tab_financeiro = document.getElementById("tab__financeiro")
+                for (let i=0; i < custo.length; i++) {
+                    let row = tab_financeiro.appendChild(document.createElement('tr'))
+                    row.appendChild(document.createElement('td')).innerHTML = volumes[i]
+                    row.appendChild(document.createElement('td')).innerHTML = beneficio[i]
+                    row.appendChild(document.createElement('td')).innerHTML = custo[i]
+                    row.appendChild(document.createElement('td')).innerHTML = payback[i]
+                    const VPL_td = row.appendChild(document.createElement('td'))
+                    VPL_td.innerHTML = VPL[i]
+                    if (VPL[i].includes("-")) {VPL_td.setAttribute("style", "color:red")}
+                    else {VPL_td.setAttribute("style", "color:black")}
+
+                }
+                
+            }
+
+            const dolar = {{ dolar|stringformat:'.2f' }}
+            const bomba_preco = {{ bomba.preco|stringformat:'.2f' }}
             const main_ids = ['check', 'nome', 'indicador']
             const data_demanda = address(parent_id="demanda-items", child_tag="input", id_names=main_ids, type="demanda")
             
             const equipamentos = {{ equipamentos|safe }}
             const caixa_volumes = {{ caixa.volumes }}
             const caixa_financeiro = {{ caixa.financeiro }}
+        
 
             const area_disponivel = {{ area_disponivel }}[0]
             const pluviometria_mensal = {{ pluviometria_mensal }}
@@ -368,13 +431,22 @@
             const ctx = canvas.getContext('2d')
             const SimulChart = new Chart(ctx, config)
             
+            const tarifa = {{ tarifa|stringformat:".2f" }}
             
 
             cist_interv_btn = document.getElementById('change_interval')
             cist_interv_btn.addEventListener('click', function () { re_plot_cisterna() })
 
+
+            const custo_operacional = {{ bomba.custo_op|stringformat:".2f" }}
+            document.getElementById('custo__operacional').innerHTML = `${parseReal(custo_operacional)} R$/ano`
+
+            var reservatorio = 0
+            var equipamentos_adequados = {}
             create_table()
-            document.getElementById('custo_operacional').innerHTML = `${parseReal({{ bomba.custo_op }}[0])} R$/ano`
+            create_table_financeiro(simulados.x_values, simulados.y_values, simulados.gastos, dolar)
+
+            
 
 
         </script>

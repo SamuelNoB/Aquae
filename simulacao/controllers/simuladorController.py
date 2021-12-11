@@ -1,6 +1,6 @@
 from simulacao.controllers.dimensionamentoController import DimensionamentoController
 from simulacao.models import Simulacao, DemandasDeAgua, OfertasDeAgua
-from simulacao.base_de_dados.models import CaixaDAgua
+from simulacao.base_de_dados.models import CaixaDAgua, TarifaDeAgua
 
 
 def get_bomba_e_co(n_pavimentos):
@@ -56,3 +56,9 @@ def get_caixa_dagua(demanda_diaria, dolar):
         
         caixas_dict = {caixa.volume: caixa.valor * dolar for caixa in possiveis}
         return list(caixas_dict.keys()), caixas_dict
+
+
+def get_tarifa(consumo):
+        tarifa = TarifaDeAgua.objects.filter(min__lte=consumo,
+                                             max__gte=consumo)
+        return list(tarifa)[0].tarifa
