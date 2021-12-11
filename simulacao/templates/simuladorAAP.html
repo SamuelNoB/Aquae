@@ -180,6 +180,7 @@
                 const y_values = []
                 const gastos = []
                 mep_patch = false
+                mep = 20*interval
                 index_max = 19
                 index_mep = 19
                 for (let i = 1; i <= 20; i++) {
@@ -221,7 +222,7 @@
                 }
                 
                 const new_simulados = create_values(intervalo_cisterna)
-                
+
                 removeData(SimulChart)
                 addData(SimulChart, labels=new_simulados.x_values, data=new_simulados.y_values)
                 fixMEP(SimulChart, index_mep)
@@ -358,7 +359,7 @@
             
             let mep_patch = false
             let mep = 200
-            let index_max = 20
+            let index_max = 19
             let index_mep = 19
             let intervalo_cisterna = 10
             const simulados = create_values(intervalo_cisterna)
