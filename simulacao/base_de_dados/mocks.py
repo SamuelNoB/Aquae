@@ -30,42 +30,50 @@ equipamentos = {
     '150': {
         'filtro_dagua': 150,
         'sifao_ladrao': 100,
-        'freio_dagua': 100
+        'freio_dagua': 100,
+        'custo_implementacao': 410.34
     },
     '200': {
             'filtro_dagua': 200,
             'sifao_ladrao': 100,
-            'freio_dagua': 100
+            'freio_dagua': 100,
+            'custo_implementacao': 638.73
         },
     '500': {
             'filtro_dagua': 500,
             'sifao_ladrao': 100,
-            'freio_dagua': 100
+            'freio_dagua': 100,
+            'custo_implementacao': 1006.90
         },
     '700': {
             'filtro_dagua': 700,
             'sifao_ladrao': 150,
-            'freio_dagua': 150
+            'freio_dagua': 150,
+            'custo_implementacao': 1558.36
         },
     '1000': {
             'filtro_dagua': 1000,
             'sifao_ladrao': 150,
-            'freio_dagua': 150
+            'freio_dagua': 150,
+            'custo_implementacao': 1759.95
         },
     '1500': {
             'filtro_dagua': 1500,
             'sifao_ladrao': 200,
-            'freio_dagua': 200
+            'freio_dagua': 200,
+            'custo_implementacao': 3083.13
         },
     '2000': {
             'filtro_dagua': 2000,
             'sifao_ladrao': 200,
-            'freio_dagua': 200
+            'freio_dagua': 200,
+            'custo_implementacao': 3739.10
         },
     '3000': {
             'filtro_dagua': 3000,
             'sifao_ladrao': 200,
-            'freio_dagua': 200
+            'freio_dagua': 200,
+            'custo_implementacao': 6654.54
         },
 }
 
@@ -287,6 +295,7 @@ def create_equipamentos():
             filtro_dagua=equipamento['filtro_dagua'],
             sifao_ladrao=equipamento['sifao_ladrao'],
             freio_dagua=equipamento['freio_dagua'],
+            custo_implementacao=equipamento['custo_implementacao'],
             area_de_coleta=uma_area
         )
         novo_equipamento.save()
