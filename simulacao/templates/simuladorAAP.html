@@ -158,7 +158,6 @@
                 }
                 
                 for (let i = 12; i < 24; i++) {
-                    
                     const demanda = demanda_mensal[i % 12]
                     const oferta = oferta_mensal[i % 12]
                     const resultado = oferta-demanda
@@ -172,7 +171,6 @@
                         if (saldo_cisterna < 0) {gasto_add += Math.abs(saldo_cisterna); saldo_cisterna = 0}
                     }
                 }
-
                 return {economia, gasto_add}
             }
 
@@ -221,6 +219,7 @@
                     demanda_mensal = demanda_mensal.map(function(x) {return x + indicador})
                 }
                 
+                calc_area_oferta()
                 const new_simulados = create_values(intervalo_cisterna)
 
                 removeData(SimulChart)
@@ -290,8 +289,6 @@
                 let custo = volumes.map(function(vol) {return (preco_geral + vol * preco_cisterna_por_m3) * dolar})
                 
                 
-
-
                 let beneficio = economia.map(function(x){return x*tarifa})
                 const gasto_adicional = gastos.map(function(x){return x*tarifa})
 
