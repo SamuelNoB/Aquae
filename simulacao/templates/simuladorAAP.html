@@ -237,7 +237,7 @@
                 addData(SimulChart, labels=new_simulados.x_values, data=new_simulados.y_values)
                 fixMEP(SimulChart, index_mep)
 
-                return new_simulados.y_values, new_simulados.gastos
+                create_table_financeiro(new_simulados.x_values, new_simulados.y_values, new_simulados.gastos, dolar)
             }
 
             function calc_area_oferta(coef_esc = 0.9, coef_filt = 0.9) {
@@ -263,7 +263,6 @@
 
             function create_table() {
                 /*Tabela 1*/
-                calc_area_oferta()
                 document.getElementById('oferta__total').innerHTML = `${oferta_anual} m³/ano`
                 document.getElementById('demanda__total').innerHTML = `${demanda_anual} m³/ano`
                 document.getElementById('area__coleta').innerHTML = `${area_coleta} m²`
@@ -341,7 +340,7 @@
             function updateUI(id) {
                 const new_simul = re_plot(id)
                 create_table()
-                create_table_financeiro(new_simul.x_values, new_simul.y_values, new_simul.gastos, dolar, juros = 3/100)
+                create_table_financeiro(new_simul.x_values, new_simul.y_values, new_simul.gastos, dolar)
             }
 
             function address(parent_id, child_tag, id_names, type) {
