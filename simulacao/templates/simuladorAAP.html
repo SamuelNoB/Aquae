@@ -227,7 +227,7 @@
                 addData(SimulChart, labels=new_simulados.x_values, data=new_simulados.y_values)
                 fixMEP(SimulChart, index_mep)
 
-                return new_simulados.y_values, new_simulados.gastos
+                return new_simulados
             }
 
             function re_plot_cisterna() {
@@ -323,6 +323,9 @@
                 VPL = VPL.map(function(x) {return Math.round((x + Number.EPSILON)*100)/100})
                 VPL = VPL.map(parseReal)
                 const tab_financeiro = document.getElementById("tab__financeiro")
+                while (tab_financeiro.firstChild) {
+                    tab_financeiro.removeChild(tab_financeiro.lastChild)
+                }
                 for (let i=0; i < custo.length; i++) {
                     let row = tab_financeiro.appendChild(document.createElement('tr'))
                     row.appendChild(document.createElement('td')).innerHTML = volumes[i]
@@ -336,6 +339,12 @@
 
                 }
                 
+            }
+
+            function updateUI(id) {
+                const new_simul = re_plot(id)
+                create_table()
+                create_table_financeiro(new_simul.x_values, new_simul.y_values, new_simul.gastos, dolar, juros = 3/100)
             }
 
             function address(parent_id, child_tag, id_names, type) {
@@ -355,7 +364,7 @@
                     } else if (id_names[(i%3)] == 'nome') {
                         nomes.push(child[i].value)
                     } else if(id_names[(i%3)] == 'check') {
-                        child[i].addEventListener('click', function () {re_plot(child[i].id); create_table()}, false)
+                        child[i].addEventListener('click', function () {updateUI(child[i].id);}, false)
                     }
                 }
             }
