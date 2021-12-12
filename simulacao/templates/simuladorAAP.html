@@ -242,10 +242,11 @@
             }
 
             function calc_area_oferta(coef_esc = 0.9, coef_filt = 0.9) {
-                demanda_anual = demanda_mensal.reduce(add, 0)
+                demanda_anual = Math.round((demanda_mensal.reduce(add, 0) + Number.EPSILON)*100)/100
                 const area_ideal = Math.ceil(demanda_anual/(pluviometria_total * coef_esc * coef_filt) * 1000)
                 area_coleta = Math.min(area_ideal, area_disponivel)
                 oferta_mensal = pluviometria_mensal.map(function(pp) {return pp * area_coleta * coef_filt * coef_esc / 1000})
+                oferta_anual = Math.round((oferta_mensal.reduce(add, 0) + Number.EPSILON)*100)/100
             }
 
             function get_equips(area_utilizada) {
@@ -337,6 +338,29 @@
                 
             }
 
+            function address(parent_id, child_tag, id_names, type) {
+                let parent = document.getElementById(parent_id)
+                let child = parent.getElementsByTagName(child_tag)
+            
+                
+                const nomes = []
+                const indicadores = []
+                const n = child.length/3
+                for (let i = 0; i < n*3; i++){
+                    child[i].setAttribute('id', 'id_' + type + "-" + Math.floor(i / 3) + "-" + id_names[(i%3)])
+                    child[i].setAttribute('name', type + "-" + Math.floor(i / 3) + "-" + id_names[(i%3)])
+                    
+                    if (id_names[(i%3)] == 'indicador') {
+                        indicadores.push( parseFloat(child[i].value.replace(',', '.')))
+                    } else if (id_names[(i%3)] == 'nome') {
+                        nomes.push(child[i].value)
+                    } else if(id_names[(i%3)] == 'check') {
+                        child[i].addEventListener('click', function () {re_plot(child[i].id); create_table()}, false)
+                    }
+                }
+            }
+
+            
             const dolar = {{ dolar|stringformat:'.2f' }}
             const bomba_preco = {{ bomba.preco|stringformat:'.2f' }}
             const main_ids = ['check', 'nome', 'indicador']
