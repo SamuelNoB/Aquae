@@ -25,6 +25,11 @@ function parseReal(float){
     return valor
 }
 
+function realFloat(real) {
+    const valor = String(real).replace('.', '').replace(',', '.')
+    return parseFloat(valor)
+}
+
 
 /*Faz o enderecamento das tabelas de demanda e oferta,
 alem de criar os EventListener's que tornam o grafico interativo*/

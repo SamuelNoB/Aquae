@@ -280,9 +280,9 @@
             }
 
             /*Tabela 3*/
-            function create_table_financeiro(volumes, economia, gastos, dolar, juros = 3/100) {
+            function create_table_financeiro(volumes, economia, gastos, dolar) {
                 const preco_cisterna_por_m3 = 324.95
-                const custo_op = document.getElementById('custo__operacional').innerHTML.replace('.', '').replace(',', '.')
+                const custo_op = document.getElementById('custo__operacional').innerHTML.replace(" R$/ano", "")
 
                 const preco_geral = bomba_preco + caixa_financeiro[reservatorio] + equipamentos_adequados['custo']
                 let custo = volumes.map(function(vol) {return (preco_geral + vol * preco_cisterna_por_m3) * dolar})
@@ -293,14 +293,14 @@
 
 
                 const beneficio_true = beneficio.map(function(eco, index) {
-                    return eco - gasto_adicional[index] - parseFloat(custo_op)})
+                    return eco - gasto_adicional[index] - realFloat(custo_op)})
 
 
                 const payback = custo.map(function(preco, index) {
                     return Math.ceil(preco/beneficio_true[index])
                 })
 
-                
+                const juros = document.getElementById("id_taxa_de_juros").value/100
                 let VPL = Array(beneficio_true.length)
                 for (let j=0; j < beneficio_true.length; j++) {
                     const VPL_parcelas = Array(30)
@@ -317,7 +317,7 @@
                 custo = custo.map(function(x) {return Math.round((x + Number.EPSILON)*100)/100})
                 custo = custo.map(parseReal)
                 VPL = VPL.map(function(x) {return Math.round((x + Number.EPSILON)*100)/100})
-                VPL = VPL.map(parseReal)
+                const VPL_real = VPL.map(parseReal)
                 const tab_financeiro = document.getElementById("tab__financeiro")
                 while (tab_financeiro.firstChild) {
                     tab_financeiro.removeChild(tab_financeiro.lastChild)
@@ -329,8 +329,8 @@
                     row.appendChild(document.createElement('td')).innerHTML = custo[i]
                     row.appendChild(document.createElement('td')).innerHTML = payback[i]
                     const VPL_td = row.appendChild(document.createElement('td'))
-                    VPL_td.innerHTML = VPL[i]
-                    if (VPL[i].includes("-")) {VPL_td.setAttribute("style", "color:red")}
+                    VPL_td.innerHTML = VPL_real[i]
+                    if (VPL_real[i].includes("-")) {VPL_td.setAttribute("style", "color:red")}
                     else {VPL_td.setAttribute("style", "color:black")}
 
                 }
@@ -365,6 +365,34 @@
                 }
             }
 
+            function re_vpl() {
+                const custo_op = document.getElementById('custo__operacional').innerHTML.replace(" R$/ano")
+                const custo_op_float = realFloat(custo_op)
+                const juros = document.getElementById("id_taxa_de_juros").value/100
+
+                const gastos = SimulChart.data.datasets[0].data.map((x) => {return (demanda_anual-x) * tarifa})
+                
+
+                const table = document.getElementById("tab__financeiro").children
+                for (let i=0; i < table.length; i++) {
+                    const beneficio = realFloat(table[i].children[1].innerHTML)
+                    const custo = realFloat(table[i].children[2].innerHTML)
+                    const beneficio_true = beneficio - custo_op_float - gastos[i]
+                    
+                    const VPL_parcelas = Array(30)
+                    for (let i=1; i <= 30; i++) {
+                        VPL_parcelas[i-1] = beneficio_true / (1+juros)**i
+                    }
+                    const VPL = VPL_parcelas.reduce(add, 0) - custo
+                    const VPL_real = parseReal(Math.round((VPL + Number.EPSILON)*100)/100)
+                    const VPL_td = table[i].children[4]
+                    VPL_td.innerHTML = VPL_real
+                    if (VPL_real.includes("-")) {VPL_td.setAttribute("style", "color:red")}
+                    else {VPL_td.setAttribute("style", "color:black")}
+
+                }
+
+            }
             
             const dolar = {{ dolar|stringformat:'.2f' }}
             const bomba_preco = {{ bomba.preco|stringformat:'.2f' }}
@@ -476,9 +504,9 @@
             create_table()
             create_table_financeiro(simulados.x_values, simulados.y_values, simulados.gastos, dolar)
 
-            
-
-
+    
+            const juros_btn = document.getElementById("juros-btn")
+            juros_btn.addEventListener('click', function(){ re_vpl() })
         </script>
 
 
