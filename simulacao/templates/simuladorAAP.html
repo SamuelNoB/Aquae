@@ -245,6 +245,7 @@
                 const area_ideal = Math.ceil(demanda_anual/(pluviometria_total * coef_esc * coef_filt) * 1000)
                 area_coleta = Math.min(area_ideal, area_disponivel)
                 oferta_mensal = pluviometria_mensal.map(function(pp) {return pp * area_coleta * coef_filt * coef_esc / 1000})
+                oferta_mensal = oferta_mensal.map((x) => {return Math.round((x + Number.EPSILON) * 100) / 100})
                 oferta_anual = Math.round((oferta_mensal.reduce(add, 0) + Number.EPSILON)*100)/100
             }
 
