@@ -152,11 +152,12 @@
                         saldo_cisterna += resultado
                         if (saldo_cisterna > cisterna) {saldo_cisterna = cisterna} 
                     } else {
-                        saldo_cisterna -= resultado
+                        saldo_cisterna += resultado
                         if (saldo_cisterna < 0) {saldo_cisterna = 0}
                     }
                 }
                 
+
                 for (let i = 12; i < 24; i++) {
                     const demanda = demanda_mensal[i % 12]
                     const oferta = oferta_mensal[i % 12]
@@ -251,7 +252,7 @@
 
             function get_equips(area_utilizada) {
                 for (const [area, equip] of Object.entries(equipamentos)) {
-                    if (area > area_utilizada) return equip
+                    if (area >= area_utilizada) return equip
                 }
             }
 
@@ -408,7 +409,7 @@
             const area_disponivel = {{ area_disponivel }}[0]
             const pluviometria_mensal = {{ pluviometria_mensal }}
             const pluviometria_total = {{ pluviometria_total }}
-            let area_coleta = {{ area_coleta }}
+            let area_coleta = {{ area_coleta|stringformat:".2f" }}
             let demanda_mensal = {{ demanda_mensal }}
             let demanda_anual = {{ geral_demanda }}[0]
             let oferta_mensal = {{ oferta_mensal }}
