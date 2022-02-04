@@ -329,11 +329,17 @@
                     row.appendChild(document.createElement('td')).innerHTML = volumes[i]
                     row.appendChild(document.createElement('td')).innerHTML = beneficio[i]
                     row.appendChild(document.createElement('td')).innerHTML = custo[i]
-                    row.appendChild(document.createElement('td')).innerHTML = payback[i]
+                    const payback_td = row.appendChild(document.createElement('td'))
+                    payback_td.innerHTML = payback[i]
                     const VPL_td = row.appendChild(document.createElement('td'))
                     VPL_td.innerHTML = VPL_real[i]
-                    if (VPL_real[i].includes("-")) {VPL_td.setAttribute("style", "color:red")}
-                    else {VPL_td.setAttribute("style", "color:black")}
+                    if (VPL_real[i].includes("-")) {
+                        VPL_td.setAttribute("style", "color:red")
+                        payback_td.setAttribute("style", "color:red")
+                        payback_td.innerHTML = 'Inviável!'}
+                    else {
+                        VPL_td.setAttribute("style", "color:black")
+                        payback_td.setAttribute("style", "color:black")}
 
                 }
                 
