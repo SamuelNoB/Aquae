@@ -265,8 +265,8 @@
 
             function create_table() {
                 /*Tabela 1*/
-                document.getElementById('oferta__total').innerHTML = `${oferta_anual} m³/ano`
-                document.getElementById('demanda__total').innerHTML = `${demanda_anual} m³/ano`
+                document.getElementById('oferta__total').innerHTML = `${parseReal(oferta_anual)} m³/ano`
+                document.getElementById('demanda__total').innerHTML = `${parseReal(demanda_anual)} m³/ano`
                 document.getElementById('area__coleta').innerHTML = `${area_coleta} m²`
 
 
