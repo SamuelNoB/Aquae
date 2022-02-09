@@ -102,8 +102,8 @@
                         <div class="tab-content">
                             <div class="tab-pane active" role="tabpanel" id="tab-3" style="background: #ffffff;">
                                 <ul class="list-group text-capitalize" style="background: var(--secondary);">
-                                    <li class="list-group-item" style="color: var(dark);background: #e1e1e1;border-style: solid;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;" class="normal">Oferta: </span><span class="text-lowercase" id="oferta_geral">{{ geral_o }} m³/ano</span></li>
-                                    <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;" class="normal">Demanda: </span><span class="text-lowercase" id="demanda_geral">{{ geral_d }} m³/ano</span><br></li>
+                                    <li class="list-group-item" style="color: var(dark);background: #e1e1e1;border-style: solid;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;" class="normal">Oferta: </span><span class="text-lowercase" id="oferta_geral"> m³/ano</span></li>
+                                    <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);background: #e1e1e1;font-weight: 600;" class="normal">Demanda: </span><span class="text-lowercase" id="demanda_geral"> m³/ano</span><br></li>
                                     <li class="list-group-item" style="background: #e1e1e1;"><span style="color: var(--dark);font-weight: 600;background: #e1e1e1;border-color: var(--dark);">Custo Operacional: </span> <span class="normal" id="custo_operacional"></span> </li>
                                 </ul>
                             </div>
@@ -240,7 +240,12 @@
                     scales: {
                         x: {
                             ticks: ticks_config
-                        }
+                        },
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
                     }
                 }
             });
@@ -282,17 +287,31 @@
                 document.getElementById("oferta_geral").innerHTML = String(total).replace('.', ',') + " m³/ano"
             } 
 
-            const re_economia = data_adjust(data_oferta.indicadores, data_demanda.indicadores)
+            const oferta_total = data_oferta.indicadores.reduce(add, 0)*12
+            const demanda_total = soma_dem(data_demanda.indicadores, data_demanda.nomes, oferta_total)
+            const re_economia = data_adjust(oferta_total, data_demanda.indicadores, data_demanda.nomes)
+            
             plot(x = data_demanda.nomes, y = re_economia)
 
-            const demanda_possivel = Math.min(data_demanda.indicadores.reduce(add, 0), data_oferta.indicadores.reduce(add, 0))
+            
+            const demanda_possivel = Math.min(demanda_total, oferta_total)
 
-            create_tabs(demanda_possivel * 1000 / 30, tarifa, juros)
+            create_tabs(demanda_possivel * 1000 / 30, oferta_total, tarifa, juros)
+        }
+
+
+        function round_x(float, decimals) {
+            return Math.round(float*10**decimals + Number.EPSILON) / (10**decimals)
         }
 
 
         /*Cria elementos da parte financeira e capacidade necessaria*/
-        function create_tabs(demanda, tarifa, juros) {
+        function create_tabs(demanda, oferta, tarifa, juros) {
+
+            document.getElementById("oferta_geral").innerHTML = `${parseReal(round_x(oferta, 2))} m³/ano`
+            document.getElementById("demanda_geral").innerHTML = `${parseReal(demanda * 30 / 1000)} m³/ano`
+
+
             /*Seletor de capacidade minima*/
             let volume_cap = Math.max(...volumes_cap)
             for (let i = 0; i < volumes_cap.length; i++) {
@@ -351,12 +370,12 @@
         function soma_dem(indicadores, nomes, oferta_total) {
             let soma = 0
             for (let i = 0; i < indicadores.length; i++) {
-                let anual = indicadores[i]*12
+                let mensal = indicadores[i]
                 if (nomes[i] != "Irrigação de jardins") {
-                    soma = soma + anual
+                    soma = soma + mensal*12
                 } else {
                     /*A irrigacao so e contabilizada nos meses de estiagem*/
-                    soma = soma + anual/2
+                    soma = soma + mensal*6
                 }
             }
             return soma
@@ -388,12 +407,11 @@
         const economia = data_adjust(oferta_total, data_demanda.indicadores, data_demanda.nomes)
         
         /*Demanda possivel de ser atendida dada a oferta*/
-        
         const demanda_possivel = Math.min(demanda_total, oferta_total)
-        console.log(demanda_possivel)
+        
 
         plot(x = data_demanda.nomes, y = economia)
-        create_tabs(demanda_possivel * 1000 / 30, tarifa, juros)
+        create_tabs(demanda_possivel * 1000 / 30, oferta_total, tarifa, juros)
         const juros_btn = document.getElementById("juros-btn")
         juros_btn.addEventListener('click', function () {juros = document.getElementById("juros").value / 100; 
                                                          create_tabs(demanda_possivel * 1000 / 30, tarifa, juros)}, false)
