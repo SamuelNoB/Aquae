@@ -324,14 +324,14 @@ class SimulacaoRAC(TemplateView):
                 'Financeiro': financeiro_cap},
             'bomba': {
                 'Dimensoes': bomba,
-                'Custo_op': [custo_op],
-                'Custo': [bomba.preco]
+                'Custo_op': custo_op,
+                'Custo': bomba.preco
             },
             'caixa': {
                 'Volumes': volumes_caixa,
                 'Financeiro': financeiro_caixa
             },
-            'tarifa': [tarifa]
+            'tarifa': tarifa
         }
 
         return render(request, self.template_name, context)

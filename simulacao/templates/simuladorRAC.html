@@ -186,6 +186,7 @@
             return({n, nomes, indicadores})
         }
 
+
         /*Retorna casos diferentes de zero para que o grafico nao apresente o dado zerado*/
         function clean_data(labels, values) {
             
@@ -245,15 +246,21 @@
             });
         }
 
+
         /*Retorna a possivel economia de cada demanda*/
-        function data_adjust(oferta_indicadores, demanda_indicadores) {
+        function data_adjust(oferta_total, demanda_indicadores, demanda_nomes) {
             const economia = []
-            const oferta_total = oferta_indicadores.reduce(add, 0) * 12
             for (let i = 0; i < demanda_indicadores.length; i++) {
-                economia.push(Math.min(demanda_indicadores[i] * 12, oferta_total))
+                if (demanda_nomes[i] != "Irrigação de jardins") {
+                    economia.push(Math.min(demanda_indicadores[i] * 12, oferta_total))
+                } else {
+                    /*A irrigacao so e contabilizada nos meses de estiagem*/
+                    economia.push(Math.min(demanda_indicadores[i] * 6, oferta_total))
+                }
             }
             return economia
         }
+
 
         /*Refaz o grafico, e outros elementos da pagina, toda vez que ocorre uma interacao com checkbox*/
         function re_plot(id) {
@@ -282,6 +289,7 @@
 
             create_tabs(demanda_possivel * 1000 / 30, tarifa, juros)
         }
+
 
         /*Cria elementos da parte financeira e capacidade necessaria*/
         function create_tabs(demanda, tarifa, juros) {
@@ -339,35 +347,56 @@
 
         }
 
-        const main_ids = ['check', 'nome', 'indicador']
-        const data_oferta = address(parent_id="oferta-items", child_tag="input", id_names=main_ids, type="oferta")
-        const data_demanda = address(parent_id="demanda-items", child_tag="input", id_names=main_ids, type="demanda")
-        const economia = data_adjust(data_oferta.indicadores, data_demanda.indicadores)
+
+        function soma_dem(indicadores, nomes, oferta_total) {
+            let soma = 0
+            for (let i = 0; i < indicadores.length; i++) {
+                let anual = indicadores[i]*12
+                if (nomes[i] != "Irrigação de jardins") {
+                    soma = soma + anual
+                } else {
+                    /*A irrigacao so e contabilizada nos meses de estiagem*/
+                    soma = soma + anual/2
+                }
+            }
+            return soma
+        }
 
 
         const volumes_cap = {{ tratamento.Volumes }}
         const financeiro_cap = {{ tratamento.Financeiro }}
         
-        const custo_op_bomba = {{ bomba.Custo_op }}[0]
-        const custo_bomba = {{ bomba.Custo }}[0]
+        const custo_op_bomba = {{ bomba.Custo_op|stringformat:".2f" }}
+        const custo_bomba = {{ bomba.Custo|stringformat:".2f" }}
 
         const volumes_caixa = {{ caixa.Volumes }}
         const financeiro_caixa = {{ caixa.Financeiro }}
-    
-
-        plot(x = data_demanda.nomes, y = economia)
-
-
-        const tarifa = {{ tarifa }}[0]
+        
+        const tarifa = {{ tarifa|stringformat:".2f" }}
 
         var juros = document.getElementById("juros").value / 100
-        const demanda_possivel = Math.min(data_demanda.indicadores.reduce(add, 0), data_oferta.indicadores.reduce(add, 0))
-        create_tabs(demanda_possivel * 1000 / 30, tarifa, juros)
         
+    </script>
+    <script>
+        const main_ids = ['check', 'nome', 'indicador']
+        const data_oferta = address(parent_id="oferta-items", child_tag="input", id_names=main_ids, type="oferta")
+        const data_demanda = address(parent_id="demanda-items", child_tag="input", id_names=main_ids, type="demanda")
+
+        const oferta_total = data_oferta.indicadores.reduce(add, 0)*12
+        const demanda_total = soma_dem(data_demanda.indicadores, data_demanda.nomes, oferta_total)
+
+        const economia = data_adjust(oferta_total, data_demanda.indicadores, data_demanda.nomes)
+        
+        /*Demanda possivel de ser atendida dada a oferta*/
+        
+        const demanda_possivel = Math.min(demanda_total, oferta_total)
+        console.log(demanda_possivel)
+
+        plot(x = data_demanda.nomes, y = economia)
+        create_tabs(demanda_possivel * 1000 / 30, tarifa, juros)
         const juros_btn = document.getElementById("juros-btn")
         juros_btn.addEventListener('click', function () {juros = document.getElementById("juros").value / 100; 
                                                          create_tabs(demanda_possivel * 1000 / 30, tarifa, juros)}, false)
-
     </script>
 
 {% endblock %}
