@@ -316,9 +316,7 @@ class SimulacaoRAC(TemplateView):
         context = {
             'pk': self.kwargs.get("pk"),
             'individual_o' : individual_oferta,
-            'geral_o' : round(geral_oferta, 2),
             'individual_d' : individual_demanda,
-            'geral_d' : round(geral_demanda, 2),
             'tratamento': {
                 'Volumes': volumes_cap,
                 'Financeiro': financeiro_cap},
