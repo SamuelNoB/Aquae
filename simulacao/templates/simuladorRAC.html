@@ -307,9 +307,9 @@
 
         /*Cria elementos da parte financeira e capacidade necessaria*/
         function create_tabs(demanda, oferta, tarifa, juros) {
-
+            const demanda_anual = demanda * 30 / 1000
             document.getElementById("oferta_geral").innerHTML = `${parseReal(round_x(oferta, 2))} m³/ano`
-            document.getElementById("demanda_geral").innerHTML = `${parseReal(demanda * 30 / 1000)} m³/ano`
+            document.getElementById("demanda_geral").innerHTML = `${parseReal(round_x(demanda_anual, 2))} m³/ano`
 
 
             /*Seletor de capacidade minima*/
@@ -338,7 +338,7 @@
 
             document.getElementById("Capacidade").innerHTML = volume_cap
             
-            const Beneficio = Math.round((tarifa * demanda * 30 * 12 / 1000 - custo_op_final + Number.EPSILON)*100) / 100
+            const Beneficio = Math.round((tarifa * demanda_anual - custo_op_final + Number.EPSILON)*100) / 100
             document.getElementById("Beneficio").innerHTML = parseReal(Beneficio)
 
             let Payback = Math.ceil(custo_cap / Beneficio)
