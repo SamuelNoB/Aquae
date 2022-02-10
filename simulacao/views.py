@@ -129,11 +129,12 @@ class SimulacaoAAP(TemplateView):
         coeficiente_filt = 0.9
 
 
-        individual_d, geral_demanda, irrigacao = simuladorController.calc_oferta_demanda(pk, 'demandas_de_agua',
+        individual_d = simuladorController.calc_oferta_demanda(pk, 'demandas_de_agua',
                                                                                    residentes=pessoas,
                                                                                    area_irrigacao=area_i,
                                                                                    area_pisos=area_p)
-        geral_demanda = round(geral_demanda, 2)
+        irrigacao = individual_d['Irrigação de jardins']
+        geral_demanda = round(simuladorController.soma_dem(individual_d), 2)
         irrigacao = round(irrigacao, 2)
 
 
@@ -208,28 +209,6 @@ class SimulacaoRAC(TemplateView):
             'demandas_de_agua': DemandasDeAgua.objects.filter(simulacao=pk),
             'ofertas_de_agua': OfertasDeAgua.objects.filter(simulacao=pk)
         }
-
-    
-    def calc_oferta_demanda(self, pk, interesse, **kwargs):
-        ofertas = self.get_simulacao(pk)[interesse]
-
-        individual = {}
-        geral = 0
-
-
-        for oferta in ofertas:
-            agua = (oferta.indicador * oferta.frequencia_mensal)/1000 * kwargs['residentes']
-            if oferta.nome == "Irrigação de jardins":
-                agua = agua / 12 * 5 * kwargs['area_irrigacao']
-            elif oferta.nome == "Lavagem de pisos":
-                agua = agua * kwargs['area_pisos'] 
-            agua = round(agua, 2)
-            geral += agua 
-            individual[oferta.nome] = agua
-
-        geral = geral*12 # m³/ano
-        # individual em m³/mes
-        return individual, geral
     
 
     def get_capacidade(self, demanda, dolar):
@@ -286,16 +265,16 @@ class SimulacaoRAC(TemplateView):
         pessoas = simul.n_pessoas
 
         # Se a simulacao foi encontrada, entao o form da demanda foi preenchido
-        individual_demanda, geral_demanda = self.calc_oferta_demanda(pk, 'demandas_de_agua', 
+        individual_demanda = simuladorController.calc_oferta_demanda(pk, 'demandas_de_agua', 
                                                                      area_irrigacao=area_i,
                                                                      area_pisos=area_p,
                                                                      residentes=pessoas)
 
         # Buscar uma oferta em uma simulacao existente nao retorna erro
-        individual_oferta, geral_oferta = self.calc_oferta_demanda(pk, 'ofertas_de_agua', 
-                                                                   area_irrigacao=area_i,
-                                                                   area_pisos=area_p,
-                                                                   residentes=pessoas)
+        individual_oferta = simuladorController.calc_oferta_demanda(pk, 'ofertas_de_agua', 
+                                                                    area_irrigacao=area_i,
+                                                                    area_pisos=area_p,
+                                                                    residentes=pessoas)
         if not individual_oferta:
             return redirect('simulacao:formulario-rac', pk=pk)
 
@@ -306,7 +285,8 @@ class SimulacaoRAC(TemplateView):
    
 
         # m³ para litros / dia
-        demanda_g_ld = geral_demanda * 1000 / (12 * 30)
+        # demanda no mes de estiagem
+        demanda_g_ld = sum(list(individual_demanda.values())) * 1000 / 30
         volumes_cap, financeiro_cap = self.get_capacidade(demanda_g_ld, dolar=dolar)
         volumes_caixa, financeiro_caixa = self.get_caixa_dagua(demanda_g_ld, dolar=dolar)
         

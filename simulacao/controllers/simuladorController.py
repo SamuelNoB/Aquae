@@ -24,27 +24,31 @@ def calc_oferta_demanda(pk, interesse, **kwargs):
     ofertas = get_simulacao(pk)[interesse]
 
     individual = {}
-    geral = 0
-    irrigacao = 0
 
     for oferta in ofertas:
         agua = (oferta.indicador * oferta.frequencia_mensal)/1000
         if oferta.nome == "Irrigação de jardins":
-            agua = agua / 12 * 5 * kwargs['area_irrigacao']
-            irrigacao = agua * 12 / 5
+            agua = agua * kwargs['area_irrigacao']
         elif oferta.nome == "Lavagem de pisos":
-            agua = agua * kwargs['area_pisos'] 
+            agua = agua * kwargs['area_pisos']
         else:
             agua = agua * kwargs['residentes']
         agua = round(agua, 2)
-        geral += agua 
         individual[oferta.nome] = agua
 
-    if "Irrigação de jardins" in individual:
-        individual["Irrigação de jardins"] = irrigacao
-    geral = geral*12 # m³/ano
     # individual em m³/mes
-    return individual, geral, irrigacao
+    return individual
+
+
+def soma_dem(demandas_dict):
+    total = 0
+    for nome, indicador in demandas_dict.items():
+        if nome == "Irrigação de jardins":
+            total += indicador/12 * 5
+        else:
+            total += indicador
+    
+    return total*12
 
 
 def get_caixa_dagua(demanda_diaria, dolar):
