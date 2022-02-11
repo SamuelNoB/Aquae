@@ -254,7 +254,7 @@ span.normal {
 }
 
 .flex-calc {
-  min-height: calc(100vh - 390px);
+  min-height: calc(100vh - 215px);
 }
 
 #watermark {
