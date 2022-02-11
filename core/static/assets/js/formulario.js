@@ -1,3 +1,8 @@
+function realFloat(real) {
+    const valor = String(real).replace('.', '').replace(',', '.')
+    return parseFloat(valor)
+}
+
 /*Funcao que adiciona todos os campos de uma linha do formulario*/
 function addFields(k, dados=[], id="table_body", initial=Boolean(false), interesse) {
     let container = document.getElementById(id);
@@ -100,6 +105,15 @@ function readdres (id='table_body', interesse='ofertas') {
     for (let i=0; i < inputs.length; i++){
         inputs[i].setAttribute('name', `${interesse}-${k_array[i]}${attr[i % 3]}`)
         inputs[i].setAttribute('id', `id_${interesse}-${k_array[i]}${attr[i % 3]}`)
+        
+        /*Valores fracionarios devem ser informados com '.' e nao com ','*/
+        if (inputs[i].value.includes(',') && i % 3 != 0) {
+            inputs[i].value = realFloat(inputs[i].value)
+        }
+        /*Valores de frequencia mensal devem ser inteiros*/
+        if (inputs[i].value.includes('.') && i % 3 == 1) {
+            inputs[i].value = Math.ceil(inputs[i].value)
+        }
     }
 
 }
