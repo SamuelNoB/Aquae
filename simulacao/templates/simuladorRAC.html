@@ -135,6 +135,10 @@
     <script src={% static 'assets/js/simulacao.js' %}>
     </script>
     <script>
+        function round_x(float, decimals) {
+            const p10 = 10**decimals
+            return Math.round(float*p10 + Number.EPSILON) / (p10)
+        }
         /*Soma elementos de um array*/
         function add(accumulator, a) {
             return accumulator + a;
@@ -253,11 +257,6 @@
             create_tabs(demanda_possivel * 1000 / 30, demanda_total, oferta_total, tarifa, juros)
         }
 
-
-        function round_x(float, decimals) {
-            return Math.round(float*10**decimals + Number.EPSILON) / (10**decimals)
-        }
-
         
         /*Cria elementos da parte financeira e capacidade necessaria*/
         function create_tabs(demanda_p, demanda_t, oferta, tarifa, juros) {
@@ -284,15 +283,15 @@
             }
             document.getElementById("Caixa_volume").innerHTML = `${String(volume_caixa)} L`
 
-            const custo_op_final = Math.round((financeiro_cap[volume_cap][1] + custo_op_bomba + Number.EPSILON)*100)/100
+            const custo_op_final = round_x(financeiro_cap[volume_cap][1] + custo_op_bomba, 2)
             document.getElementById("custo_operacional").innerHTML = parseReal(custo_op_final) + ' R$/ano'
 
-            const custo_cap = Math.round((financeiro_cap[volume_cap][0] + custo_bomba + financeiro_caixa[volume_caixa] + Number.EPSILON)*100)/100
+            const custo_cap = round_x(financeiro_cap[volume_cap][0] + custo_bomba + financeiro_caixa[volume_caixa], 2)
             document.getElementById("Custo_cap").innerHTML = parseReal(custo_cap)
 
             document.getElementById("Capacidade").innerHTML = volume_cap
             
-            const Beneficio = Math.round((tarifa * demanda_p * 30/1000 - custo_op_final + Number.EPSILON)*100) / 100
+            const Beneficio = round_x(tarifa * demanda_p * 30/1000 - custo_op_final, 2)
             document.getElementById("Beneficio").innerHTML = parseReal(Beneficio)
 
             let Payback = Math.ceil(custo_cap / Beneficio)
@@ -312,7 +311,7 @@
                 const parcela = Beneficio / ((1 + juros)**i)
                 VPL_parcelas.push(parcela)
             }
-            const VPL = Math.round((VPL_parcelas.reduce(add, 0) - custo_cap + Number.EPSILON)*100)/100
+            const VPL = round_x(VPL_parcelas.reduce(add, 0) - custo_cap, 2)
             const vpl_span = document.getElementById("VPL")
             vpl_span.innerHTML = parseReal(VPL)         
             if (VPL < 0) {vpl_span.setAttribute("style", "color:red")}
