@@ -235,19 +235,12 @@
             if (id.includes('demanda')) {
                 /*Cria novo indicador, valor do formulario ou zero, dependendo se o usuario acabou de marcar ou desmarcar a checkbox*/
                 data_demanda.indicadores[index] = checkbox.checked * parseFloat(indicador.replace(',', '.'))
-
-                /*Recalcula soma total dos novos indicadores*/
-                const total = Math.round((data_demanda.indicadores.reduce(add, 0) + Number.EPSILON) * 1000 * 12) / 1000 
-                document.getElementById("demanda_geral").innerHTML = String(total).replace('.', ',') + " m³/ano"
             } else if (id.includes('oferta')) {
                 data_oferta.indicadores[index] = checkbox.checked * parseFloat(indicador.replace(',', '.'))
-                
-                const total = Math.round((data_oferta.indicadores.reduce(add, 0) + Number.EPSILON) * 1000 * 12) / 1000
-                document.getElementById("oferta_geral").innerHTML = String(total).replace('.', ',') + " m³/ano"
             } 
 
             const oferta_total = data_oferta.indicadores.reduce(add, 0)*12
-            const demanda_total = soma_dem(data_demanda.indicadores, data_demanda.nomes, oferta_total)
+            const demanda_total = soma_dem(data_demanda.indicadores, data_demanda.nomes)
             const re_economia = data_adjust(oferta_total, data_demanda.indicadores, data_demanda.nomes)
 
 
@@ -257,7 +250,7 @@
 
             const demanda_possivel = Math.min(demanda_total, oferta_total)
 
-            create_tabs(demanda_possivel * 1000 / 30, oferta_total, tarifa, juros)
+            create_tabs(demanda_possivel * 1000 / 30, demanda_total, oferta_total, tarifa, juros)
         }
 
 
@@ -265,18 +258,18 @@
             return Math.round(float*10**decimals + Number.EPSILON) / (10**decimals)
         }
 
-
+        
         /*Cria elementos da parte financeira e capacidade necessaria*/
-        function create_tabs(demanda, oferta, tarifa, juros) {
-            const demanda_anual = demanda * 30 / 1000
+        function create_tabs(demanda_p, demanda_t, oferta, tarifa, juros) {
+            
             document.getElementById("oferta_geral").innerHTML = `${parseReal(round_x(oferta, 2))} m³/ano`
-            document.getElementById("demanda_geral").innerHTML = `${parseReal(round_x(demanda_anual, 2))} m³/ano`
+            document.getElementById("demanda_geral").innerHTML = `${parseReal(round_x(demanda_t, 2))} m³/ano`
 
 
             /*Seletor de capacidade minima*/
             let volume_cap = Math.max(...volumes_cap)
             for (let i = 0; i < volumes_cap.length; i++) {
-                if (volumes_cap[i] > demanda) {
+                if (volumes_cap[i] > demanda_p) {
                     volume_cap = volumes_cap[i]
                     break
                 }
@@ -284,7 +277,7 @@
             /*Seletor de caixa minima*/
             let volume_caixa = Math.max(...volumes_caixa)
             for (let i = 0; i < volumes_caixa.length; i++) {
-                if (volumes_caixa[i] > demanda) {
+                if (volumes_caixa[i] > demanda_p) {
                     volume_caixa = volumes_caixa[i]
                     break
                 }
@@ -299,7 +292,7 @@
 
             document.getElementById("Capacidade").innerHTML = volume_cap
             
-            const Beneficio = Math.round((tarifa * demanda_anual - custo_op_final + Number.EPSILON)*100) / 100
+            const Beneficio = Math.round((tarifa * demanda_p * 30/1000 - custo_op_final + Number.EPSILON)*100) / 100
             document.getElementById("Beneficio").innerHTML = parseReal(Beneficio)
 
             let Payback = Math.ceil(custo_cap / Beneficio)
@@ -328,7 +321,7 @@
         }
 
 
-        function soma_dem(indicadores, nomes, oferta_total) {
+        function soma_dem(indicadores, nomes) {
             let soma = 0
             for (let i = 0; i < indicadores.length; i++) {
                 let mensal = indicadores[i]
@@ -363,7 +356,7 @@
         const data_demanda = address(parent_id="demanda-items", child_tag="input", id_names=main_ids, type="demanda")
 
         const oferta_total = data_oferta.indicadores.reduce(add, 0)*12
-        const demanda_total = soma_dem(data_demanda.indicadores, data_demanda.nomes, oferta_total)
+        const demanda_total = soma_dem(data_demanda.indicadores, data_demanda.nomes)
 
         const economia = data_adjust(oferta_total, data_demanda.indicadores, data_demanda.nomes)
         
@@ -416,10 +409,10 @@
         const SimulChart = new Chart(ctx, config)
         
 
-        create_tabs(demanda_possivel * 1000 / 30, oferta_total, tarifa, juros)
+        create_tabs(demanda_possivel * 1000 / 30, demanda_total, oferta_total, tarifa, juros)
         const juros_btn = document.getElementById("juros-btn")
         juros_btn.addEventListener('click', function () {juros = document.getElementById("juros").value / 100; 
-                                                         create_tabs(demanda_possivel * 1000 / 30, tarifa, juros)}, false)
+                                                         create_tabs(demanda_possivel * 1000 / 30, demanda_total, tarifa, juros)}, false)
     </script>
 
 {% endblock %}
