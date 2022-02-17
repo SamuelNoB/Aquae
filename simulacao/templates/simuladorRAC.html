@@ -78,7 +78,7 @@
             </div>
             <div class="row align-content-center" style="border: 1px none rgb(33,37,41);background: #eeeeee;margin-left: 0;margin-right: 0;">
                 <div class="col-md-6" id="ChartDiv">
-                    <canvas id="myChart" width="400" height="400"></canvas>
+                    <canvas id="SimulChart" width="400" height="400"></canvas>
                 </div>
                 <div class="col-md-6">
                     <h4 style="font-weight: bold;">Análise financeira</h4>
@@ -132,12 +132,35 @@
             </div>
         </div>
     </section>
+    <script src={% static 'assets/js/simulacao.js' %}>
+    </script>
     <script>
         /*Soma elementos de um array*/
         function add(accumulator, a) {
             return accumulator + a;
         }
         
+
+        /*Retorna casos diferentes de zero para que o grafico nao apresente o dado zerado*/
+        function clean_data(labels, values) {
+            
+            if (values.includes(0)) {
+                var cleaned_values = []
+                var cleaned_labels = []
+                for (let i = 0; i < values.length; i++) {
+                    if (values[i] != 0) {
+                        cleaned_values.push(values[i])
+                        cleaned_labels.push(labels[i])
+                    }
+                } 
+            } else {
+                var cleaned_labels = labels
+                var cleaned_values = values
+            }
+
+            return ({cleaned_labels, cleaned_values})
+        }
+
 
         /*Transforma um valor tipo float em formatacao de R$*/
         function parseReal(float){
@@ -187,71 +210,6 @@
         }
 
 
-        /*Retorna casos diferentes de zero para que o grafico nao apresente o dado zerado*/
-        function clean_data(labels, values) {
-            
-            if (values.includes(0)) {
-                var cleaned_values = []
-                var cleaned_labels = []
-                for (let i = 0; i < values.length; i++) {
-                    if (values[i] != 0) {
-                        cleaned_values.push(values[i])
-                        cleaned_labels.push(labels[i])
-                    }
-                } 
-            } else {
-                var cleaned_labels = labels
-                var cleaned_values = values
-            }
-
-            return ({cleaned_labels, cleaned_values})
-        }
-
-
-        function plot(x, y, ticks_config = {}) {
-            const clean = clean_data(labels = x, values = y)
-            
-            /*Deleta a canvas antiga para nao bugar a visualizacao*/
-            document.getElementById('myChart').remove()
-
-            /*Nova canvas*/
-            const ChartDiv =  document.getElementById('ChartDiv')
-
-            const canvas = ChartDiv.appendChild(document.createElement("canvas"))
-            canvas.setAttribute('width', '400')
-            canvas.setAttribute('height', '400')
-            canvas.setAttribute('id', 'myChart')
-            const ctx = canvas.getContext('2d');
-            
-            const myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: clean.cleaned_labels,
-                    
-                    datasets: [{
-                        label: 'Economia de Água m³/ano',
-                        data: clean.cleaned_values,
-                        backgroundColor: 'rgba(54, 162, 235, 1)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: { 
-                    scales: {
-                        x: {
-                            ticks: ticks_config
-                        },
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                }
-            });
-        }
-
-
         /*Retorna a possivel economia de cada demanda*/
         function data_adjust(oferta_total, demanda_indicadores, demanda_nomes) {
             const economia = []
@@ -269,6 +227,7 @@
 
         /*Refaz o grafico, e outros elementos da pagina, toda vez que ocorre uma interacao com checkbox*/
         function re_plot(id) {
+            
             const index = id.replace(/[^0-9]/g, '')
             const checkbox = document.getElementById(id)
             const indicador = document.getElementById(id.replace('check', 'indicador')).value
@@ -290,10 +249,12 @@
             const oferta_total = data_oferta.indicadores.reduce(add, 0)*12
             const demanda_total = soma_dem(data_demanda.indicadores, data_demanda.nomes, oferta_total)
             const re_economia = data_adjust(oferta_total, data_demanda.indicadores, data_demanda.nomes)
-            
-            plot(x = data_demanda.nomes, y = re_economia)
 
-            
+
+            const clean = clean_data(data_demanda.nomes, re_economia)
+            removeData(SimulChart)
+            addData(SimulChart, clean.cleaned_labels, clean.cleaned_values)
+
             const demanda_possivel = Math.min(demanda_total, oferta_total)
 
             create_tabs(demanda_possivel * 1000 / 30, oferta_total, tarifa, juros)
@@ -410,7 +371,51 @@
         const demanda_possivel = Math.min(demanda_total, oferta_total)
         
 
-        plot(x = data_demanda.nomes, y = economia)
+        const plot_options = { 
+            plugins: {
+                autocolors: false,
+                title: {
+                    display: true,
+                    text: 'Economia anual possível de água por demanda'
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {},
+                    title: {
+                        display: true,
+                        text: 'Demanda de água'
+                    } 
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Economia de água (m³/ano)'
+                    }
+                },
+            }
+        }
+        
+        const config = {
+            type: 'bar',
+            data: {
+                labels: data_demanda.nomes.slice(),
+                datasets: [{
+                    label: 'Economia de água m³/ano',
+                    data: economia,
+                    backgroundColor: 'rgba(54, 162, 235, 1)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }],
+            },
+            options: plot_options   
+        }
+
+        const canvas = document.getElementById('SimulChart')
+        const ctx = canvas.getContext('2d')
+        const SimulChart = new Chart(ctx, config)
+        
+
         create_tabs(demanda_possivel * 1000 / 30, oferta_total, tarifa, juros)
         const juros_btn = document.getElementById("juros-btn")
         juros_btn.addEventListener('click', function () {juros = document.getElementById("juros").value / 100; 
