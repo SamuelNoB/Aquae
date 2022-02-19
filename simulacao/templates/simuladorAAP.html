@@ -407,24 +407,30 @@
             
             const dolar = {{ dolar|stringformat:'.2f' }}
             const bomba_preco = {{ bomba.preco|stringformat:'.2f' }}
-            const main_ids = ['check', 'nome', 'indicador']
-            const data_demanda = address(parent_id="demanda-items", child_tag="input", id_names=main_ids, type="demanda")
             
             const equipamentos = {{ equipamentos|safe }}
             const caixa_volumes = {{ caixa.volumes }}
             const caixa_financeiro = {{ caixa.financeiro }}
-        
 
-            const area_disponivel = {{ area_disponivel }}[0]
+            const area_disponivel = {{ area_disponivel|stringformat:".2f" }}
             const pluviometria_mensal = {{ pluviometria_mensal }}
             const pluviometria_total = {{ pluviometria_total }}
-            let area_coleta = {{ area_coleta|stringformat:".2f" }}
-            let demanda_mensal = {{ demanda_mensal }}
-            let demanda_anual = {{ geral_demanda }}[0]
-            let oferta_mensal = {{ oferta_mensal }}
-            let oferta_anual = {{ oferta_total }}[0]
             const meses_estiagem = {{ meses_estiagem }}
+            let area_coleta = {{ area_coleta|stringformat:".2f" }}
+
+            let demanda_mensal = {{ demanda_mensal }}
+            let demanda_anual = {{ geral_demanda|stringformat:".2f" }}
+            let oferta_mensal = {{ oferta_mensal }}
+            let oferta_anual = {{ oferta_total|stringformat:".2f" }}
             
+            const tarifa = {{ tarifa|stringformat:".2f" }}
+            const custo_operacional = {{ bomba.custo_op|stringformat:".2f" }}
+
+        </script>
+        <script>
+            const main_ids = ['check', 'nome', 'indicador']
+            const data_demanda = address(parent_id="demanda-items", child_tag="input", id_names=main_ids, type="demanda")
+
             let mep_patch = false
             let mep = 200
             let index_max = 19
@@ -500,14 +506,11 @@
             const ctx = canvas.getContext('2d')
             const SimulChart = new Chart(ctx, config)
             
-            const tarifa = {{ tarifa|stringformat:".2f" }}
-            
-
             cist_interv_btn = document.getElementById('change_interval')
             cist_interv_btn.addEventListener('click', function () { re_plot_cisterna() })
 
 
-            const custo_operacional = {{ bomba.custo_op|stringformat:".2f" }}
+            
             document.getElementById('custo__operacional').innerHTML = `${parseReal(custo_operacional)} R$/ano`
 
             var reservatorio = 0

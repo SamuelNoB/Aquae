@@ -167,16 +167,16 @@ class SimulacaoAAP(TemplateView):
         
         tarifa = simuladorController.get_tarifa(consumo)* (1 + esgoto)
         
-
+        
         context = {
             'pk' : pk,
             'individual_d' : individual_d,
-            'geral_demanda' : [geral_demanda],
-            'oferta_total': [oferta_total],
+            'geral_demanda' : geral_demanda,
+            'oferta_total': oferta_total,
             'demanda_mensal': demanda_mensal,
             'oferta_mensal': oferta_mensal,
             'meses_estiagem': meses_est,
-            'area_disponivel': [area_c],
+            'area_disponivel': area_c,
             'area_coleta': area_coleta,
             'pluviometria_mensal': pluviometria,
             'pluviometria_total': pluviometria_total,
