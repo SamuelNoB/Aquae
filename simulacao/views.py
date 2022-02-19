@@ -201,14 +201,6 @@ class SimulacaoRAC(TemplateView):
     template_name = 'simuladorRAC.html'
     
 
-    def get_simulacao(self, pk):
-        return {
-            'simulacao': Simulacao.objects.get(pk=pk),
-            'demandas_de_agua': DemandasDeAgua.objects.filter(simulacao=pk),
-            'ofertas_de_agua': OfertasDeAgua.objects.filter(simulacao=pk)
-        }
-    
-
     def get_capacidade(self, demanda, dolar):
         todas = CapacidadeDeTratamento.objects.all()
         
@@ -224,36 +216,11 @@ class SimulacaoRAC(TemplateView):
         return list(capacidade_dict.keys()), capacidade_dict
 
 
-    def get_bomba_e_co(self, n_pavimentos):
-        # Area de coleta faz-se desprezivel para o RAC
-        Dimensionamento = DimensionamentoController(area_coleta=0, pavimentos=n_pavimentos)
-        bomba = Dimensionamento.get_bomba_dagua()
-        co = Dimensionamento.get_custo_operacional()
-        return bomba, co
-
-
-    def get_caixa_dagua(self, demanda_diaria, dolar):
-        todas = CaixaDAgua.objects.all()
-        possiveis = list(todas.filter(volume__lt=demanda_diaria))
-        
-        if len(possiveis) < len(todas):
-            possiveis.append(todas[len(possiveis)])
-        
-        caixas_dict = {caixa.volume: caixa.valor * dolar for caixa in possiveis}
-        return list(caixas_dict.keys()), caixas_dict
-
-
-    def get_tarifa(self, consumo):
-        tarifa = TarifaDeAgua.objects.filter(min__lte=consumo,
-                                             max__gte=consumo)
-        return list(tarifa)[0].tarifa
-
-
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk') 
 
         try:
-            simul = self.get_simulacao(pk=pk)['simulacao']
+            simul = simuladorController.get_simulacao(pk=pk)['simulacao']
         except simulacao.models.Simulacao.DoesNotExist:
             return redirect('simulacao:edificacao')
         area_i = simul.area_irrigacao
@@ -279,20 +246,20 @@ class SimulacaoRAC(TemplateView):
         dolar = get_dollar()
 
         n_pavimentos = simul.n_pavimentos
-        bomba, custo_op = self.get_bomba_e_co(n_pavimentos=n_pavimentos)
+        bomba, custo_op = simuladorController.get_bomba_e_co(n_pavimentos)
    
 
         # m³ para litros / dia
         # demanda no mes de estiagem
         demanda_g_ld = sum(list(individual_demanda.values())) * 1000 / 30
         volumes_cap, financeiro_cap = self.get_capacidade(demanda_g_ld, dolar=dolar)
-        volumes_caixa, financeiro_caixa = self.get_caixa_dagua(demanda_g_ld, dolar=dolar)
+        volumes_caixa, financeiro_caixa = simuladorController.get_caixa_dagua(demanda_g_ld, dolar=dolar)
         
-        tarifa = self.get_tarifa(consumo) * (1 + esgoto)
+        tarifa = simuladorController.get_tarifa(consumo) * (1 + esgoto)
 
 
         context = {
-            'pk': self.kwargs.get("pk"),
+            'pk': pk,
             'individual_o' : individual_oferta,
             'individual_d' : individual_demanda,
             'tratamento': {
