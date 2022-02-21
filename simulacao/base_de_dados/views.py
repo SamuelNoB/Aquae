@@ -7,12 +7,16 @@ from .mocks import *
 
 
 @staff_member_required
-def preenche_base_de_dados(request):
+def preenche_db_cidade(request):
     create_indices_pluviometricos()
+    create_tarifas()
+    return HttpResponse("Cidades inseridas")
+
+@staff_member_required
+def preenche_db_equips(request):
     create_areas_coleta()
     create_equipamentos()
     create_bombas_dagua()
     create_caixas_dagua()
-    create_tarifas()
     create_capacidades_de_tratamento()
-    return HttpResponse("equipamentos inseridos")
+    return HttpResponse("Equipamentos inseridos")

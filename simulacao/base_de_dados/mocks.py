@@ -8,6 +8,8 @@ from .models import (Cidade,
                      CapacidadeDeTratamento
                      )
 
+import django
+
 indice_pluviometrico_mock = {
     'Brasília': {
         '2019': [270, 213, 210, 121, 36, 10, 6, 13, 48, 171, 220, 259],
@@ -180,27 +182,27 @@ tarifas_mock = {
         [
             {'min': 0,
              'max': 7,
-             'tarifa': 2.99
+             'tarifa': 2.98
              },
             {'min': 8,
              'max': 13,
-             'tarifa': 3.59
+             'tarifa': 3.57
              },
             {'min': 14,
              'max': 20,
-             'tarifa': 7.1
+             'tarifa': 7.07
              },
             {'min': 21,
              'max': 30,
-             'tarifa': 10.66
+             'tarifa': 10.25
              },
             {'min': 31,
              'max': 45,
-             'tarifa': 17.05
+             'tarifa': 15.37
              },
             {'min': 46,
              'max': 99999999,
-             'tarifa': 23.87
+             'tarifa': 19.99
              },
         ]
 }
@@ -267,7 +269,14 @@ capacidades_de_tratamento = [
 
 def create_indices_pluviometricos():
     for cidade, anos in indice_pluviometrico_mock.items():
-        nova_cidade = Cidade.objects.create(nome=cidade)
+        # Se a cidade ja existir recria-se a mesma
+        try:
+            nova_cidade = Cidade.objects.create(nome=cidade)
+        except django.db.utils.IntegrityError:
+            nova_cidade = Cidade.objects.get(nome=cidade).delete()
+            nova_cidade = Cidade.objects.create(nome=cidade)
+
+
         for ano, valores in anos.items():
             indices = map(lambda valor: IndicePluviometrico.objects.create(
                 cidade=nova_cidade,
@@ -282,13 +291,29 @@ def create_indices_pluviometricos():
             indice.save()
 
 
+def create_tarifas():
+    for cidade, tarifas in tarifas_mock.items():
+        cidade_obj = Cidade.objects.get(nome=cidade)
+        
+        for tarifa in tarifas:
+            nova_tarifa = TarifaDeAgua \
+                .objects.create(cidade=cidade_obj,
+                                min=tarifa['min'],
+                                max=tarifa['max'],
+                                tarifa=tarifa['tarifa']
+                                )
+            nova_tarifa.save()
+
+
 def create_areas_coleta():
+    AreaDeColeta.objects.all().delete()
     for area_coleta in areas_de_coleta:
         novo_objeto = AreaDeColeta.objects.create(area_min=area_coleta[0], area_max=area_coleta[1])
         novo_objeto.save()
 
 
 def create_equipamentos():
+    Equipamentos.objects.all().delete()
     for area_de_coleta, equipamento in equipamentos.items():
         uma_area = AreaDeColeta.objects.get(area_max=int(area_de_coleta))
         novo_equipamento = Equipamentos.objects.create(
@@ -302,6 +327,7 @@ def create_equipamentos():
 
 
 def create_bombas_dagua():
+    BombaDeAgua.objects.all().delete()
     for bomba in bombas_dagua:
         nova_bomba = BombaDeAgua\
             .objects.create(pavimentos_min=bomba['pavimentos_min'],
@@ -318,6 +344,7 @@ def create_bombas_dagua():
 
 
 def create_caixas_dagua():
+    CaixaDAgua.objects.all().delete()
     for caixa in caixas_dagua:
         nova_caixa = CaixaDAgua\
             .objects.create(min=caixa['min'],
@@ -328,20 +355,8 @@ def create_caixas_dagua():
         nova_caixa.save()
 
 
-def create_tarifas():
-    for cidade_tarifa in tarifas_mock.items():
-        cidade = Cidade.objects.get(nome=cidade_tarifa[0])
-        for tarifas in cidade_tarifa[1]:
-            nova_tarifa = TarifaDeAgua \
-                .objects.create(cidade=cidade,
-                                min=tarifas['min'],
-                                max=tarifas['max'],
-                                tarifa=tarifas['tarifa']
-                                )
-            nova_tarifa.save()
-
-
 def create_capacidades_de_tratamento():
+    CapacidadeDeTratamento.objects.all().delete()
     for capacidade in capacidades_de_tratamento:
         nova_capacidade = CapacidadeDeTratamento\
             .objects.create(min=capacidade['min'],
