@@ -7,8 +7,9 @@ from .models import (Cidade,
                      TarifaDeAgua,
                      CapacidadeDeTratamento
                      )
-
+import json
 import django
+from ..utils import get_tarifa_caesb
 
 indice_pluviometrico_mock = {
     'Brasília': {
@@ -177,36 +178,6 @@ caixas_dagua = [
     },
 ]
 
-tarifas_mock = {
-    "Brasília":
-        [
-            {'min': 0,
-             'max': 7,
-             'tarifa': 2.98
-             },
-            {'min': 8,
-             'max': 13,
-             'tarifa': 3.57
-             },
-            {'min': 14,
-             'max': 20,
-             'tarifa': 7.07
-             },
-            {'min': 21,
-             'max': 30,
-             'tarifa': 10.25
-             },
-            {'min': 31,
-             'max': 45,
-             'tarifa': 15.37
-             },
-            {'min': 46,
-             'max': 99999999,
-             'tarifa': 19.99
-             },
-        ]
-}
-
 # RAC
 capacidades_de_tratamento = [
     {
@@ -292,7 +263,10 @@ def create_indices_pluviometricos():
 
 
 def create_tarifas():
-    for cidade, tarifas in tarifas_mock.items():
+    data = {"Brasília": get_tarifa_caesb()}
+    with open('./simulacao/base_de_dados/tarifas.json', 'w') as outfile:
+        json.dump(data, outfile)
+    for cidade, tarifas in data.items():
         cidade_obj = Cidade.objects.get(nome=cidade)
         
         for tarifa in tarifas:
