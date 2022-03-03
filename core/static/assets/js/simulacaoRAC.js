@@ -100,7 +100,7 @@ function create_tabs(demanda_p, demanda_t, oferta, tarifa) {
 
 
     /*Determina VPL*/
-    const juros = realFloat(document.getElementById("juros").value) / 100
+    const juros = document.getElementById("juros").value / 100
     const VPL_parcelas = []
     for (let i = 1; i <= 30; i++) {
         const parcela = Beneficio / ((1 + juros) ** i)
