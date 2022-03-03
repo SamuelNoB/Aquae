@@ -53,7 +53,7 @@ function re_plot(id) {
 }
 
 /*Cria elementos da parte financeira e capacidade necessaria*/
-function create_tabs(demanda_p, demanda_t, oferta, tarifa, juros) {
+function create_tabs(demanda_p, demanda_t, oferta, tarifa) {
 
     document.getElementById("oferta_geral").innerHTML = `${parseReal(round_x(oferta, 2))} m³/ano`
     document.getElementById("demanda_geral").innerHTML = `${parseReal(round_x(demanda_t, 2))} m³/ano`
@@ -100,6 +100,7 @@ function create_tabs(demanda_p, demanda_t, oferta, tarifa, juros) {
 
 
     /*Determina VPL*/
+    const juros = realFloat(document.getElementById("juros").value) / 100
     const VPL_parcelas = []
     for (let i = 1; i <= 30; i++) {
         const parcela = Beneficio / ((1 + juros) ** i)

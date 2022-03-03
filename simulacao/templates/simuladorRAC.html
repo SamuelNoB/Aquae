@@ -148,7 +148,6 @@
         
         const tarifa = {{ tarifa|stringformat:".2f" }}
 
-        var juros = document.getElementById("juros").value / 100
     </script>
     <script>
         const main_ids = ['check', 'nome', 'indicador']
@@ -209,10 +208,9 @@
         const SimulChart = new Chart(ctx, config)
         
 
-        create_tabs(demanda_possivel * 1000 / 30, demanda_total, oferta_total, tarifa, juros)
+        create_tabs(demanda_possivel * 1000 / 30, demanda_total, oferta_total, tarifa)
         const juros_btn = document.getElementById("juros-btn")
-        juros_btn.addEventListener('click', function () {juros = document.getElementById("juros").value / 100; 
-                                                         create_tabs(demanda_possivel * 1000 / 30, demanda_total, tarifa, juros)}, false)
+        juros_btn.addEventListener('click', function () {create_tabs(demanda_possivel * 1000 / 30, demanda_total, demanda_total, tarifa)}, false)
     </script>
 
 {% endblock %}
