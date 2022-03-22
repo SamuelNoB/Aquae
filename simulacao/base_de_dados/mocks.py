@@ -9,7 +9,7 @@ from .models import (Cidade,
                      )
 import json
 import django
-from ..utils import get_tarifa_caesb
+from ..utils import get_tarifa_caesb, get_ni_ipca
 
 indice_pluviometrico_mock = {
     'Brasília': {
@@ -28,55 +28,58 @@ areas_de_coleta = [
     (2001, 3000)
 ]
 
+# TODO adicionar comentario com o ano de coleta dos custos
+# Temporariamente utilizando 06/2019
+IPCA_o = 5214.27
 equipamentos = {
 
     '150': {
         'filtro_dagua': 150,
         'sifao_ladrao': 100,
         'freio_dagua': 100,
-        'custo_implementacao': 410.34
+        'custo_implementacao': 1547.0
     },
     '200': {
             'filtro_dagua': 200,
             'sifao_ladrao': 100,
             'freio_dagua': 100,
-            'custo_implementacao': 638.73
+            'custo_implementacao': 2408.0
         },
     '500': {
             'filtro_dagua': 500,
             'sifao_ladrao': 100,
             'freio_dagua': 100,
-            'custo_implementacao': 1006.90
+            'custo_implementacao': 3796.0
         },
     '700': {
             'filtro_dagua': 700,
             'sifao_ladrao': 150,
             'freio_dagua': 150,
-            'custo_implementacao': 1558.36
+            'custo_implementacao': 5875.0
         },
     '1000': {
             'filtro_dagua': 1000,
             'sifao_ladrao': 150,
             'freio_dagua': 150,
-            'custo_implementacao': 1759.95
+            'custo_implementacao': 6635.0
         },
     '1500': {
             'filtro_dagua': 1500,
             'sifao_ladrao': 200,
             'freio_dagua': 200,
-            'custo_implementacao': 3083.13
+            'custo_implementacao': 11623.4
         },
     '2000': {
             'filtro_dagua': 2000,
             'sifao_ladrao': 200,
             'freio_dagua': 200,
-            'custo_implementacao': 3739.10
+            'custo_implementacao': 14096.4
         },
     '3000': {
             'filtro_dagua': 3000,
             'sifao_ladrao': 200,
             'freio_dagua': 200,
-            'custo_implementacao': 6654.54
+            'custo_implementacao': 25087.6
         },
 }
 
@@ -132,49 +135,49 @@ caixas_dagua = [
         "min": 0,
         "max": 500,
         "volume": 500,
-        "valor": 53.05
+        "valor": 200.0
     },
     {
         "min": 501,
         "max": 1000,
         "volume": 1000,
-        "valor": 79.58
+        "valor": 300.0
     },
     {
         "min": 1001,
         "max": 1500,
         "volume": 1500,
-        "valor": 145.89
+        "valor": 550.0
     },
     {
         "min": 1501,
         "max": 2000,
         "volume": 2000,
-        "valor": 204.24
+        "valor": 770.0
     },
     {
         "min": 2001,
         "max": 3000,
         "volume": 3000,
-        "valor": 344.83
+        "valor": 1300.0
     },
     {
         "min": 3001,
         "max": 5000,
         "volume": 5000,
-        "valor": 464.19
+        "valor": 1750.0
     },
     {
         "min": 5001,
         "max": 10000,
         "volume": 10000,
-        "valor": 1100.8
+        "valor": 4150.0
     },
     {
         "min": 10001,
         "max": 15000,
         "volume": 15000,
-        "valor": 1789.41
+        "valor": 6780.0
     },
 ]
 
@@ -184,57 +187,57 @@ capacidades_de_tratamento = [
         "min": 0,
         "max": 3000,
         "volume": 3000,
-        "valor": 6631,
-        "custo_o": 0.4
+        "valor": 25000.0,
+        "custo_o": 1.5
     },
     {
         "min": 3001,
         "max": 6000,
         "volume": 6000,
-        "valor": 8090,
-        "custo_o": 0.8
+        "valor": 30500.0,
+        "custo_o": 3.0
     },
     {
         "min": 6001,
         "max": 10000,
         "volume": 10000,
-        "valor": 11008,
-        "custo_o": 1.33
+        "valor": 41500.0,
+        "custo_o": 5.0
     },
     {
         "min": 10001,
         "max": 15000,
         "volume": 15000,
-        "valor": 13342,
-        "custo_o": 1.99
+        "valor": 50300.0,
+        "custo_o": 7.5
     },
     {
         "min": 15001,
         "max": 20000,
         "volume": 20000,
-        "valor": 13926,
-        "custo_o": 2.65
+        "valor": 52500.0,
+        "custo_o": 10.0
     },
     {
         "min": 20001,
         "max": 30000,
         "volume": 30000,
-        "valor": 17242,
-        "custo_o": 3.98
+        "valor": 65000.0,
+        "custo_o": 15.0
     },
     {
         "min": 30001,
         "max": 50000,
         "volume": 50000,
-        "valor": 23077,
-        "custo_o": 6.63
+        "valor": 87000.0,
+        "custo_o": 25.0
     },
     {
         "min": 50001,
         "max": 80000,
         "volume": 80000,
-        "valor": 26764,
-        "custo_o": 10.61
+        "valor": 100900.0,
+        "custo_o": 40.0
     }
 ]
 
@@ -287,6 +290,7 @@ def create_areas_coleta():
 
 
 def create_equipamentos():
+    IPCA = get_ni_ipca()/IPCA_o
     Equipamentos.objects.all().delete()
     for area_de_coleta, equipamento in equipamentos.items():
         uma_area = AreaDeColeta.objects.get(area_max=int(area_de_coleta))
@@ -294,7 +298,7 @@ def create_equipamentos():
             filtro_dagua=equipamento['filtro_dagua'],
             sifao_ladrao=equipamento['sifao_ladrao'],
             freio_dagua=equipamento['freio_dagua'],
-            custo_implementacao=equipamento['custo_implementacao'],
+            custo_implementacao=equipamento['custo_implementacao']*IPCA,
             area_de_coleta=uma_area
         )
         novo_equipamento.save()
@@ -318,25 +322,27 @@ def create_bombas_dagua():
 
 
 def create_caixas_dagua():
+    IPCA = get_ni_ipca()/IPCA_o
     CaixaDAgua.objects.all().delete()
     for caixa in caixas_dagua:
         nova_caixa = CaixaDAgua\
             .objects.create(min=caixa['min'],
                             max=caixa['max'],
                             volume=caixa['volume'],
-                            valor=caixa['valor']
+                            valor=caixa['valor']*IPCA
                             )
         nova_caixa.save()
 
 
 def create_capacidades_de_tratamento():
+    IPCA = get_ni_ipca()/IPCA_o
     CapacidadeDeTratamento.objects.all().delete()
     for capacidade in capacidades_de_tratamento:
         nova_capacidade = CapacidadeDeTratamento\
             .objects.create(min=capacidade['min'],
                             max=capacidade['max'],
                             volume=capacidade['volume'],
-                            valor=capacidade['valor'],
+                            valor=capacidade['valor']*IPCA,
                             custo_operacional=capacidade['custo_o']
                             )
         nova_capacidade.save()

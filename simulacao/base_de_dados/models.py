@@ -87,7 +87,7 @@ class Equipamentos(models.Model):
     filtro_dagua = models.IntegerField(verbose_name="filtro d'água")
     sifao_ladrao = models.IntegerField(verbose_name='Sifão ladrão')
     freio_dagua = models.IntegerField(verbose_name="Freio d'água")
-    custo_implementacao = models.FloatField(verbose_name="custo de implementação em Dólares", default=0)
+    custo_implementacao = models.FloatField(verbose_name="custo de implementação em Reais", default=0)
 
     area_de_coleta = models.ForeignKey(
         AreaDeColeta,
@@ -109,8 +109,8 @@ class BombaDeAgua(models.Model):
     pavimentos_min = models.IntegerField(verbose_name="Mínimo de pavimentos")
     pavimentos_max = models.IntegerField(verbose_name='Máximo de pavimentos')
     potencia = models.FloatField('Cavalos de potência')
-    consumo = models.FloatField("Consumo de enegia em Kilowatts/hora")
-    tarifa = models.FloatField('Tarifa em Kilowatts/hora')
+    consumo = models.FloatField("Consumo de enegia em Kilowatts-hora")
+    tarifa = models.FloatField('Tarifa em Kilowatts-hora')
     succao = models.IntegerField('Sucção da bomba')
     recalque = models.IntegerField('Recalque da bomba')
     preco = models.FloatField('Preço de compra da bomba')
@@ -128,10 +128,10 @@ class CaixaDAgua(models.Model):
     min = models.IntegerField(verbose_name='Mínimo', default=0)
     max = models.IntegerField(verbose_name='Máximo', default=500)
     volume = models.IntegerField(verbose_name='Volume', default=500)
-    valor = models.FloatField(verbose_name='Valor em dólares', default=53.05)
+    valor = models.FloatField(verbose_name='Valor em reais', default=200.0)
 
     def __str__(self):
-        return f"Caixa d'água\t{self.volume}l\tUSD: {self.valor}"
+        return f"Caixa d'água\t{self.volume}l\tR$: {self.valor}"
 
     class Meta:
         verbose_name = "Caixa D'água"
@@ -143,11 +143,11 @@ class CapacidadeDeTratamento(models.Model):
     min = models.IntegerField(verbose_name='Mínimo', default=0)
     max = models.IntegerField(verbose_name='Máximo', default=3000)
     volume = models.IntegerField(verbose_name='Volume', default=500)
-    valor = models.FloatField(verbose_name='Valor em dólares', default=6631) # Em dólares
-    custo_operacional = models.FloatField(verbose_name='Custo Operacional ($)', default=0.4)
+    valor = models.FloatField(verbose_name='Valor em reais', default=25000) # Em dólares
+    custo_operacional = models.FloatField(verbose_name='Custo Operacional (R$)', default=1.5)
 
     def __str__(self):
-        return f"Capacidade de Tratamento {self.volume}l    USD: {self.valor}"
+        return f"Capacidade de Tratamento {self.volume}L    R$: {self.valor}"
 
     class Meta:
         verbose_name = "Capacidade de Tratamento"

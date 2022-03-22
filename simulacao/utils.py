@@ -8,6 +8,17 @@ def get_dollar():
     return round(dollar, 2)
 
 
+def get_ni_ipca():
+    url = "http://www.ipeadata.gov.br/ExibeSerie.aspx?serid=36482&module=M"
+
+    res = req.get(url)
+    doc = html.fromstring(res.content)
+
+    N_indice = doc.xpath('//td')[-518].text
+    
+    return float(N_indice.replace('.', '').replace(',', '.'))
+
+
 def get_tarifa_caesb():
     response = req.get("https://www.caesb.df.gov.br/tarifas-e-precos.html")
     doc = html.fromstring(response.content)
