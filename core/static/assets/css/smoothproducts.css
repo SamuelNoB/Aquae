@@ -275,11 +275,10 @@ span.normal {
   .tab-content > .tab-pane {
     display: block;
   }
-  footer {
+  .vanish {
     display: none;
   }
   #watermark {
     display: block;
-  }
-  
+  }  
 }
