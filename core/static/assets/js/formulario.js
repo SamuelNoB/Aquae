@@ -51,7 +51,7 @@ function addFields(k, dados=[], id="table_body", initial=Boolean(false), interes
         numericField(row, k, 'indicador', dados[2], dados[3])
 
     } else {
-        tipo_de_uso.setAttribute('placeholder', 'Nome do uso aqui');
+        tipo_de_uso.setAttribute('placeholder', 'Inserir uso');
         numericField(row, k, 'frequencia_mensal', '1', 'Vezes ao mês');
         numericField(row, k, 'indicador', '1', 'Litros/pessoa/dia');
     }
