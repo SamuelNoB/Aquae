@@ -163,7 +163,7 @@ class SimulacaoAAP(TemplateView):
         equips = self.get_equips(area_coleta)
         # m³ para litros / dia
         demanda_g_ld = demanda_est * 1000 / 30
-        volumes_caixa, financeiro_caixa = simuladorController.get_caixa_dagua(demanda_g_ld, dolar)
+        volumes_caixa, financeiro_caixa = simuladorController.get_caixa_dagua(demanda_g_ld)
         
         tarifa = simuladorController.get_tarifa(consumo)* (1 + esgoto)
         
@@ -201,7 +201,7 @@ class SimulacaoRAC(TemplateView):
     template_name = 'simuladorRAC.html'
     
 
-    def get_capacidade(self, demanda, dolar):
+    def get_capacidade(self, demanda):
         todas = CapacidadeDeTratamento.objects.all()
         
         # Capacidades suficientes para uma demanda menor que a especificada no formulario
@@ -211,7 +211,7 @@ class SimulacaoRAC(TemplateView):
             # Capacidade suficiente para a demanda especificada no formulario
             possiveis.append(todas[len(possiveis)])
 
-        capacidade_dict = {capacidade.volume: [capacidade.valor * dolar, capacidade.custo_operacional * dolar] for capacidade in possiveis}
+        capacidade_dict = {capacidade.volume: [capacidade.valor, capacidade.custo_operacional] for capacidade in possiveis}
 
         return list(capacidade_dict.keys()), capacidade_dict
 
@@ -243,8 +243,6 @@ class SimulacaoRAC(TemplateView):
         if not individual_oferta:
             return redirect('simulacao:formulario-rac', pk=pk)
 
-        dolar = get_dollar()
-
         n_pavimentos = simul.n_pavimentos
         bomba, custo_op = simuladorController.get_bomba_e_co(n_pavimentos)
    
@@ -252,8 +250,8 @@ class SimulacaoRAC(TemplateView):
         # m³ para litros / dia
         # demanda no mes de estiagem
         demanda_g_ld = sum(list(individual_demanda.values())) * 1000 / 30
-        volumes_cap, financeiro_cap = self.get_capacidade(demanda_g_ld, dolar=dolar)
-        volumes_caixa, financeiro_caixa = simuladorController.get_caixa_dagua(demanda_g_ld, dolar=dolar)
+        volumes_cap, financeiro_cap = self.get_capacidade(demanda_g_ld)
+        volumes_caixa, financeiro_caixa = simuladorController.get_caixa_dagua(demanda_g_ld)
         
         tarifa = simuladorController.get_tarifa(consumo) * (1 + esgoto)
 

@@ -123,3 +123,8 @@ function fixMEP(chart, index) {
     annotation_opt.xMax = index
     chart.update('none')
 }
+
+function realFloat(real) {
+    const valor = String(real).replace('.', '').replace(',', '.')
+    return parseFloat(valor)
+}

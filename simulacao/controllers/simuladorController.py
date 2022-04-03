@@ -51,14 +51,14 @@ def soma_dem(demandas_dict):
     return total*12
 
 
-def get_caixa_dagua(demanda_diaria, dolar):
+def get_caixa_dagua(demanda_diaria):
         todas = CaixaDAgua.objects.all()
         possiveis = list(todas.filter(volume__lt=demanda_diaria))
         
         if len(possiveis) < len(todas):
             possiveis.append(todas[len(possiveis)])
         
-        caixas_dict = {caixa.volume: caixa.valor * dolar for caixa in possiveis}
+        caixas_dict = {caixa.volume: caixa.valor for caixa in possiveis}
         return list(caixas_dict.keys()), caixas_dict
 
 

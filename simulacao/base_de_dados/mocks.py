@@ -265,6 +265,7 @@ def create_indices_pluviometricos():
             indice.save()
 
 
+# TODO reorganizar funcoes semelhantes para evitar multiplos requests do IPCA
 def create_tarifas():
     data = {"Brasília": get_tarifa_caesb()}
     with open('./simulacao/base_de_dados/tarifas.json', 'w') as outfile:

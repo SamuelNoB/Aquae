@@ -241,7 +241,7 @@
                 addData(SimulChart, labels=new_simulados.x_values, data=new_simulados.y_values)
                 fixMEP(SimulChart, index_mep)
 
-                create_table_financeiro(new_simulados.x_values, new_simulados.y_values, new_simulados.gastos, dolar)
+                create_table_financeiro(new_simulados.x_values, new_simulados.y_values, new_simulados.gastos)
             }
 
             function calc_area_oferta(coef_esc = 0.9, coef_filt = 0.9) {
@@ -285,12 +285,12 @@
             }
 
             /*Tabela 3*/
-            function create_table_financeiro(volumes, economia, gastos, dolar) {
+            function create_table_financeiro(volumes, economia, gastos) {
                 const preco_cisterna_por_m3 = 324.95
                 const custo_op = document.getElementById('custo__operacional').innerHTML.replace(" R$/ano", "")
 
                 const preco_geral = bomba_preco + caixa_financeiro[reservatorio] + equipamentos_adequados['custo']
-                let custo = volumes.map(function(vol) {return (preco_geral + vol * preco_cisterna_por_m3) * dolar})
+                let custo = volumes.map(function(vol) {return (preco_geral + vol * preco_cisterna_por_m3)})
                 
                 
                 let beneficio = economia.map(function(x){return x*tarifa})
@@ -351,7 +351,7 @@
             function updateUI(id) {
                 const new_simul = re_plot(id)
                 create_table()
-                create_table_financeiro(new_simul.x_values, new_simul.y_values, new_simul.gastos, dolar)
+                create_table_financeiro(new_simul.x_values, new_simul.y_values, new_simul.gastos)
             }
 
             function address(parent_id, child_tag, id_names, type) {
@@ -405,7 +405,6 @@
 
             }
             
-            const dolar = {{ dolar|stringformat:'.2f' }}
             const bomba_preco = {{ bomba.preco|stringformat:'.2f' }}
             
             const equipamentos = {{ equipamentos|safe }}
@@ -516,7 +515,7 @@
             var reservatorio = 0
             var equipamentos_adequados = {}
             create_table()
-            create_table_financeiro(simulados.x_values, simulados.y_values, simulados.gastos, dolar)
+            create_table_financeiro(simulados.x_values, simulados.y_values, simulados.gastos)
 
     
             const juros_btn = document.getElementById("juros-btn")
