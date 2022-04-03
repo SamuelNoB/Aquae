@@ -16,8 +16,8 @@
                     <div class="form-row" style="margin: 0px 16px;">
                         <h3 style="font-weight: bold;font-style: normal;">Tipo de edificação</h3>
                         <div class="form-group col-md-12">
-                            <div class="form-check form-check-inline" id="casa-radio"><input class="form-check-input" type="radio" id="formCheck-1" value="0" name="tipo_residencia" checked=""><label class="form-check-label" for="formCheck-1">Casa</label></div>
-                            <div class="form-check form-check-inline" id="apartamento-radio"><input class="form-check-input" type="radio" id="formCheck-2" value="1" name="tipo_residencia"><label class="form-check-label" for="formCheck-2">Prédio residencial</label></div>
+                            <div class="form-check form-check-inline" id="casa-radio"><input onclick="document.getElementById('id_n_apts').disabled = true" class="form-check-input" type="radio" id="formCheck-1" value="0" name="tipo_residencia" checked=""><label class="form-check-label" for="formCheck-1">Casa</label></div>
+                            <div class="form-check form-check-inline" id="apartamento-radio"><input onclick="document.getElementById('id_n_apts').disabled = false" class="form-check-input" type="radio" id="formCheck-2" value="1" name="tipo_residencia"><label class="form-check-label" for="formCheck-2">Prédio residencial</label></div>
                         </div>
                         <div class="border rounded-0 form-row" id="residence-options" style="margin: 0px 0px;">
                             <div class="form-group col-md-3" id="totalApartamentos" style="padding: 0px 5px;">
