@@ -267,6 +267,7 @@ span.normal {
  display: none;
 }
 
+/*Ao tentar imprimir a página obtém-se uma versão mais limpa e com tabelas expandidas*/
 @media print {
   @page {
     margin-top: -20px;
