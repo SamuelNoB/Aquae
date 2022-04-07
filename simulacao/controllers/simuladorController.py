@@ -14,25 +14,32 @@ def get_bomba_e_co(n_pavimentos):
 def get_simulacao(pk):
     # Filtrar uma oferta inexistente nao retorna erro, apenas um queryset vazio
     return {
-        'simulacao': Simulacao.objects.get(pk=pk),
-        'demandas_de_agua': DemandasDeAgua.objects.filter(simulacao=pk),
-        'ofertas_de_agua': OfertasDeAgua.objects.filter(simulacao=pk)
+        "simulacao": Simulacao.objects.get(pk=pk),
+        "demandas_de_agua": DemandasDeAgua.objects.filter(simulacao=pk),
+        "ofertas_de_agua": OfertasDeAgua.objects.filter(simulacao=pk),
     }
 
 
 def calc_oferta_demanda(pk, interesse, **kwargs):
+    """
+    Calcula a oferta ou demanda de água convertendo para Litros/dia
+    """
+    # "ofertas" no caso do RAC
+    # Analogamente, seria "demandas" no caso do AAP
     ofertas = get_simulacao(pk)[interesse]
 
     individual = {}
 
     for oferta in ofertas:
-        agua = (oferta.indicador * oferta.frequencia_mensal)/1000
+        agua = (oferta.indicador * oferta.frequencia_mensal) / 1000
         if oferta.nome == "Irrigação de jardins":
-            agua = agua * kwargs['area_irrigacao']
-        elif oferta.nome == "Lavagem de pisos":
-            agua = agua * kwargs['area_pisos']
-        else:
-            agua = agua * kwargs['residentes']
+            agua = agua * kwargs["area_irrigacao"]
+        elif oferta.unidade == DemandasDeAgua.METROS_QUADRADOS:
+            # DemandasDeAgua.METROS_QUADRADOS é apenas uma string para comparar a unidade de medida
+            # Pode ser usada sem perda de generalidade pelo RAC
+            agua = agua * kwargs["area_pisos"]
+        elif oferta.unidade == DemandasDeAgua.PESSOA:
+            agua = agua * kwargs["residentes"]
         agua = round(agua, 2)
         individual[oferta.nome] = agua
 
@@ -44,25 +51,24 @@ def soma_dem(demandas_dict):
     total = 0
     for nome, indicador in demandas_dict.items():
         if nome == "Irrigação de jardins":
-            total += indicador/12 * 5
+            total += indicador / 12 * 5
         else:
             total += indicador
-    
-    return total*12
+
+    return total * 12
 
 
 def get_caixa_dagua(demanda_diaria):
-        todas = CaixaDAgua.objects.all()
-        possiveis = list(todas.filter(volume__lt=demanda_diaria))
-        
-        if len(possiveis) < len(todas):
-            possiveis.append(todas[len(possiveis)])
-        
-        caixas_dict = {caixa.volume: caixa.valor for caixa in possiveis}
-        return list(caixas_dict.keys()), caixas_dict
+    todas = CaixaDAgua.objects.all()
+    possiveis = list(todas.filter(volume__lt=demanda_diaria))
+
+    if len(possiveis) < len(todas):
+        possiveis.append(todas[len(possiveis)])
+
+    caixas_dict = {caixa.volume: caixa.valor for caixa in possiveis}
+    return list(caixas_dict.keys()), caixas_dict
 
 
 def get_tarifa(consumo):
-        tarifa = TarifaDeAgua.objects.filter(min__lte=consumo,
-                                             max__gte=consumo)
-        return list(tarifa)[0].tarifa
+    tarifa = TarifaDeAgua.objects.filter(min__lte=consumo, max__gte=consumo)
+    return list(tarifa)[0].tarifa
