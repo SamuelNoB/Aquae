@@ -5,71 +5,80 @@ function realFloat(real) {
 
 /*Funcao que adiciona todos os campos de uma linha do formulario*/
 function addFields(k, dados=[], id="table_body", initial=Boolean(false), interesse) {
-    let container = document.getElementById(id);
-    let row = container.appendChild(document.createElement("tr"));
-    row.setAttribute('id', interesse + k)
+    let uso =  `type="text" 
+                id="id_demandas${k}-nome"
+                name="demandas-${k}-nome"
+                maxlength="100"
+                class="form-control"
+                required `
 
-    /*Campos de frequencia e indicador de uso final tem propriedades dos campos de nome do uso*/
-    function numericField(row, k, id, padrao='1', escala='Litros/pessoa/dia'){
-        let td = row.appendChild(document.createElement("td"));
-        let div_in = td.appendChild(document.createElement("div"));
-        let valor = div_in.appendChild(document.createElement("input"));
-        let div_append = div_in.appendChild(document.createElement("div"));
-        let span = div_append.appendChild(document.createElement("span"));
+    let freq = `type="numeric" 
+                id="id_demandas${k}-frequencia_mensal"
+                name="demandas-${k}-frequencia_mensal"
+                min="1"
+                class="form-control"
+                required `
 
-        div_in.setAttribute('class', 'input-group');
-        div_append.setAttribute('class', 'input-group-append');
-        span.innerHTML = escala;
-        span.setAttribute('class', 'input-group-text');
+    let indicador = `type="numeric" 
+                    id="id_demandas${k}-indicador"
+                    name="demandas-${k}-indicador"
+                    min="1"
+                    class="form-control"
+                    required `
 
-        valor.setAttribute('type', 'numeric');
-        valor.setAttribute('value', padrao);
-        valor.setAttribute('class', 'form-control');
-        valor.setAttribute('min', 1)
-        valor.setAttribute('name', `${interesse}-${k}-${id}`)
-        valor.setAttribute('id', `id_${interesse}-${k}-${id}`)
-        valor.setAttribute('required', '')
-    }
-
- 
-    let td1 = row.appendChild(document.createElement("td"));
-    let tipo_de_uso = td1.appendChild(document.createElement("input"));
-    tipo_de_uso.setAttribute('type', 'text');
-    tipo_de_uso.setAttribute('class', 'form-control');
-    tipo_de_uso.setAttribute('maxlength', '100')
-    tipo_de_uso.setAttribute('id', `id_${interesse}${k}-nome`)
-    tipo_de_uso.setAttribute('name', `${interesse}-${k}-nome`)
-    tipo_de_uso.setAttribute('required', '')
-
-    /*No caso de gerar o formulario, deve-se ter que os nomes podem apenas ser lidos*/
-    /*Entre outras caracteristicas diferentes*/
-    if (initial){
-        tipo_de_uso.setAttribute('readonly', '');
-        tipo_de_uso.setAttribute('style', 'position: relative;font-weight: bold;');
-        tipo_de_uso.setAttribute('value', dados[0])
-        numericField(row, k, 'frequencia_mensal', dados[1], 'Vezes ao mês')
-        numericField(row, k, 'indicador', dados[2], dados[3])
+    let unidade_de_medida = ""
+    if (initial) {
+        uso = uso + `readonly 
+                    style="position: relative; font-weight: bold;" 
+                    value="${dados[0]}"`
+        
+        freq = freq + `value="${dados[1]}"`
+        indicador = indicador + `value="${dados[2]}"`
+        unidade_de_medida = dados[3]
 
     } else {
-        tipo_de_uso.setAttribute('placeholder', 'Inserir uso');
-        numericField(row, k, 'frequencia_mensal', '1', 'Vezes ao mês');
-        numericField(row, k, 'indicador', '1', 'Litros/pessoa/dia');
+        uso = uso + `style="position: relative;"
+                    placeholder="Inserir uso"`
+
+        freq = freq + `value="1"`
+        indicador = indicador + `value="1"`
+        unidade_de_medida = "Litros/pessoa/dia"
     }
 
-
-    /*Todas as linhas tem "4 elementos", nao 3*/
-    /*O quarto elemento trata-se to botao de deletar a linha*/
-    function delField(row_id) {
-        let row_to_del = document.getElementById(row_id);
-        row_to_del.parentNode.removeChild(row_to_del)
-    }
-
-    let td4 = row.appendChild(document.createElement("td"))
-    let del_btn = td4.appendChild(document.createElement("button"))
-    del_btn.setAttribute('class', 'btn btn-light')
-    del_btn.setAttribute('type', 'button')
-    del_btn.addEventListener('click', function(){delField(interesse+k)}, false)
-    del_btn.innerHTML = 'Deletar'
+    const unidades = {
+        "Litros/m²/dia": "Litros/pessoa/dia",
+        "Litros/pessoa/dia": "Litros/m²/dia"
+        }
+    
+    const $row = $(`#${id}`).append(`<tr id="${interesse}${k}">
+                                        <td><input ${uso}></td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input ${freq}>
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">Vezes ao mês</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input ${indicador}>
+                                                <div class="input-group-append">
+                                                    <select id="id_demandas${k}-unidade" name="demandas-${k}-unidade" class="input-group-text">
+                                                        <option value="${unidade_de_medida}">${unidade_de_medida}</option>
+                                                        <option value="${unidades[unidade_de_medida]}">${unidades[unidade_de_medida]}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button id="del_${interesse}${k}" class="btn btn-light" type="button">Deletar</button>
+                                        </td>
+                                     </tr>`)
+    
+    $(`#del_${interesse}${k}`).click( function () {
+        $(`#${interesse}${k}`).remove();
+    });
 }
 
 
