@@ -75,7 +75,20 @@ class OfertasDeAgua(models.Model):
 
     nome = models.CharField(verbose_name="Nome da oferta", max_length=100)
     frequencia_mensal = models.IntegerField(verbose_name="Frequencia mensal de uso")
+
     indicador = models.FloatField(verbose_name="Indicador de uso final", blank=True)
+    METROS_QUADRADOS = "Litros/m²/dia"
+    PESSOA = "Litros/pessoa/dia"
+    UNIDADE_CHOICES = [
+        (METROS_QUADRADOS, "Litros/m²/dia"),
+        (PESSOA, "Litros/pessoa/dia"),
+    ]
+    unidade = models.CharField(
+        max_length=17,
+        choices=UNIDADE_CHOICES,
+        verbose_name="Unidade de medida do indicador de uso final",
+        default=PESSOA,
+    )
 
     simulacao = models.ForeignKey(
         Simulacao,
