@@ -90,7 +90,9 @@
                             <input type="hidden" name="demandas-MAX_NUM_FORMS" id="id_demandas-MAX_NUM_FORMS" value="100">
                         </div>
                     </div>
-                    <div class="form-row" style="margin: 1em;"><button class="btn btn-secondary btn-sm" id="addCustomConsumo" type="button" onclick="addFields(k); k++">Adicionar</button><span class="d-md-flex align-items-md-center">&nbsp;Outro tipo de uso de água não potável.</span></div>
+                    <div class="form-row" style="margin: 1em;">
+                        <button class="btn btn-secondary btn-sm" id="addCustomConsumo" type="button" onclick="addFields({k: k, interesse: 'demandas'}); k++">Adicionar</button>
+                        <span class="d-md-flex align-items-md-center">&nbsp;Outro tipo de uso de água não potável.</span></div>
                     <div class="text-right col-md-12">
                         <button class="btn btn-danger" type="button" data-dismiss="edificacaoForm" id="restaurar">Restaurar</button>
                         <button id="submit" class="btn btn-primary" type="submit" style="margin: 1em;">Próximo</button></div>

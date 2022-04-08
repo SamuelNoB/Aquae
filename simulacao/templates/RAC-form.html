@@ -34,7 +34,7 @@
                 <input type="hidden" name="ofertas-MAX_NUM_FORMS" id="id_ofertas-MAX_NUM_FORMS" value="100">
 
                 <div class="form-row" style="margin: 1em;">
-                    <button class="btn btn-secondary btn-sm" id="addCustomConsumo" type="button" onclick="addFields(k); k++;">Adicionar</button>
+                    <button class="btn btn-secondary btn-sm" id="addCustomConsumo" type="button" onclick="addFields({k: k, interesse: 'ofertas'}); k++;">Adicionar</button>
                     <span class="d-md-flex align-items-md-center">&nbsp;Outro tipo de oferta de água cinza.</span>
                 </div>
                 <div class="text-right col-md-12">
@@ -44,6 +44,8 @@
             </form>
         </div>
     </section>
+{% endblock content %}
+{% block scripts %}
     <script src={% static 'assets/js/formulario.js' %}>
     </script>
     <script>
