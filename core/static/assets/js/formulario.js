@@ -6,7 +6,7 @@ function realFloat(real) {
 /*Funcao que adiciona todos os campos de uma linha do formulario*/
 function addFields({
     k,
-    dados = [],
+    dados = ["", 1, 1, "Litros/pessoa/dia"],
     id = "table_body",
     initial = Boolean(false),
     interesse,
@@ -15,6 +15,7 @@ function addFields({
                 id="id_${interesse}${k}-nome"
                 name="${interesse}-${k}-nome"
                 maxlength="100"
+                value="${dados[0]}"
                 class="form-control"
                 required `;
 
@@ -22,6 +23,7 @@ function addFields({
                 id="id_${interesse}${k}-frequencia_mensal"
                 name="${interesse}-${k}-frequencia_mensal"
                 min="1"
+                value="${dados[1]}"
                 class="form-control"
                 required `;
 
@@ -29,6 +31,7 @@ function addFields({
                     id="id_${interesse}${k}-indicador"
                     name="${interesse}-${k}-indicador"
                     min="1"
+                    value="${dados[2]}"
                     class="form-control"
                     required `;
 
@@ -37,11 +40,8 @@ function addFields({
         uso =
             uso +
             `readonly 
-            style="position: relative; font-weight: bold;" 
-            value="${dados[0]}"`;
+            style="position: relative; font-weight: bold;"`;
 
-        freq = freq + `value="${dados[1]}"`;
-        indicador = indicador + `value="${dados[2]}"`;
         unidade_de_medida = dados[3];
     } else {
         uso =
@@ -49,8 +49,6 @@ function addFields({
             `style="position: relative;"
                     placeholder="Inserir uso"`;
 
-        freq = freq + `value="1"`;
-        indicador = indicador + `value="1"`;
         unidade_de_medida = "Litros/pessoa/dia";
     }
 
@@ -100,7 +98,8 @@ function InitFields(
     id = "table_body",
     interesse = "ofertas"
 ) {
-    for (let i = 0; i < tipo.length; i++) {
+    const n = tipo.length;
+    for (let i = 0; i < n; i++) {
         let padroes = [tipo[i], padrao_freq[i], padrao_ind[i], escala[i]];
         addFields({
             k: k,
