@@ -40,12 +40,12 @@
                             </div>
                             <div class="form-group col-md-4" id="totalApartamentos" style="padding: 0px 5px;">
                                 <label class="text-left" id="lab_totalApartamentos" style="font-weight: bold;">{{ nova_edificacao.n_apts.label }}</label>
-                                {%  render_field nova_edificacao.n_apts class="form-control col-md-10" disabled="" %}
+                                {%  render_field nova_edificacao.n_apts class="form-control col-md-10" disabled="" min="0" %}
                             </div>
                             
                             <div class="form-group col-md-4" id="div_n_moradores" style="padding: 0px 5px;">
                                 <label class="text-left" id="aptMoradores" style="font-weight: bold;">Número de moradores</label>
-                                {%  render_field nova_edificacao.n_pessoas class="form-control col-md-10"  %}
+                                {%  render_field nova_edificacao.n_pessoas class="form-control col-md-10" min="0"  %}
                             </div>
                             
                             <div class="form-group col-md-7" style="padding: 0px 5px; margin-right: -18%;"><label style="font-weight: bold;">Consumo mensal de água</label>
