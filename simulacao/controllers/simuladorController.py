@@ -1,6 +1,7 @@
 from simulacao.controllers.dimensionamentoController import DimensionamentoController
 from simulacao.models import Simulacao, DemandasDeAgua, OfertasDeAgua
 from simulacao.base_de_dados.models import CaixaDAgua, TarifaDeAgua
+from math import ceil
 
 
 def get_bomba_e_co(n_pavimentos):
@@ -77,5 +78,10 @@ def get_caixa_dagua(demanda_diaria):
 
 
 def get_tarifa(consumo):
+    """
+    Arredonda o consumo para o teto e calcula a tarifa utilizando esse teto
+    Acontece que as faixas de consumo não descrevem o consumo entre uma faixa e outra
+    """
+    consumo = ceil(consumo)
     tarifa = TarifaDeAgua.objects.filter(min__lte=consumo, max__gte=consumo)
     return list(tarifa)[0].tarifa
