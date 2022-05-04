@@ -16,22 +16,34 @@
                     <div class="form-row" style="margin: 0px 16px;">
                         <h3 style="font-weight: bold;font-style: normal;">Tipo de edificação</h3>
                         <div class="form-group col-md-12">
-                            <div class="form-check form-check-inline" id="casa-radio"><input onclick="document.getElementById('id_n_apts').disabled = true" class="form-check-input" type="radio" id="formCheck-1" value="0" name="tipo_residencia" checked=""><label class="form-check-label" for="formCheck-1">Casa</label></div>
-                            <div class="form-check form-check-inline" id="apartamento-radio"><input onclick="document.getElementById('id_n_apts').disabled = false" class="form-check-input" type="radio" id="formCheck-2" value="1" name="tipo_residencia"><label class="form-check-label" for="formCheck-2">Prédio residencial</label></div>
+                            <div class="form-check form-check-inline" id="casa-radio">
+                                <input onclick="document.getElementById('id_n_apts').disabled = true;
+                                document.getElementById('aptMoradores').innerHTML = 'Número de moradores';
+                                window.dispatchEvent(new Event('resize'));"
+                                class="form-check-input" type="radio" id="formCheck-1" value="0" name="tipo_residencia" checked="">
+                                <label class="form-check-label" for="formCheck-1">Casa</label>
+                            </div>
+                            <div class="form-check form-check-inline" id="apartamento-radio">
+                                <input onclick="document.getElementById('id_n_apts').disabled = false;
+                                document.getElementById('aptMoradores').innerHTML = 'Número médio de moradores por apartamento';
+                                window.dispatchEvent(new Event('resize'));"
+                                class="form-check-input" type="radio" id="formCheck-2" value="1" name="tipo_residencia">
+                                <label class="form-check-label" for="formCheck-2">Prédio residencial</label>
+                            </div>
                         </div>
                         <div class="border rounded-0 form-row" id="residence-options" style="margin: 0px 0px;">
-                            <div class="form-group col-md-4">
-                                <label style="font-weight: bold;">{{ nova_edificacao.n_pavimentos.label }}</label>
+                            <div class="form-group col-md-4" id="div_n_pavimentos">
+                                <label class="text-left" id="lab_n_pavimentos" style="font-weight: bold;">{{ nova_edificacao.n_pavimentos.label }}</label>
                                 <div class="input-group">
                                     {% render_field nova_edificacao.n_pavimentos class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="00" title="Altura total da residencia em número de pavimentos" %}
                                 </div>
                             </div>
                             <div class="form-group col-md-4" id="totalApartamentos" style="padding: 0px 5px;">
-                                <label class="text-left" style="font-weight: bold;">{{ nova_edificacao.n_apts.label }}</label>
-                                {%  render_field nova_edificacao.n_apts class="form-control col-md-10" disabled="" %}<small class="form-text text-muted">Total de pavimentos no prédio</small>
+                                <label class="text-left" id="lab_totalApartamentos" style="font-weight: bold;">{{ nova_edificacao.n_apts.label }}</label>
+                                {%  render_field nova_edificacao.n_apts class="form-control col-md-10" disabled="" %}
                             </div>
                             
-                            <div class="form-group col-md-4" style="padding: 0px 5px;">
+                            <div class="form-group col-md-4" id="div_n_moradores" style="padding: 0px 5px;">
                                 <label class="text-left" id="aptMoradores" style="font-weight: bold;">Número de moradores</label>
                                 {%  render_field nova_edificacao.n_pessoas class="form-control col-md-10"  %}
                             </div>
@@ -102,6 +114,20 @@
         </section>
 {% endblock content%}
 {% block scripts %}
+    <script type="text/javascript">
+        $(window).resize(function () {
+            const heig1 = $("#lab_n_pavimentos").height();
+            const heig2 = $("#lab_totalApartamentos").height();
+            const heig3 = $("#aptMoradores").height();
+            const lrg = Math.max(heig1, heig2, heig3);
+
+            $("#div_n_pavimentos").css('margin-top', lrg-heig1);
+            $("#totalApartamentos").css('margin-top', lrg-heig2);
+            $("#div_n_moradores").css('margin-top', lrg-heig3);
+        });
+
+        window.dispatchEvent(new Event('resize'));
+    </script>
     <script src={% static 'assets/js/formulario.js' %}>
     </script>
     <script>
