@@ -27,19 +27,26 @@ def calc_oferta_demanda(pk, interesse, **kwargs):
     # "ofertas" no caso do RAC
     # Analogamente, seria "demandas" no caso do AAP
     ofertas = get_simulacao(pk)[interesse]
+    if not kwargs["apts"]:
+        apts = 1
+    else:
+        apts = kwargs["apts"]
+
+    residentes = kwargs["residentes"] * apts
 
     individual = {}
 
     for oferta in ofertas:
         agua = (oferta.indicador * oferta.frequencia_mensal) / 1000
-        if oferta.nome == "Irrigação de jardins":
+        if oferta.unidade == DemandasDeAgua.PESSOA:
+            agua = agua * residentes
+        elif oferta.nome == "Irrigação de jardins":
             agua = agua * kwargs["area_irrigacao"]
         elif oferta.unidade == DemandasDeAgua.METROS_QUADRADOS:
             # DemandasDeAgua.METROS_QUADRADOS é apenas uma string para comparar a unidade de medida
             # Pode ser usada sem perda de generalidade pelo RAC
             agua = agua * kwargs["area_pisos"]
-        elif oferta.unidade == DemandasDeAgua.PESSOA:
-            agua = agua * kwargs["residentes"]
+
         agua = round(agua, 2)
         individual[oferta.nome] = agua
 

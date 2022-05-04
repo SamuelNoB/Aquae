@@ -134,6 +134,7 @@ class SimulacaoAAP(TemplateView):
         consumo = simul.consumo_mensal
         esgoto = simul.tarifa_esgoto / 100
         pessoas = simul.n_pessoas
+        n_apts = simul.n_apts
         n_pavimentos = simul.n_pavimentos
         coeficiente_esc = 0.9
         coeficiente_filt = 0.9
@@ -141,6 +142,7 @@ class SimulacaoAAP(TemplateView):
         individual_d = simuladorController.calc_oferta_demanda(
             pk,
             "demandas_de_agua",
+            apts=n_apts,
             residentes=pessoas,
             area_irrigacao=area_i,
             area_pisos=area_p,
@@ -243,11 +245,13 @@ class SimulacaoRAC(TemplateView):
         consumo = simul.consumo_mensal
         esgoto = simul.tarifa_esgoto / 100
         pessoas = simul.n_pessoas
+        n_apts = simul.n_apts
 
         # Se a simulacao foi encontrada, entao o form da demanda foi preenchido
         individual_demanda = simuladorController.calc_oferta_demanda(
             pk,
             "demandas_de_agua",
+            apts=n_apts,
             area_irrigacao=area_i,
             area_pisos=area_p,
             residentes=pessoas,
@@ -257,6 +261,7 @@ class SimulacaoRAC(TemplateView):
         individual_oferta = simuladorController.calc_oferta_demanda(
             pk,
             "ofertas_de_agua",
+            apts=n_apts,
             area_irrigacao=area_i,
             area_pisos=area_p,
             residentes=pessoas,
