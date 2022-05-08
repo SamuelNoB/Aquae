@@ -69,15 +69,20 @@
                             
                             <div class="form-group col-md-6" style="padding: 0px 5px;"><label style="font-weight: bold;">Área de pisos</label>
                                 <div class="input-group">
-                                    {% render_field nova_edificacao.area_pisos class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="00" title="Área de cobertura" step=".01" value="0" %}
+                                    {% render_field nova_edificacao.area_pisos class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="00" title="Área de pisos" step=".01" value="0" %}
                                     <div class="input-group-append"><span class="input-group-text">m²<br></span></div>
                                 </div><small class="form-text text-muted">Área de pisos para lavagem da residência em m².</small>
                             </div>
                             <div class="form-group col-md-2"><label style="font-weight: bold;">Área para irrigação</label>
                                 <div class="input-group">
-                                    {% render_field nova_edificacao.area_irrigacao class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="00" title="Área de cobertura" step=".01" value="0" %}
+                                    {% render_field nova_edificacao.area_irrigacao class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="00" title="Área para irrigação" step=".01" value="0" %}
                                     <div class="input-group-append"><span class="input-group-text">m²<br></span></div>
                                 </div><small class="form-text text-muted">Área para irrigação do jardim da residência em m².</small>
+                            </div>
+                            <div class="form-group col-md-2"><label style="font-weight: bold;">Estado (UF)</label>
+                                <div class="input-group">
+                                    {% render_field nova_edificacao.estado class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" title="Estado" %}
+                                </div>
                             </div>
                         </div>
                     <h3 style="font-weight: bold;margin: 0px 16px;">Demanda de água não potável</h3>
