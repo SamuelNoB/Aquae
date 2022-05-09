@@ -8,13 +8,14 @@ class DemandasInline(admin.TabularInline):
     model = DemandasDeAgua
 
 
+class OfertasInline(admin.TabularInline):
+    model = OfertasDeAgua
+
+
 class SimulacaoAdmin(admin.ModelAdmin):
-    inlines = [
-        DemandasInline
-    ]
+    inlines = [DemandasInline, OfertasInline]
 
 
 admin.site.register(Simulacao, SimulacaoAdmin)
 admin.site.register(DemandasDeAgua)
 admin.site.register(OfertasDeAgua)
-
