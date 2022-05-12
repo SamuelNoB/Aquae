@@ -1,5 +1,8 @@
-import requests as req
+import requests
+from datetime import date
 from lxml import html
+import json
+
 
 ESTADOS_BR = (
     ("Acre (AC)", "AC"),
@@ -33,25 +36,38 @@ ESTADOS_BR = (
 
 
 def get_dollar():
-    res = req.get("https://economia.awesomeapi.com.br/json/all/USD-BRL")
+    res = requests.get("https://economia.awesomeapi.com.br/json/all/USD-BRL")
     dollar_data = res.json()
     dollar = float(dollar_data["USD"]["low"])
     return round(dollar, 2)
 
 
 def get_ni_ipca():
-    url = "http://www.ipeadata.gov.br/ExibeSerie.aspx?serid=36482&module=M"
+    """
+    Coleta o IPCA do mês anterior fazendo um post request
+    para a tabela 1737 do SIDRA (IBGE) e
+    retorna o número índice respectivo ao mês anterior
+    """
+    hoje = date.today()
+    ano = hoje.year
+    mes = hoje.month
+    mes_mm = str(mes - 1).zfill(2)
 
-    res = req.get(url)
-    doc = html.fromstring(res.content)
+    url = "https://sidra.ibge.gov.br/Ajax/JSon/Valores/1/1737"
+    payload = {
+        "params": f"t/1737/f/c/h/n/n1/all/V/2266/P/{ano}{mes_mm}/d/v2266 13",
+        "versao": "-1",
+        "desidentifica": "false",
+    }
 
-    N_indice = doc.xpath("//td")[-518].text
-
-    return float(N_indice.replace(".", "").replace(",", "."))
+    response = requests.post(url, data=payload)
+    response__list__ = json.loads(response.content.decode())
+    ni = float(response__list__[0]["V"])
+    return ni
 
 
 def get_tarifa_caesb():
-    response = req.get("https://www.caesb.df.gov.br/tarifas-e-precos.html")
+    response = requests.get("https://www.caesb.df.gov.br/tarifas-e-precos.html")
     doc = html.fromstring(response.content)
 
     # O site da CAESB tem uma incosistencia na estrutura
