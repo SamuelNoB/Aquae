@@ -60,7 +60,7 @@ class IndicePluviometrico(models.Model):
 
     ano = models.IntegerField("Ano")
     mes = models.IntegerField("Mês", choices=MESES_CHOICES)
-    media_pluviometrica = models.IntegerField("Média pluviométrica em mm")
+    media_pluviometrica = models.FloatField("Média pluviométrica em mm")
 
     cidade = models.ForeignKey(
         Cidade,
