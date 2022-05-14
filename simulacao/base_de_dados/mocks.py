@@ -12,11 +12,14 @@ import json
 import django
 from ..utils import get_tarifa_caesb, get_ni_ipca
 
-indice_pluviometrico_mock = {
-    "Brasília": {
-        "2019": [270, 213, 210, 121, 36, 10, 6, 13, 48, 171, 220, 259],
-    }
-}
+# indice_pluviometrico_mock = {
+#     "Brasília": {
+#         "2019": [270, 213, 210, 121, 36, 10, 6, 13, 48, 171, 220, 259],
+#     }
+# }
+
+with open("simulacao/base_de_dados/Pluviometria_Brasil.json", "r") as file:
+    indice_pluviometrico_mock = json.load(file)
 
 areas_de_coleta = [
     (0, 150),
@@ -155,27 +158,29 @@ capacidades_de_tratamento = [
 
 
 def create_indices_pluviometricos():
-    for cidade, anos in indice_pluviometrico_mock.items():
-        # Se a cidade ja existir recria-se a mesma
-        try:
-            nova_cidade = Cidade.objects.create(nome=cidade)
-        except django.db.utils.IntegrityError:
-            nova_cidade = Cidade.objects.get(nome=cidade).delete()
-            nova_cidade = Cidade.objects.create(nome=cidade)
+    for estado in indice_pluviometrico_mock:
+        for cidade, anos in indice_pluviometrico_mock[estado].items():
+            # Se a cidade ja existir recria-se a mesma
+            try:
+                nova_cidade = Cidade.objects.create(nome=cidade, uf=estado)
+            except django.db.utils.IntegrityError:
+                nova_cidade = Cidade.objects.get(nome=cidade, uf=estado).delete()
+                nova_cidade = Cidade.objects.create(nome=cidade, uf=estado)
 
-        for ano, valores in anos.items():
-            indices = map(
-                lambda valor: IndicePluviometrico.objects.create(
-                    cidade=nova_cidade,
-                    ano=int(ano),
-                    mes=valores.index(valor),
-                    media_pluviometrica=valor,
-                ),
-                valores,
-            )
-        nova_cidade.save()
-        for indice in indices:
-            indice.save()
+            nova_cidade.save()
+
+            for ano, valores in anos.items():
+                indices = map(
+                    lambda valor: IndicePluviometrico.objects.create(
+                        cidade=nova_cidade,
+                        ano=int(ano),
+                        mes=int(valor) - 1,
+                        media_pluviometrica=valores[valor],
+                    ),
+                    valores,
+                )
+                for indice in indices:
+                    indice.save()
 
 
 # TODO reorganizar funcoes semelhantes para evitar multiplos requests do IPCA
