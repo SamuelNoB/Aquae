@@ -174,7 +174,7 @@ def create_indices_pluviometricos():
                     lambda valor: IndicePluviometrico.objects.create(
                         cidade=nova_cidade,
                         ano=int(ano),
-                        mes=int(valor) - 1,
+                        mes=int(valor),
                         media_pluviometrica=valores[valor],
                     ),
                     valores,
