@@ -5,7 +5,7 @@ from ..utils import ESTADOS_BR
 
 
 class Cidade(models.Model):
-    nome = models.CharField("Nome da cidade", max_length=100, unique=True)
+    nome = models.CharField("Nome da cidade", max_length=100)
     ESTADO_CHOICES = ESTADOS_BR
     uf = models.CharField(
         "UF",
