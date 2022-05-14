@@ -15,7 +15,7 @@ class Cidade(models.Model):
     )
 
     def __str__(self):
-        return f"{self.nome} {self.uf[-3:-1]}"
+        return f"{self.nome} {self.uf}"
 
     class Meta:
         verbose_name = "Cidade"
@@ -70,7 +70,7 @@ class IndicePluviometrico(models.Model):
     )
 
     def __str__(self):
-        return f"{self.ano} {self.mes}"
+        return f"{self.ano} {self.mes} {self.cidade}"
 
     class Meta:
         verbose_name = "Índice pluviométrico"
