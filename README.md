@@ -10,7 +10,8 @@ O Aquae é um programa que tem o intuito de realizar simulações de aproveitame
 -   Django
 -   Postgres
 
-## Futuras Features
+## Features em desenvolvimento
 
--   Simulação de aproveitamento de águas cinzas.
--   Dados pré definidos para simulação.
+-   Dados de pluviometria para diversas cidades do Brasil;
+-   Cálculo do benefício financeiro com tarifas adequadas para cada cidade;
+-   Simulação para prédios comerciais.
