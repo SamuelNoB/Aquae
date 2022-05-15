@@ -9,6 +9,8 @@ O Aquae é um programa que tem o intuito de realizar simulações de aproveitame
 -   Python
 -   Django
 -   Postgres
+-   JavaScript
+-   Bootstrap
 
 ## Features em desenvolvimento
 
