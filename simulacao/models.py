@@ -53,7 +53,7 @@ class Simulacao(models.Model):
         verbose_name="Estado (UF)",
         max_length=24,
         choices=ESTADO_CHOICES,
-        default="Distrito Federal (DF)",
+        default="DF",
     )
     tipo_residencia = models.IntegerField(
         verbose_name="Tipo da residencia", choices=RESIDENCIA_CHOICES

@@ -10,7 +10,7 @@ class Cidade(models.Model):
     uf = models.CharField(
         "UF",
         max_length=50,
-        default="Distrito Federal (DF)",
+        default="DF",
         choices=ESTADO_CHOICES,
     )
 
