@@ -55,7 +55,8 @@ def edificacao(request):
     if request.is_ajax():
         # TODO liberar campos de cidade
         uf = request.GET.get("uf")
-        return JsonResponse({}, status=200)
+        nomes = list(map(lambda cidade: cidade.nome, Cidade.objects.filter(uf=uf)))
+        return JsonResponse({"cidades": nomes}, status=200)
 
     if request.method == "POST":
         nova_edificacao = nova_edificacao(request.POST)
