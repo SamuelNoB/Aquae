@@ -132,6 +132,19 @@
         });
 
         window.dispatchEvent(new Event('resize'));
+
+        $("#id_estado").change(function () {
+            $.ajax({
+                url: '',
+                type: 'get',
+                data: {
+                    uf: this.value
+                },
+                success: function (response) {
+                    // TODO liberar campos de cidade
+                }
+            })
+        });
     </script>
     <script src={% static 'assets/js/formulario.js' %}>
     </script>
