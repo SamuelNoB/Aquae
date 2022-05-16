@@ -53,7 +53,6 @@ def edificacao(request):
     context["nova_edificacao"] = nova_edificacao
 
     if request.is_ajax():
-        # TODO liberar campos de cidade
         uf = request.GET.get("uf")
         nomes = list(map(lambda cidade: cidade.nome, Cidade.objects.filter(uf=uf)))
         return JsonResponse({"cidades": nomes}, status=200)
