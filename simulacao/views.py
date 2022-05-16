@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, reverse, HttpResponse, get_object_or_404
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
+from django.http import JsonResponse
 from django.forms import inlineformset_factory, formset_factory
 from numpy.lib.function_base import diff
 from requests.api import get
@@ -50,6 +51,11 @@ def edificacao(request):
     novos_consumos = consumo_factory
     nova_edificacao = EdificacaoForm
     context["nova_edificacao"] = nova_edificacao
+
+    if request.is_ajax():
+        # TODO liberar campos de cidade
+        uf = request.GET.get("uf")
+        return JsonResponse({}, status=200)
 
     if request.method == "POST":
         nova_edificacao = nova_edificacao(request.POST)
