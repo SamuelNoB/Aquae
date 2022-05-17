@@ -175,6 +175,7 @@
                         if (saldo_cisterna < 0) {gasto_add += Math.abs(saldo_cisterna); saldo_cisterna = 0}
                     }
                 }
+                
                 return {economia, gasto_add}
             }
 
@@ -245,6 +246,7 @@
             }
 
             function calc_area_oferta(coef_esc = 0.9, coef_filt = 0.9) {
+
                 demanda_anual = Math.round((demanda_mensal.reduce(add, 0) + Number.EPSILON)*100)/100
                 const area_ideal = Math.ceil(demanda_anual/(pluviometria_total * coef_esc * coef_filt) * 1000)
                 area_coleta = Math.min(area_ideal, area_disponivel)
@@ -298,7 +300,7 @@
 
 
                 const beneficio_true = beneficio.map(function(eco, index) {
-                    return eco - gasto_adicional[index] - realFloat(custo_op)})
+                    return eco - realFloat(custo_op)})
 
 
                 const payback = custo.map(function(preco, index) {
@@ -315,7 +317,7 @@
                     }
                     VPL[j] = VPL_parcelas.reduce(add, 0) - custo[j]
                 }
-                
+
 
                 beneficio = beneficio.map(function(x) {return Math.round((x + Number.EPSILON)*100)/100})
                 beneficio = beneficio.map(parseReal)
@@ -388,8 +390,7 @@
                 for (let i=0; i < table.length; i++) {
                     const beneficio = realFloat(table[i].children[1].innerHTML)
                     const custo = realFloat(table[i].children[2].innerHTML)
-                    const beneficio_true = beneficio - custo_op_float - gastos[i]
-                    
+                    const beneficio_true = beneficio - custo_op_float
                     const VPL_parcelas = Array(30)
                     for (let i=1; i <= 30; i++) {
                         VPL_parcelas[i-1] = beneficio_true / (1+juros)**i
@@ -402,7 +403,6 @@
                     else {VPL_td.setAttribute("style", "color:black")}
 
                 }
-
             }
             
             const bomba_preco = {{ bomba.preco|stringformat:'.2f' }}
