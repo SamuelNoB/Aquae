@@ -153,7 +153,6 @@
                     cidade_select.empty()
                     cidade_select.append("<option hidden disabled selected value> -- Selecione -- </option>")
                     for (let cidade of response.cidades) {
-                        console.log(cidade)
                         cidade_select.append(`<option value="${cidade}">${cidade}</option>`)
                     }
                 }
