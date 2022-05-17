@@ -1,5 +1,7 @@
 from django.db import models
 from .utils import ESTADOS_BR
+from .base_de_dados.models import Cidade
+
 
 # Create your models here.
 
@@ -48,12 +50,20 @@ class Simulacao(models.Model):
 
     RESIDENCIA_CHOICES = ((0, "casa"), (1, "apartamento"))
     ESTADO_CHOICES = ESTADOS_BR
+    CIDADES_NOME = list(map(lambda cidade: cidade.nome, Cidade.objects.all()))
+    CIDADE_CHOICES = zip(CIDADES_NOME, CIDADES_NOME)
 
     estado = models.CharField(
         verbose_name="Estado (UF)",
         max_length=24,
         choices=ESTADO_CHOICES,
         default="DF",
+    )
+    cidade = models.CharField(
+        verbose_name="Cidade",
+        max_length=50,
+        choices=CIDADE_CHOICES,
+        default="BRASILIA",
     )
     tipo_residencia = models.IntegerField(
         verbose_name="Tipo da residencia", choices=RESIDENCIA_CHOICES
