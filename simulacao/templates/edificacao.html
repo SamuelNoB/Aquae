@@ -84,6 +84,14 @@
                                     {% render_field nova_edificacao.estado class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" title="Estado" %}
                                 </div>
                             </div>
+                            <div class="form-group col-md-2"><label style="font-weight: bold;">Cidade</label>
+                                <div class="input-group">
+                                    <select name="cidade" title="" data-placement="bottom" data-bss-tooltip="" data-toggle="tooltip" class="form-control col-md-8" id="id_cidade" data-original-title="">
+                                        <option hidden disabled selected value> -- Selecione -- </option>
+                                        <option value="BRASILIA">BRASILIA</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     <h3 style="font-weight: bold;margin: 0px 16px;">Demanda de água não potável</h3>
                     <div id="consumoAgua" style="margin: 0px 16px;">
@@ -141,7 +149,13 @@
                     uf: this.value
                 },
                 success: function (response) {
-                    // TODO liberar campos de cidade
+                    const cidade_select = $("#id_cidade")
+                    cidade_select.empty()
+                    cidade_select.append("<option hidden disabled selected value> -- Selecione -- </option>")
+                    for (let cidade of response.cidades) {
+                        console.log(cidade)
+                        cidade_select.append(`<option value="${cidade}">${cidade}</option>`)
+                    }
                 }
             })
         });
