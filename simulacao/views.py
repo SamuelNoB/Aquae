@@ -158,9 +158,10 @@ class SimulacaoAAP(TemplateView):
         # TODO Versoes futuras devem especificar cidade
         pluviometria = np.array(self.get_pluviometria())
         meses_est = np.where(pluviometria < 50)
+        n_meses_est = len(meses_est[0])
         pluviometria_total = pluviometria.sum()
         geral_demanda = round(
-            simuladorController.soma_dem(individual_d, len(meses_est)), 2
+            simuladorController.soma_dem(individual_d, n_meses_est), 2
         )
         area_ideal = ceil(
             geral_demanda
@@ -176,7 +177,7 @@ class SimulacaoAAP(TemplateView):
         oferta_total = round(oferta_mensal.sum(), 2)
 
         demanda_sest = round(
-            (geral_demanda - irrigacao * 5) / 12, 2
+            (geral_demanda - irrigacao * n_meses_est) / 12, 2
         )  # periodo sem estiagem
         demanda_est = demanda_sest + irrigacao  # periodo de estiagem
         demanda_mensal = np.array([demanda_sest for i in range(12)])

@@ -55,11 +55,11 @@ def calc_oferta_demanda(pk, interesse, **kwargs):
     return individual
 
 
-def soma_dem(demandas_dict):
+def soma_dem(demandas_dict, n_est):
     total = 0
     for nome, indicador in demandas_dict.items():
         if nome == "Irrigação de jardins":
-            total += indicador / 12 * 5
+            total += indicador / 12 * n_est
         else:
             total += indicador
 
