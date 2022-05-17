@@ -100,7 +100,7 @@ def RACform(request, pk):
 class SimulacaoAAP(TemplateView):
     template_name = "simuladorAAP.html"
 
-    def get_pluviometria(self, cidade="Brasília"):
+    def get_pluviometria(self, cidade="BRASILIA"):
         local = Cidade.objects.get(nome=cidade)
         pluviometria = IndicePluviometrico.objects.filter(ano=2019, cidade=local)
         pluviometria = pluviometria.values_list("media_pluviometrica")
