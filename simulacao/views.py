@@ -154,11 +154,14 @@ class SimulacaoAAP(TemplateView):
             area_pisos=area_p,
         )
         irrigacao = round(individual_d["Irrigação de jardins"], 2)
-        geral_demanda = round(simuladorController.soma_dem(individual_d), 2)
 
         # TODO Versoes futuras devem especificar cidade
         pluviometria = np.array(self.get_pluviometria())
+        meses_est = np.where(pluviometria < 50)
         pluviometria_total = pluviometria.sum()
+        geral_demanda = round(
+            simuladorController.soma_dem(individual_d, len(meses_est)), 2
+        )
         area_ideal = ceil(
             geral_demanda
             / (pluviometria_total * coeficiente_esc * coeficiente_filt)
@@ -177,7 +180,6 @@ class SimulacaoAAP(TemplateView):
         )  # periodo sem estiagem
         demanda_est = demanda_sest + irrigacao  # periodo de estiagem
         demanda_mensal = np.array([demanda_sest for i in range(12)])
-        meses_est = np.where(pluviometria < 50)
         demanda_mensal[meses_est] = demanda_est
 
         # JS nao recebe np arrray
