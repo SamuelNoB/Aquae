@@ -73,20 +73,20 @@
                                     <div class="input-group-append"><span class="input-group-text">m²<br></span></div>
                                 </div><small class="form-text text-muted">Área de pisos para lavagem da residência em m².</small>
                             </div>
-                            <div class="form-group col-md-2"><label style="font-weight: bold;">Área para irrigação</label>
+                            <div id="div_irrigacao" class="form-group col-md-2"><label id="lab_irrigacao" style="font-weight: bold;">Área para irrigação</label>
                                 <div class="input-group">
                                     {% render_field nova_edificacao.area_irrigacao class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="00" title="Área para irrigação" step=".01" value="0" %}
                                     <div class="input-group-append"><span class="input-group-text">m²<br></span></div>
                                 </div><small class="form-text text-muted">Área para irrigação do jardim da residência em m².</small>
                             </div>
-                            <div class="form-group col-md-2"><label style="font-weight: bold;">Estado (UF)</label>
+                            <div id="div_uf" class="form-group col-md-2"><label id="lab_uf" style="font-weight: bold;">Estado (UF)</label>
                                 <div class="input-group">
-                                    {% render_field nova_edificacao.estado class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" title="Estado" %}
+                                    {% render_field nova_edificacao.estado class="form-control col-md-12" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" title="Estado" %}
                                 </div>
                             </div>
-                            <div class="form-group col-md-2"><label style="font-weight: bold;">Cidade</label>
+                            <div id="div_cidade" class="form-group col-md-2"><label id="lab_cidade" style="font-weight: bold;">Cidade</label>
                                 <div class="input-group">
-                                    <select name="cidade" title="" data-placement="bottom" data-bss-tooltip="" data-toggle="tooltip" class="form-control col-md-8" id="id_cidade" data-original-title="">
+                                    <select name="cidade" title="" data-placement="bottom" data-bss-tooltip="" data-toggle="tooltip" class="form-control col-md-12" id="id_cidade" data-original-title="">
                                         <option hidden disabled selected value> -- Selecione -- </option>
                                         <option value="BRASILIA">BRASILIA</option>
                                     </select>
@@ -137,6 +137,16 @@
             $("#div_n_pavimentos").css('margin-top', lrg-heig1);
             $("#totalApartamentos").css('margin-top', lrg-heig2);
             $("#div_n_moradores").css('margin-top', lrg-heig3);
+
+
+            const hCidade = $("#lab_cidade").height()
+            const hUF = $("#lab_uf").height()
+            const hIrrigacao = $("#lab_irrigacao").height()
+            const tallest = Math.max(hCidade, hUF, hIrrigacao)
+
+            $("#div_cidade").css('margin-top', tallest - hCidade)
+            $("#div_uf").css('margin-top', tallest - hUF)
+            $("#div_irrigacao").css('margin-top', tallest - hIrrigacao)
         });
 
         window.dispatchEvent(new Event('resize'));
