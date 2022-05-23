@@ -1,5 +1,5 @@
 import requests
-from datetime import date
+from datetime import date, timedelta
 from lxml import html
 import json
 
@@ -49,13 +49,14 @@ def get_ni_ipca():
     retorna o número índice respectivo ao mês anterior
     """
     hoje = date.today()
-    ano = hoje.year
-    mes = hoje.month
-    mes_mm = str(mes - 1).zfill(2)
+    primeiro = hoje.replace(day=1)
+    mes_passado = primeiro - timedelta(days=1)
+    ano = mes_passado.year
+    mes = str(mes_passado.month).zfill(2)
 
     url = "https://sidra.ibge.gov.br/Ajax/JSon/Valores/1/1737"
     payload = {
-        "params": f"t/1737/f/c/h/n/n1/all/V/2266/P/{ano}{mes_mm}/d/v2266 13",
+        "params": f"t/1737/f/c/h/n/n1/all/V/2266/P/{ano}{mes}/d/v2266 13",
         "versao": "-1",
         "desidentifica": "false",
     }
