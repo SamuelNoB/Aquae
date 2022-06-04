@@ -63,12 +63,20 @@ def edificacao(request):
             uma_edificacao = nova_edificacao.save()
             novos_consumos.instance = uma_edificacao
             novos_consumos.save()
-            return redirect("simulacao:seleciona_simulacao", pk=uma_edificacao.pk)
+            return redirect("simulacao:seleciona_demanda", pk=uma_edificacao.pk)
         else:
             context["nova_edificacao"] = nova_edificacao
             return render(request, "edificacao.html", context)
 
     return render(request, "edificacao.html", context)
+
+
+def seleciona_demanda(request, pk):
+    context = {"pk": pk}
+    usos = UsosDeAgua.objects.filter(simulacao=pk)
+    usos = [uso.nome for uso in usos]
+    context["usos"] = usos
+    return render(request, "AAP-form.html", context)
 
 
 def seleciona_simulacao(request, pk):

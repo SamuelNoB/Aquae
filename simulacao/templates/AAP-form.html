@@ -1,0 +1,42 @@
+{% extends 'base.html' %} {% block content %}
+<section
+    class="clean-block features"
+    style="border-top-style: solid; padding: 0; background: rgb(207, 231, 248)"
+>
+    <div
+        class="container flex-calc"
+        style="background: #eeeeee; padding-top: 16px"
+    >
+        <div class="block-heading">
+            <h2 class="text-info" style="font-weight: 800">
+                Demandas de reúso de água da chuva
+            </h2>
+        </div>
+
+        {% for uso in usos %}
+        <div class="d-flex justify-content-center">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <input type="checkbox" checked="true" />
+                </div>
+            </div>
+
+            <input
+                type="text"
+                class=""
+                style="
+                    font-weight: bold;
+                    background: #e9ecef;
+                    border: 1px solid #ced4da;
+                    border-radius: 0.25rem;
+                    color: #495057;
+                    height: calc(1.5em + 0.75rem + 2px); ;
+                "
+                readonly
+                value="{{uso}}"
+            />
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock content %}
