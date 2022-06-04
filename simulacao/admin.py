@@ -1,21 +1,16 @@
 from django.contrib import admin
-from .models import DemandasDeAgua, Simulacao, OfertasDeAgua
+from .models import UsosDeAgua, Simulacao
 
 # Register your models here.
 
 
-class DemandasInline(admin.TabularInline):
-    model = DemandasDeAgua
-
-
-class OfertasInline(admin.TabularInline):
-    model = OfertasDeAgua
+class UsosInline(admin.TabularInline):
+    model = UsosDeAgua
 
 
 class SimulacaoAdmin(admin.ModelAdmin):
-    inlines = [DemandasInline, OfertasInline]
+    inlines = [UsosInline]
 
 
 admin.site.register(Simulacao, SimulacaoAdmin)
-admin.site.register(DemandasDeAgua)
-admin.site.register(OfertasDeAgua)
+admin.site.register(UsosDeAgua)

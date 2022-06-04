@@ -8,12 +8,11 @@ from requests.api import get
 
 from .forms import (
     EdificacaoForm,
-    DemandasForm,
+    UsosForm,
     DemandaSimulacaoAAPForm,
     SimulacaoAAPForm,
-    OfertasForm,
 )
-from .models import DemandasDeAgua, Simulacao, OfertasDeAgua
+from .models import UsosDeAgua, Simulacao
 from .base_de_dados.models import (
     Equipamentos,
     IndicePluviometrico,
@@ -44,8 +43,8 @@ def edificacao(request):
     context = {}
     consumo_factory = inlineformset_factory(
         Simulacao,
-        DemandasDeAgua,
-        form=DemandasForm,
+        UsosDeAgua,
+        form=UsosForm,
         can_delete=True,
     )
     novos_consumos = consumo_factory

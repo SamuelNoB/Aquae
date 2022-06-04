@@ -6,8 +6,7 @@ from .base_de_dados.models import Cidade
 # Create your models here.
 
 
-class DemandasDeAgua(models.Model):
-
+class UsosDeAgua(models.Model):
     nome = models.CharField(verbose_name="Nome do consumo", max_length=100)
     frequencia_mensal = models.IntegerField(verbose_name="Frequencia mensal de uso")
 
@@ -25,10 +24,13 @@ class DemandasDeAgua(models.Model):
         default=PESSOA,
     )
 
+    demanda = models.BooleanField(verbose_name="Utilizado como demanda", blank=True)
+    oferta = models.BooleanField(verbose_name="Utilizado como oferta", blank=True)
+
     simulacao = models.ForeignKey(
         "simulacao",
         verbose_name="Simulacao pertencente",
-        related_name="demandas",
+        related_name="usos",
         on_delete=models.CASCADE,
     )
 
@@ -85,32 +87,3 @@ class Simulacao(models.Model):
     class Meta:
         verbose_name = "Simulação"
         verbose_name_plural = "Simulações"
-
-
-class OfertasDeAgua(models.Model):
-    def __str__(self):
-        return f"{self.nome} {str(self.simulacao)}"
-
-    nome = models.CharField(verbose_name="Nome da oferta", max_length=100)
-    frequencia_mensal = models.IntegerField(verbose_name="Frequencia mensal de uso")
-
-    indicador = models.FloatField(verbose_name="Indicador de uso final", blank=True)
-    METROS_QUADRADOS = "Litros/m²/dia"
-    PESSOA = "Litros/pessoa/dia"
-    UNIDADE_CHOICES = [
-        (METROS_QUADRADOS, "Litros/m²/dia"),
-        (PESSOA, "Litros/pessoa/dia"),
-    ]
-    unidade = models.CharField(
-        max_length=17,
-        choices=UNIDADE_CHOICES,
-        verbose_name="Unidade de medida do indicador de uso final",
-        default=PESSOA,
-    )
-
-    simulacao = models.ForeignKey(
-        Simulacao,
-        verbose_name="Simulacao pertencente",
-        related_name="ofertas",
-        on_delete=models.CASCADE,
-    )

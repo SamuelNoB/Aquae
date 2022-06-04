@@ -109,14 +109,14 @@
 
                                 </tbody>
                             </table>
-                            <input type="hidden" name="demandas-INITIAL_FORMS" id="id_demandas-INITIAL_FORMS" value="0">
-                            <input type="hidden" name="demandas-TOTAL_FORMS" id="id_demandas-TOTAL_FORMS" value="3">
-                            <input type="hidden" name="demandas-MIN_NUM_FORMS" id="id_demandas-MIN_NUM_FORMS" value="1">
-                            <input type="hidden" name="demandas-MAX_NUM_FORMS" id="id_demandas-MAX_NUM_FORMS" value="100">
+                            <input type="hidden" name="usos-INITIAL_FORMS" id="id_usos-INITIAL_FORMS" value="0">
+                            <input type="hidden" name="usos-TOTAL_FORMS" id="id_usos-TOTAL_FORMS" value="3">
+                            <input type="hidden" name="usos-MIN_NUM_FORMS" id="id_usos-MIN_NUM_FORMS" value="1">
+                            <input type="hidden" name="usos-MAX_NUM_FORMS" id="id_usos-MAX_NUM_FORMS" value="100">
                         </div>
                     </div>
                     <div class="form-row" style="margin: 1em;">
-                        <button class="btn btn-secondary btn-sm" id="addCustomConsumo" type="button" onclick="addFields({k: k, interesse: 'demandas'}); k++">Adicionar</button>
+                        <button class="btn btn-secondary btn-sm" id="addCustomConsumo" type="button" onclick="addFields({k: k, interesse: 'usos'}); k++">Adicionar</button>
                         <span class="d-md-flex align-items-md-center">&nbsp;Outro tipo de uso de água não potável.</span></div>
                     <div class="text-right col-md-12">
                         <button class="btn btn-danger" type="button" data-dismiss="edificacaoForm" id="restaurar">Restaurar</button>
@@ -178,9 +178,9 @@
         const escalas = ["Litros/m²/dia", "Litros/m²/dia", "Litros/pessoa/dia", "Litros/pessoa/dia", "Litros/pessoa/dia"]
 
         let k = 0
-        k = InitFields(k, demanda, freq, Ddiario, escalas, id="table_body", interesse="demandas");
+        k = InitFields(k, demanda, freq, Ddiario, escalas, id="table_body", interesse="usos");
         let btn = document.getElementById("edificacaoForm")
-        btn.addEventListener("submit", function (){readdres(id="table_body", interesse="demandas")}, false)
+        btn.addEventListener("submit", function (){readdres(id="table_body", interesse="usos")}, false)
 
         const reset = document.getElementById("restaurar")
         reset.addEventListener("click", function (){reset_fields(demanda, freq, Ddiario, escalas)}, false)

@@ -1,5 +1,5 @@
 from simulacao.controllers.dimensionamentoController import DimensionamentoController
-from simulacao.models import Simulacao, DemandasDeAgua, OfertasDeAgua
+from simulacao.models import Simulacao, UsosDeAgua
 from simulacao.base_de_dados.models import CaixaDAgua, TarifaDeAgua
 from math import ceil
 
