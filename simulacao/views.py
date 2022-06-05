@@ -40,6 +40,10 @@ import json
 def AAP_RAC_form(request, pk, titulo, categoria, re_path):
     context = {"pk": pk}
     usos = UsosDeAgua.objects.filter(simulacao=pk)
+
+    if isinstance(usos[0].__dict__[categoria], bool):
+        return redirect(re_path, pk=pk)
+
     usos = [uso.nome for uso in usos]
     context["usos"] = usos
     context["titulo"] = titulo
