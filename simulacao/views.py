@@ -180,7 +180,10 @@ class SimulacaoAAP(TemplateView):
             area_irrigacao=area_i,
             area_pisos=area_p,
         )
-        irrigacao = round(individual_d["Irrigação de jardins"], 2)
+        if "Irrigação de jardins" in individual_d:
+            irrigacao = round(individual_d["Irrigação de jardins"], 2)
+        else:
+            irrigacao = 0
 
         # TODO Versoes futuras devem especificar cidade
         pluviometria = np.array(self.get_pluviometria())

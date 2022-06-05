@@ -16,8 +16,8 @@ def get_simulacao(pk):
     # Filtrar uma oferta inexistente nao retorna erro, apenas um queryset vazio
     return {
         "simulacao": Simulacao.objects.get(pk=pk),
-        "demandas_de_agua": DemandasDeAgua.objects.filter(simulacao=pk),
-        "ofertas_de_agua": OfertasDeAgua.objects.filter(simulacao=pk),
+        "demandas_de_agua": UsosDeAgua.objects.filter(simulacao=pk, demanda=True),
+        "ofertas_de_agua": UsosDeAgua.objects.filter(simulacao=pk, oferta=True),
     }
 
 
@@ -39,11 +39,11 @@ def calc_oferta_demanda(pk, interesse, **kwargs):
 
     for oferta in ofertas:
         agua = (oferta.indicador * oferta.frequencia_mensal) / 1000
-        if oferta.unidade == DemandasDeAgua.PESSOA:
+        if oferta.unidade == UsosDeAgua.PESSOA:
             agua = agua * residentes
         elif oferta.nome == "Irrigação de jardins":
             agua = agua * kwargs["area_irrigacao"]
-        elif oferta.unidade == DemandasDeAgua.METROS_QUADRADOS:
+        elif oferta.unidade == UsosDeAgua.METROS_QUADRADOS:
             # DemandasDeAgua.METROS_QUADRADOS é apenas uma string para comparar a unidade de medida
             # Pode ser usada sem perda de generalidade pelo RAC
             agua = agua * kwargs["area_pisos"]
