@@ -36,6 +36,20 @@ from math import ceil
 import numpy as np
 import json
 
+
+def usos_update(pk, escolhas, categoria):
+    """
+    Recebe a chave primária, o fomrulário que o usuário preencheu
+    e a categoria para a qual preencheu e por fim atualiza essas
+    escolhas na base de dados
+    """
+    usos = UsosDeAgua.objects.filter(simulacao=pk)
+    for uso in usos:
+        presenca = uso.nome in escolhas
+        setattr(uso, categoria, presenca)
+        uso.save()
+
+
 # Create your views here.
 
 
@@ -80,15 +94,8 @@ def seleciona_demanda(request, pk):
         if len(request.POST) == 1 or len(request.POST) - 1 > len(usos):
             return render(request, "AAP-form.html", context)
         else:
-            for uso in usos:
-                if uso in request.POST:
-                    UsosDeAgua.objects.filter(simulacao=pk, nome=uso).update(
-                        demanda=True
-                    )
-                elif uso not in request.POST:
-                    UsosDeAgua.objects.filter(simulacao=pk, nome=uso).update(
-                        demanda=False
-                    )
+            usos_update(pk=pk, escolhas=request.POST, categoria="demanda")
+            return redirect("simulacao:seleciona_simulacao", pk=pk)
     return render(request, "AAP-form.html", context)
 
 
