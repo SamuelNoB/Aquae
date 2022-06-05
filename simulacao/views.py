@@ -188,6 +188,9 @@ class SimulacaoAAP(TemplateView):
             area_irrigacao=area_i,
             area_pisos=area_p,
         )
+        if not individual_d:
+            return redirect("simulacao:seleciona_demanda", pk=pk)
+
         if "Irrigação de jardins" in individual_d:
             irrigacao = round(individual_d["Irrigação de jardins"], 2)
         else:
