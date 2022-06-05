@@ -37,6 +37,21 @@ import numpy as np
 import json
 
 
+def AAP_RAC_form(request, pk, titulo, categoria, re_path):
+    context = {"pk": pk}
+    usos = UsosDeAgua.objects.filter(simulacao=pk)
+    usos = [uso.nome for uso in usos]
+    context["usos"] = usos
+    context["titulo"] = titulo
+    if request.method == "POST":
+        if len(request.POST) == 1 or len(request.POST) - 1 > len(usos):
+            return render(request, "OD-form.html", context)
+        else:
+            usos_update(pk=pk, escolhas=request.POST, categoria=categoria)
+            return redirect(re_path, pk=pk)
+    return render(request, "OD-form.html", context)
+
+
 def usos_update(pk, escolhas, categoria):
     """
     Recebe a chave primária, o fomrulário que o usuário preencheu
@@ -85,18 +100,14 @@ def edificacao(request):
     return render(request, "edificacao.html", context)
 
 
-def seleciona_demanda(request, pk):
-    context = {"pk": pk}
-    usos = UsosDeAgua.objects.filter(simulacao=pk)
-    usos = [uso.nome for uso in usos]
-    context["usos"] = usos
-    if request.method == "POST":
-        if len(request.POST) == 1 or len(request.POST) - 1 > len(usos):
-            return render(request, "AAP-form.html", context)
-        else:
-            usos_update(pk=pk, escolhas=request.POST, categoria="demanda")
-            return redirect("simulacao:seleciona_simulacao", pk=pk)
-    return render(request, "AAP-form.html", context)
+def AAP_form(request, pk):
+    return AAP_RAC_form(
+        request,
+        pk,
+        "Demandas de reúso de água da chuva",
+        "demanda",
+        "simulacao:seleciona_simulacao",
+    )
 
 
 def seleciona_simulacao(request, pk):
@@ -104,24 +115,13 @@ def seleciona_simulacao(request, pk):
 
 
 def RACform(request, pk):
-    oferta_factory = inlineformset_factory(Simulacao, OfertasDeAgua, fields="__all__")
-    try:
-        simul_id = Simulacao.objects.get(id=pk)
-    except simulacao.models.Simulacao.DoesNotExist:
-        return redirect("simulacao:edificacao")
-
-    ofertas_avancado = OfertasDeAgua.objects.filter(simulacao=pk)
-    if ofertas_avancado:
-        return redirect("simulacao:simulacao-rac", pk=pk)
-
-    oferta_factory(instance=simul_id)
-    if request.method == "POST":
-        novas_ofertas = oferta_factory(request.POST, instance=simul_id)
-        if novas_ofertas.is_valid():
-            novas_ofertas.save()
-            return redirect("simulacao:simulacao-rac", pk=pk)
-
-    return render(request, "RAC-form.html", {"pk": pk})
+    return AAP_RAC_form(
+        request,
+        pk,
+        "Ofertas de água cinza",
+        "oferta",
+        "simulacao:simulacao-rac",
+    )
 
 
 class SimulacaoAAP(TemplateView):

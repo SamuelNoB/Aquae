@@ -12,7 +12,7 @@ urlpatterns = [
     path("edificacao/", views.edificacao, name="edificacao"),
     re_path(
         r"seleciona-demanda/(?P<pk>\d+)/$",
-        views.seleciona_demanda,
+        views.AAP_form,
         name="seleciona_demanda",
     ),
     re_path(
@@ -25,7 +25,11 @@ urlpatterns = [
         views.SimulacaoAAP.as_view(),
         name="simulacao-aap",
     ),
-    re_path(r"formulario-rac/(?P<pk>\d+)/$", views.RACform, name="formulario-rac"),
+    re_path(
+        r"formulario-rac/(?P<pk>\d+)/$",
+        views.RACform,
+        name="formulario-rac",
+    ),
     re_path(
         r"simulacao-rac/(?P<pk>\d+)/$",
         views.SimulacaoRAC.as_view(),
