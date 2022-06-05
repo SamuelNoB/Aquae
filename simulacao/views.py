@@ -294,7 +294,6 @@ class SimulacaoRAC(TemplateView):
         pessoas = simul.n_pessoas
         n_apts = simul.n_apts
 
-        # Se a simulacao foi encontrada, entao o form da demanda foi preenchido
         individual_demanda = simuladorController.calc_oferta_demanda(
             pk,
             "demandas_de_agua",
@@ -303,6 +302,8 @@ class SimulacaoRAC(TemplateView):
             area_pisos=area_p,
             residentes=pessoas,
         )
+        if not individual_demanda:
+            return redirect("simulacao:seleciona_demanda", pk=pk)
 
         # Buscar uma oferta em uma simulacao existente nao retorna erro
         individual_oferta = simuladorController.calc_oferta_demanda(
