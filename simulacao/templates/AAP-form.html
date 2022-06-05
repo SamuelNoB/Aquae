@@ -12,31 +12,38 @@
                 Demandas de reúso de água da chuva
             </h2>
         </div>
-
-        {% for uso in usos %}
-        <div class="d-flex justify-content-center">
-            <div class="input-group-prepend">
-                <div class="input-group-text">
-                    <input type="checkbox" checked="true" />
+        <form id="demandasForm" method="post">
+            {% csrf_token %} {% for uso in usos %}
+            <div class="d-flex justify-content-center">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <input name="{{uso}}" type="checkbox" checked="true" />
+                    </div>
                 </div>
-            </div>
+                <span
+                    type="text"
+                    class=""
+                    style="
+                        font-weight: bold;
+                        background: #e9ecef;
+                        border: 1px solid #ced4da;
+                        border-radius: 0.25rem;
+                        color: #495057;
+                        height: calc(1.5em + 0.75rem + 2px);
+                        width: calc(12.0em + 1.0rem);
+                        justify-content: center;
+                        display: inline-flex;
+                        align-items: center;
+                    "
+                >{{uso}}
+            </span>
 
-            <input
-                type="text"
-                class=""
-                style="
-                    font-weight: bold;
-                    background: #e9ecef;
-                    border: 1px solid #ced4da;
-                    border-radius: 0.25rem;
-                    color: #495057;
-                    height: calc(1.5em + 0.75rem + 2px); ;
-                "
-                readonly
-                value="{{uso}}"
-            />
+            </div>
+            {% endfor %}
+        </form>
+        <div class="text-right col-md-12">
+            <button id="submit" class="btn btn-primary" type="submit" style="margin: 1em;" form="demandasForm">Próximo</button></div>
         </div>
-        {% endfor %}
     </div>
 </section>
 {% endblock content %}

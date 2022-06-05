@@ -76,6 +76,19 @@ def seleciona_demanda(request, pk):
     usos = UsosDeAgua.objects.filter(simulacao=pk)
     usos = [uso.nome for uso in usos]
     context["usos"] = usos
+    if request.method == "POST":
+        if len(request.POST) == 1 or len(request.POST) - 1 > len(usos):
+            return render(request, "AAP-form.html", context)
+        else:
+            for uso in usos:
+                if uso in request.POST:
+                    UsosDeAgua.objects.filter(simulacao=pk, nome=uso).update(
+                        demanda=True
+                    )
+                elif uso not in request.POST:
+                    UsosDeAgua.objects.filter(simulacao=pk, nome=uso).update(
+                        demanda=False
+                    )
     return render(request, "AAP-form.html", context)
 
 
