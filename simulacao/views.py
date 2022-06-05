@@ -38,6 +38,10 @@ import json
 
 
 def AAP_RAC_form(request, pk, titulo, categoria, re_path):
+    """
+    Função utilizada nas views do formulário do AAP e do RAC
+    para validar o formulário e salvar as escolhas na base de dados
+    """
     context = {"pk": pk}
     usos = UsosDeAgua.objects.filter(simulacao=pk)
 
