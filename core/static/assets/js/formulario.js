@@ -117,39 +117,25 @@ function InitFields(
 /*A necessidade dessa funcao se faz no Django, que ao saber que tem X formularios procura os X primeiros formularios (no formset)*/
 /*Em outras palavras, se o total de forms for 5 entao ele procura id_ofertas-0, id_ofertas-1, ..., id_ofertas-4*/
 function readdres(id = "table_body", interesse = "ofertas") {
-    let tab_user = document.getElementById(id);
-    let rows = tab_user.getElementsByTagName("tr");
-    let k_true = rows.length;
-    let total_forms = document.getElementById(`id_${interesse}-TOTAL_FORMS`);
-    total_forms.setAttribute("value", k_true);
+    const tab_body = $(`#${id} tr`);
+    $("#id_usos-TOTAL_FORMS").attr("value", tab_body.length);
 
-    const attr = ["-nome", "-frequencia_mensal", "-indicador"];
-    let inputs = tab_user.getElementsByTagName("input");
-    let k_array = [];
-    for (let i = 0; i < k_true; i++) {
-        k_array.push(i);
-        k_array.push(i);
-        k_array.push(i);
-    }
-    for (let i = 0; i < inputs.length; i++) {
-        inputs[i].setAttribute(
-            "name",
-            `${interesse}-${k_array[i]}${attr[i % 3]}`
-        );
-        inputs[i].setAttribute(
-            "id",
-            `id_${interesse}-${k_array[i]}${attr[i % 3]}`
-        );
-
+    tab_body.each(function () {
+        let index = this.rowIndex - 1;
+        const cells = $(this).find("input");
+        cells[0].setAttribute("name", `usos-${index}-nome`);
         /*Valores fracionarios devem ser informados com '.' e nao com ','*/
-        if (inputs[i].value.includes(",") && i % 3 != 0) {
-            inputs[i].value = realFloat(inputs[i].value);
-        }
         /*Valores de frequencia mensal devem ser inteiros*/
-        if (inputs[i].value.includes(".") && i % 3 == 1) {
-            inputs[i].value = Math.ceil(inputs[i].value);
-        }
-    }
+        cells[1].setAttribute("name", `usos-${index}-frequencia_mensal`);
+        cells[1].setAttribute(
+            "value",
+            `${Math.ceil(realFloat(cells[1].value))}`
+        );
+        cells[2].setAttribute("name", `usos-${index}-indicador`);
+        cells[2].setAttribute("value", `${realFloat(cells[2].value)}`);
+        const sel = $(this).find("select")[0];
+        sel.setAttribute("name", `usos-${index}-unidade`);
+    });
 }
 
 /*Funcao que reinicia o formulario, deletando os campos existentes e chamando InitFields outra vez*/
