@@ -156,3 +156,21 @@ function reset_fields(
     k = InitFields(k, tipo, padrao_freq, padrao_ind, escala, id, interesse);
     return k;
 }
+
+function gera_estiagem(id, chunk_meses) {
+    const estiagem = $(`#${id}`);
+    for (let i = 0; i < chunk_meses.length; i++) {
+        let row = "";
+        for (let j = 0; j < chunk_meses[i].length; j++) {
+            row += `<div class="col">
+                            <div class="input-group-text">
+                                <span style="font-weight: bold;">${chunk_meses[i][j]}</span>
+                                <input type="checkbox"/>
+                            </div>
+                        </div>`;
+        }
+        estiagem.append(`<div class="row">
+                            ${row}
+                        </div>`);
+    }
+}
