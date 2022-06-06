@@ -21,7 +21,7 @@ from .base_de_dados.models import (
     TarifaDeAgua,
     Cidade,
 )
-from .utils import get_dollar
+from .utils import chunk_list, get_dollar, meses
 
 from .controllers.dimensionamentoController import DimensionamentoController
 from .controllers.demandaController import DemandaController
@@ -79,7 +79,7 @@ def usos_update(pk, escolhas, categoria):
 
 
 def edificacao(request):
-    context = {}
+    context = {"chunk_meses": json.dumps(chunk_list(meses, n=4))}
     consumo_factory = inlineformset_factory(
         Simulacao,
         UsosDeAgua,
@@ -91,9 +91,13 @@ def edificacao(request):
     context["nova_edificacao"] = nova_edificacao
 
     if request.is_ajax():
-        uf = request.GET.get("uf")
-        nomes = list(map(lambda cidade: cidade.nome, Cidade.objects.filter(uf=uf)))
-        return JsonResponse({"cidades": nomes}, status=200)
+        related = request.GET.get("related")
+        if related == "uf":
+            uf = request.GET.get("uf")
+            nomes = list(map(lambda cidade: cidade.nome, Cidade.objects.filter(uf=uf)))
+            return JsonResponse({"cidades": nomes}, status=200)
+        elif related == "pluviometria":
+            cidade = request.GET.get("cidade")
 
     if request.method == "POST":
         nova_edificacao = nova_edificacao(request.POST)

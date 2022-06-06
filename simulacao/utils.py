@@ -35,6 +35,29 @@ ESTADOS_BR = (
 )
 
 
+meses = [
+    "Jan",
+    "Fev",
+    "Mar",
+    "Abr",
+    "Mai",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Set",
+    "Out",
+    "Nov",
+    "Dez",
+]
+
+
+def chunk_list(lst, n=3):
+    """
+    Divide a lista em grupos de tamanho n
+    """
+    return [lst[i : i + n] for i in range(0, len(lst), n)]
+
+
 def get_dollar():
     res = requests.get("https://economia.awesomeapi.com.br/json/all/USD-BRL")
     dollar_data = res.json()
