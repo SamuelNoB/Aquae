@@ -164,8 +164,12 @@ function gera_estiagem(id, chunk_meses) {
         for (let j = 0; j < chunk_meses[i].length; j++) {
             row += `<div class="col">
                             <div class="input-group-text">
-                                <span style="font-weight: bold;">${chunk_meses[i][j]}</span>
-                                <input type="checkbox"/>
+                                <span style="font-weight: bold;">${
+                                    chunk_meses[i][j]
+                                }</span>
+                                <input id="estiagem-${
+                                    i * chunk_meses[i].length + j
+                                }" type="checkbox"/>
                             </div>
                         </div>`;
         }

@@ -179,7 +179,14 @@
                 type: 'get',
                 data: {
                     related: "pluviometria", 
+                    uf: $("#id_estado").val(),
                     cidade: this.value
+                },
+                success: function(response) {
+                    const estiagem = response.estiagem
+                    for (let mes=0; mes < estiagem.length; mes++){
+                        $(`#estiagem-${mes}`).attr("checked", estiagem[mes])
+                    }
                 }
             })
         })

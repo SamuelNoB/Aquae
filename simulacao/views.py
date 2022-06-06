@@ -33,6 +33,7 @@ from .controllers import simuladorController
 import simulacao
 
 from math import ceil
+from statistics import median
 import numpy as np
 import json
 
@@ -97,7 +98,18 @@ def edificacao(request):
             nomes = list(map(lambda cidade: cidade.nome, Cidade.objects.filter(uf=uf)))
             return JsonResponse({"cidades": nomes}, status=200)
         elif related == "pluviometria":
+            uf = request.GET.get("uf")
             cidade = request.GET.get("cidade")
+
+            cidade_obj = Cidade.objects.get(uf=uf, nome=cidade)
+            indices = IndicePluviometrico.objects.filter(cidade=cidade_obj)
+
+            mesMes = [[] for _ in range(12)]
+            for i in indices:
+                mesMes[i.mes - 1].append(i.media_pluviometrica)
+            estiagem = [median(mes) < 50 for mes in mesMes]
+
+            return JsonResponse({"estiagem": estiagem}, status=200)
 
     if request.method == "POST":
         nova_edificacao = nova_edificacao(request.POST)
