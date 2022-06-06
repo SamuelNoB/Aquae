@@ -164,7 +164,7 @@ function gera_estiagem(id, chunk_meses) {
         for (let j = 0; j < chunk_meses[i].length; j++) {
             row += `<div class="col">
                             <div class="input-group-text">
-                                <span style="font-weight: bold;">${
+                                <span style="font-weight: bold; margin-right: 10px">${
                                     chunk_meses[i][j]
                                 }</span>
                                 <input id="estiagem-${
