@@ -92,6 +92,10 @@
                                     </select>
                                 </div>
                             </div>
+                                <div class="col-md-6" id="div_estiagem">
+                                    <label id="lab_estiagem" style="font-weight: bold;">Meses de estiagem</label>
+                                </div>
+                            </div>
                         </div>
                     <h3 style="font-weight: bold;margin: 0px 16px;">Demanda de água não potável</h3>
                     <div id="consumoAgua" style="margin: 0px 16px;">
@@ -156,6 +160,7 @@
                 url: '',
                 type: 'get',
                 data: {
+                    related: "uf", 
                     uf: this.value
                 },
                 success: function (response) {
@@ -168,10 +173,37 @@
                 }
             })
         });
+        $("#id_cidade").change(function() {
+            $.ajax({
+                url: '',
+                type: 'get',
+                data: {
+                    related: "pluviometria", 
+                    cidade: this.value
+                }
+            })
+        })
     </script>
     <script src={% static 'assets/js/formulario.js' %}>
     </script>
     <script>
+        const chunk_meses = {{ chunk_meses|safe }}
+        const estiagem = $("#div_estiagem")
+        for (let i = 0; i < chunk_meses.length; i++) {
+            let row = ""
+            for (let j = 0; j < chunk_meses[i].length; j++) {
+                row += `<div class="col">
+                            <div class="input-group-text">
+                                <span style="font-weight: bold;">${chunk_meses[i][j]}</span>
+                                <input type="checkbox"/>
+                            </div>
+                        </div>`
+            }
+            estiagem.append(`<div class="row">
+                                ${row}
+                            </div>`)
+            
+        }
         const demanda = ["Irrigação de jardins", "Lavagem de pisos", "Descarga sanitária", "Lavagem de roupas", "Tanque"];
         const Ddiario = ["1", "1", "32", "31", "19"];
         const freq =  ["30", "4", "30", "8", "30"];
