@@ -153,11 +153,15 @@ def RACform(request, pk):
 class SimulacaoAAP(TemplateView):
     template_name = "simuladorAAP.html"
 
-    def get_pluviometria(self, cidade="BRASILIA"):
-        local = Cidade.objects.get(nome=cidade)
-        pluviometria = IndicePluviometrico.objects.filter(ano=2019, cidade=local)
-        pluviometria = pluviometria.values_list("media_pluviometrica")
-        pluviometria = list(map(lambda x: x[0], pluviometria))
+    def get_pluviometria(self, uf, cidade="BRASILIA"):
+        local = Cidade.objects.get(nome=cidade, uf=uf)
+        indices = IndicePluviometrico.objects.filter(cidade=local)
+
+        mesMes = [[] for _ in range(12)]
+        for i in indices:
+            mesMes[i.mes - 1].append(i.media_pluviometrica)
+
+        pluviometria = [median(mes) for mes in mesMes]
         return pluviometria
 
     def get_equips(self, area_coleta):
@@ -195,6 +199,8 @@ class SimulacaoAAP(TemplateView):
         pessoas = simul.n_pessoas
         n_apts = simul.n_apts
         n_pavimentos = simul.n_pavimentos
+        uf = simul.estado
+        cidade = simul.cidade
         coeficiente_esc = 0.9
         coeficiente_filt = 0.9
 
@@ -214,8 +220,7 @@ class SimulacaoAAP(TemplateView):
         else:
             irrigacao = 0
 
-        # TODO Versoes futuras devem especificar cidade
-        pluviometria = np.array(self.get_pluviometria())
+        pluviometria = np.array(self.get_pluviometria(uf=uf, cidade=cidade))
         meses_est = np.where(pluviometria < 50)
         n_meses_est = len(meses_est[0])
         pluviometria_total = pluviometria.sum()
