@@ -167,9 +167,11 @@ function gera_estiagem(id, chunk_meses) {
                                 <span style="font-weight: bold; margin-right: 10px">${
                                     chunk_meses[i][j]
                                 }</span>
-                                <input id="estiagem-${
-                                    i * chunk_meses[i].length + j
-                                }" type="checkbox"/>
+                                <input 
+                                    name="${chunk_meses[i][j].toLowerCase()}"
+                                    id="estiagem-${
+                                        i * chunk_meses[i].length + j
+                                    }" type="checkbox"/>
                             </div>
                         </div>`;
         }

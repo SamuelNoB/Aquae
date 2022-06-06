@@ -81,6 +81,19 @@ class Simulacao(models.Model):
     area_pisos = models.FloatField(verbose_name="Área de pisos")
     area_irrigacao = models.FloatField(verbose_name="Área de irrigação")
 
+    jan = models.BooleanField(verbose_name="Estiagem em janeiro", default=False)
+    fev = models.BooleanField(verbose_name="Estiagem em fevereiro", default=False)
+    mar = models.BooleanField(verbose_name="Estiagem em março", default=False)
+    abr = models.BooleanField(verbose_name="Estiagem em abril", default=False)
+    mai = models.BooleanField(verbose_name="Estiagem em maio", default=True)
+    jun = models.BooleanField(verbose_name="Estiagem em junho", default=True)
+    jul = models.BooleanField(verbose_name="Estiagem em julho", default=True)
+    ago = models.BooleanField(verbose_name="Estiagem em agosto", default=True)
+    set = models.BooleanField(verbose_name="Estiagem em setembro", default=True)
+    out = models.BooleanField(verbose_name="Estiagem em outubro", default=False)
+    nov = models.BooleanField(verbose_name="Estiagem em novembro", default=False)
+    dez = models.BooleanField(verbose_name="Estiagem em dezembro", default=False)
+
     def __str__(self):
         return f"Simulação {self.id}"
 
