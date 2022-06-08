@@ -11,15 +11,13 @@ from .models import (
 import json
 import django
 from ..utils import get_tarifa_caesb, get_ni_ipca
+import simulacao
 
 # indice_pluviometrico_mock = {
 #     "Brasília": {
 #         "2019": [270, 213, 210, 121, 36, 10, 6, 13, 48, 171, 220, 259],
 #     }
 # }
-
-with open("simulacao/base_de_dados/Pluviometria_Brasil.json", "r") as file:
-    indice_pluviometrico_mock = json.load(file)
 
 areas_de_coleta = [
     (0, 150),
@@ -158,36 +156,41 @@ capacidades_de_tratamento = [
 
 
 def create_indices_pluviometricos():
+    return
     for estado in indice_pluviometrico_mock:
-        for cidade, anos in indice_pluviometrico_mock[estado].items():
+        for cidade__nome__, anos in indice_pluviometrico_mock[estado].items():
             # Se a cidade ja existir recria-se a mesma
             try:
-                nova_cidade = Cidade.objects.create(nome=cidade, uf=estado)
-            except django.db.utils.IntegrityError:
-                nova_cidade = Cidade.objects.get(nome=cidade, uf=estado).delete()
-                nova_cidade = Cidade.objects.create(nome=cidade, uf=estado)
-
-            nova_cidade.save()
+                cidade = Cidade.objects.get(nome=cidade__nome__, uf=estado)
+            except simulacao.base_de_dados.models.Cidade.DoesNotExist:
+                cidade = Cidade.objects.create(nome=cidade__nome__, uf=estado)
+                cidade.save()
 
             for ano, valores in anos.items():
                 indices = map(
-                    lambda valor: IndicePluviometrico.objects.create(
-                        cidade=nova_cidade,
+                    lambda valor: IndicePluviometrico.objects.update_or_create(
+                        cidade=cidade,
                         ano=int(ano),
                         mes=int(valor),
                         media_pluviometrica=valores[valor],
+                        defaults={
+                            "cidade": cidade,
+                            "ano": int(ano),
+                            "mes": int(valor),
+                            "media_pluviometrica": valores[valor],
+                        },
                     ),
                     valores,
                 )
                 for indice in indices:
-                    indice.save()
+                    mm, exist = indice
+                    if not exist:
+                        mm.save()
 
 
 # TODO reorganizar funcoes semelhantes para evitar multiplos requests do IPCA
 def create_tarifas():
-    data = {"Brasília": get_tarifa_caesb()}
-    with open("./simulacao/base_de_dados/tarifas.json", "w") as outfile:
-        json.dump(data, outfile)
+    data = {"BRASILIA": get_tarifa_caesb()}
     for cidade, tarifas in data.items():
         cidade_obj = Cidade.objects.get(nome=cidade)
 
