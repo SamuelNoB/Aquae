@@ -13,11 +13,6 @@ import django
 from ..utils import get_tarifa_caesb, get_ni_ipca
 import simulacao
 
-# indice_pluviometrico_mock = {
-#     "Brasília": {
-#         "2019": [270, 213, 210, 121, 36, 10, 6, 13, 48, 171, 220, 259],
-#     }
-# }
 
 areas_de_coleta = [
     (0, 150),
