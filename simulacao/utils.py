@@ -2,6 +2,7 @@ import requests
 from datetime import date, timedelta
 from lxml import html
 import json
+from tabula import read_pdf
 
 
 ESTADOS_BR = (
@@ -34,6 +35,35 @@ ESTADOS_BR = (
     ("TO", "TO"),
 )
 
+Estado_Sigla = {
+    "Acre": "AC",
+    "Alagoas": "AL",
+    "Amapá": "AP",
+    "Amazonas": "AM",
+    "Bahia": "BA",
+    "Ceará": "CE",
+    "Espírito Santo": "ES",
+    "Goiás": "GO",
+    "Maranhão": "MA",
+    "Mato Grosso": "MT",
+    "Mato Grosso do Sul": "MS",
+    "Minas Gerais": "MG",
+    "Pará": "PA",
+    "Paraíba": "PB",
+    "Paraná": "PR",
+    "Pernambuco": "PE",
+    "Piauí": "PI",
+    "Rio de Janeiro": "RJ",
+    "Rio Grande do Norte": "RN",
+    "Rio Grande do Sul": "RS",
+    "Rondônia": "RO",
+    "Roraima": "RR",
+    "Santa Catarina": "SC",
+    "São Paulo": "SP",
+    "Sergipe": "SE",
+    "Tocantins": "TO",
+    "Distrito Federal": "DF",
+}
 
 meses = [
     "Jan",
@@ -90,49 +120,22 @@ def get_ni_ipca():
     return ni
 
 
-def get_tarifa_caesb():
-    response = requests.get("https://www.caesb.df.gov.br/tarifas-e-precos.html")
-    doc = html.fromstring(response.content)
+def get_tarifa():
+    ano = date.today().year - 3
+    snis = f"http://www.snis.gov.br/downloads/diagnosticos/ae/{ano}/Diagnostico-SNIS-AE-{ano}-Capitulo-12.pdf"
+    df = read_pdf(
+        input_path=snis,
+        pages=4,
+        area=[290, 80, 800, 600],
+    )[0]
 
-    # O site da CAESB tem uma incosistencia na estrutura
-    aliquota = '//*[@id="conceitual"]/div[3]/center/table[1]/tbody/tr[3]/td[4]/div'
-    vol_faixa = '//*[@id="conceitual"]/div[3]/center/table[1]/tbody/tr[3]/td[3]/div'
+    df = df.iloc[:, 0:2]
+    df.set_axis(["UF", "Tarifa"], axis=1, inplace=True)
+    df["Tarifa"] = df["Tarifa"].apply(lambda tarifa: float(tarifa.replace(",", ".")))
+    df.query(
+        "UF not in ['Brasil', 'Sul', 'Sudeste', 'Centro-Oeste', 'Norte', 'Nordeste']",
+        inplace=True,
+    )
+    df["UF"] = df["UF"].apply(lambda uf: Estado_Sigla[uf])
 
-    tarifa = doc.xpath(aliquota)[0].text.lstrip()
-    vol_faixa = int(doc.xpath(vol_faixa)[0].text.lstrip())
-
-    vol0 = 0
-    tarifas = [
-        {
-            "min": vol0,
-            "max": vol0 + vol_faixa,
-            "tarifa": float(tarifa.replace(",", ".")),
-        }
-    ]
-    vol0 += vol_faixa + 1
-
-    for i in range(4, 9):
-        aliquota = (
-            f'//*[@id="conceitual"]/div[3]/center/table[1]/tbody/tr[{i}]/td[4]/div/span'
-        )
-        vol_faixa = (
-            f'//*[@id="conceitual"]/div[3]/center/table[1]/tbody/tr[{i}]/td[3]/div'
-        )
-        tarifa = doc.xpath(aliquota)[0].text.lstrip()
-
-        vol_faixa = doc.xpath(vol_faixa)
-        if not vol_faixa:
-            vol_faixa = 9999999
-        else:
-            vol_faixa = int(vol_faixa[0].text.lstrip())
-
-        tarifas.append(
-            {
-                "min": vol0,
-                "max": vol0 + vol_faixa - 1,
-                "tarifa": float(tarifa.replace(",", ".")),
-            }
-        )
-        vol0 += vol_faixa
-
-    return tarifas
+    return df

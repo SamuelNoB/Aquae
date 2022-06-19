@@ -10,7 +10,7 @@ from .models import (
 )
 import json
 import django
-from ..utils import get_tarifa_caesb, get_ni_ipca
+from ..utils import get_ni_ipca, get_tarifa
 import simulacao
 
 
@@ -185,16 +185,13 @@ def create_indices_pluviometricos():
 
 # TODO reorganizar funcoes semelhantes para evitar multiplos requests do IPCA
 def create_tarifas():
-    data = {"BRASILIA": get_tarifa_caesb()}
-    for cidade, tarifas in data.items():
-        cidade_obj = Cidade.objects.get(nome=cidade)
-
-        for tarifa in tarifas:
+    for row in get_tarifa().iterrows():
+        uf, tarifa = row[1][0], row[1][1]
+        cidades = Cidade.objects.filter(uf=uf)
+        for cidade in cidades:
             nova_tarifa = TarifaDeAgua.objects.create(
-                cidade=cidade_obj,
-                min=tarifa["min"],
-                max=tarifa["max"],
-                tarifa=tarifa["tarifa"],
+                cidade=cidade,
+                tarifa=tarifa,
             )
             nova_tarifa.save()
 

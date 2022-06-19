@@ -23,8 +23,6 @@ class Cidade(models.Model):
 
 
 class TarifaDeAgua(models.Model):
-    min = models.IntegerField("Faixa de consumo mínima", default=0)
-    max = models.IntegerField("Faixa de consumo máxima", null=True)
     tarifa = models.FloatField("tarifa", default=0)
 
     cidade = models.ForeignKey(
@@ -35,7 +33,7 @@ class TarifaDeAgua(models.Model):
     )
 
     def __str__(self):
-        return f"{self.cidade}: {self.min}\t{self.max}\tTarifa:{self.tarifa}"
+        return f"{self.cidade}\t{self.tarifa}"
 
     class Meta:
         verbose_name = "Tarifa de água"
