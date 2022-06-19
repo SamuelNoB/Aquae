@@ -262,7 +262,7 @@ class SimulacaoAAP(TemplateView):
             demanda_g_ld
         )
 
-        tarifa = simuladorController.get_tarifa(consumo) * (1 + esgoto)
+        tarifa = simuladorController.get_tarifa(uf=uf, cidade=cidade) * (1 + esgoto)
 
         context = {
             "pk": pk,
@@ -319,6 +319,8 @@ class SimulacaoRAC(TemplateView):
         esgoto = simul.tarifa_esgoto / 100
         pessoas = simul.n_pessoas
         n_apts = simul.n_apts
+        uf = simul.estado
+        cidade = simul.cidade
 
         individual_demanda = simuladorController.calc_oferta_demanda(
             pk,
@@ -354,7 +356,7 @@ class SimulacaoRAC(TemplateView):
             demanda_g_ld
         )
 
-        tarifa = simuladorController.get_tarifa(consumo) * (1 + esgoto)
+        tarifa = simuladorController.get_tarifa(uf=uf, cidade=cidade) * (1 + esgoto)
 
         context = {
             "pk": pk,
