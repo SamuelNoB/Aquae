@@ -104,13 +104,13 @@
                                 <thead>
                                     <tr>
                                         <th data-toggle="tooltip" data-bss-tooltip="" style="width: 25%;" title="nome da destinação da demanda de água não potável.">Tipo de uso</th>
-                                        <th data-toggle="tooltip" data-bss-tooltip="" style="width: 35%;" title="Quantidade de usos ao mês.">Frequência mensal de uso</th>
-                                        <th data-toggle="tooltip" data-bss-tooltip="" style="width: 35%;" title="Quantidade de litros usados em um dia. Preenchido com valores pré definidos de acordo com consumo médio mensal de água no Distrito Federal.">Indicador de uso final</th>
+                                        <th data-toggle="tooltip" data-bss-tooltip="" style="width: 20%;" title="Quantidade de litros utilizados por minuto, ciclo ou descarga. Preenchido com valores pré definidos de acordo com consumo médio mensal de água no Distrito Federal.">Vazão estimada</th>
+                                        <th data-toggle="tooltip" data-bss-tooltip="" style="width: 25%;" title="Quantidade de usos ao mês.">Frequência mensal de uso</th>
+                                        <th data-toggle="tooltip" data-bss-tooltip="" style="width: 25%;" title="Quantidade de litros usados em um dia. Preenchido com valores pré definidos de acordo com consumo médio mensal de água no Distrito Federal.">Indicador de uso final</th>
                                         <th style="width: 5%;">Deletar</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table_body">
-
                                 </tbody>
                             </table>
                             <input type="hidden" name="usos-INITIAL_FORMS" id="id_usos-INITIAL_FORMS" value="0">
@@ -197,12 +197,13 @@
         const chunk_meses = {{ chunk_meses|safe }}
         gera_estiagem("div_estiagem", chunk_meses)
         const demanda = ["Irrigação de jardins", "Lavagem de pisos", "Descarga sanitária", "Lavagem de roupas", "Tanque"];
+        const vazoes = ["20", "20", "9", "135", "6"];
         const Ddiario = ["1", "1", "32", "31", "19"];
         const freq =  ["30", "4", "30", "8", "30"];
         const escalas = ["Litros/m²/dia", "Litros/m²/dia", "Litros/pessoa/dia", "Litros/pessoa/dia", "Litros/pessoa/dia"]
 
         let k = 0
-        k = InitFields(k, demanda, freq, Ddiario, escalas, id="table_body", interesse="usos");
+        k = InitFields(k, demanda, vazoes, freq, Ddiario, escalas, id="table_body", interesse="usos");
         let btn = document.getElementById("edificacaoForm")
         btn.addEventListener("submit", function (){readdres(id="table_body", interesse="usos")}, false)
 

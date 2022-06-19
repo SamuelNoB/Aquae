@@ -6,7 +6,7 @@ function realFloat(real) {
 /*Funcao que adiciona todos os campos de uma linha do formulario*/
 function addFields({
     k,
-    dados = ["", 1, 1, "Litros/pessoa/dia"],
+    dados = ["", 1, 1, 1, "Litros/pessoa/dia"],
     id = "table_body",
     initial = Boolean(false),
     interesse,
@@ -19,11 +19,19 @@ function addFields({
                 class="form-control"
                 required `;
 
+    let vazao = `type="numeric" 
+                id="id_${interesse}${k}-vazao"
+                name="${interesse}-${k}-vazao"
+                min="1"
+                value="${dados[1]}"
+                class="form-control"
+                required `;
+
     let freq = `type="numeric" 
                 id="id_${interesse}${k}-frequencia_mensal"
                 name="${interesse}-${k}-frequencia_mensal"
                 min="1"
-                value="${dados[1]}"
+                value="${dados[2]}"
                 class="form-control"
                 required `;
 
@@ -31,7 +39,7 @@ function addFields({
                     id="id_${interesse}${k}-indicador"
                     name="${interesse}-${k}-indicador"
                     min="1"
-                    value="${dados[2]}"
+                    value="${dados[3]}"
                     class="form-control"
                     required `;
 
@@ -42,7 +50,7 @@ function addFields({
             `readonly 
             style="position: relative; font-weight: bold;"`;
 
-        unidade_de_medida = dados[3];
+        unidade_de_medida = dados[4];
     } else {
         uso =
             uso +
@@ -59,6 +67,14 @@ function addFields({
 
     const $row = $(`#${id}`).append(`<tr id="${interesse}${k}">
                                         <td><input ${uso}></td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input ${vazao}>
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">L/min</span>
+                                                </div>
+                                            </div>
+                                        </td>
                                         <td>
                                             <div class="input-group">
                                                 <input ${freq}>
@@ -92,6 +108,7 @@ function addFields({
 function InitFields(
     k,
     tipo,
+    vazao,
     padrao_freq,
     padrao_ind,
     escala,
@@ -100,7 +117,13 @@ function InitFields(
 ) {
     const n = tipo.length;
     for (let i = 0; i < n; i++) {
-        let padroes = [tipo[i], padrao_freq[i], padrao_ind[i], escala[i]];
+        let padroes = [
+            tipo[i],
+            vazao[i],
+            padrao_freq[i],
+            padrao_ind[i],
+            escala[i],
+        ];
         addFields({
             k: k,
             dados: padroes,
