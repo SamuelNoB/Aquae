@@ -35,34 +35,34 @@
                             <div class="form-group col-md-4" id="div_n_pavimentos">
                                 <label class="text-left" id="lab_n_pavimentos" style="font-weight: bold;">{{ nova_edificacao.n_pavimentos.label }}</label>
                                 <div class="input-group">
-                                    {% render_field nova_edificacao.n_pavimentos class="form-control col-md-10" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="00" title="Altura total da residencia em número de pavimentos" %}
+                                    {% render_field nova_edificacao.n_pavimentos class="form-control col-md-10" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" max="17" min="1" title="Altura total da residencia em número de pavimentos" %}
                                 </div>
                             </div>
                             <div class="form-group col-md-4" id="totalApartamentos" style="padding: 0px 5px;">
                                 <label class="text-left" id="lab_totalApartamentos" style="font-weight: bold;">{{ nova_edificacao.n_apts.label }}</label>
-                                {%  render_field nova_edificacao.n_apts class="form-control col-md-10" disabled="" min="0" %}
+                                {%  render_field nova_edificacao.n_apts class="form-control col-md-10" disabled="" min="1" %}
                             </div>
                             
                             <div class="form-group col-md-4" id="div_n_moradores" style="padding: 0px 5px;">
                                 <label class="text-left" id="aptMoradores" style="font-weight: bold;">Número de moradores</label>
-                                {%  render_field nova_edificacao.n_pessoas class="form-control col-md-10" min="0"  %}
+                                {%  render_field nova_edificacao.n_pessoas class="form-control col-md-10" min="1"  %}
                             </div>
                             <div class="form-group col-md-7" style="padding: 0px 5px; margin-right: -18%;"><label style="font-weight: bold;">Área de Cobertura&nbsp;</label>
                                 <div class="input-group">
-                                    {% render_field nova_edificacao.area_cobertura class="form-control col-md-6" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="00" title="Área de cobertura" step=".01" value="0" %}
+                                    {% render_field nova_edificacao.area_cobertura class="form-control col-md-6" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="0.1" title="Área de cobertura" step=".01" value="0" %}
                                     <div class="input-group-append"><span class="input-group-text">m²</span></div>
                                 </div><small class="form-text text-muted">Área de cobertura da residência para coleta.</small>
                             </div>
                             
                             <div class="form-group col-md-6" style="padding: 0px 5px;"><label style="font-weight: bold;">Área de pisos</label>
                                 <div class="input-group">
-                                    {% render_field nova_edificacao.area_pisos class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="00" title="Área de pisos" step=".01" value="0" %}
+                                    {% render_field nova_edificacao.area_pisos class="form-control col-md-7" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="0.01" title="Área de pisos" step=".01" value="0" %}
                                     <div class="input-group-append"><span class="input-group-text">m²<br></span></div>
                                 </div><small class="form-text text-muted">Área de pisos para lavagem da residência em m².</small>
                             </div>
                             <div id="div_irrigacao" class="form-group col-md-2"><label id="lab_irrigacao" style="font-weight: bold;">Área para irrigação</label>
                                 <div class="input-group">
-                                    {% render_field nova_edificacao.area_irrigacao class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="00" title="Área para irrigação" step=".01" value="0" %}
+                                    {% render_field nova_edificacao.area_irrigacao class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="0.01" title="Área para irrigação" step=".01" value="0" %}
                                     <div class="input-group-append"><span class="input-group-text">m²<br></span></div>
                                 </div><small class="form-text text-muted">Área para irrigação do jardim da residência em m².</small>
                             </div>
@@ -101,6 +101,7 @@
                                 </thead>
                                 <tbody id="table_body">
                                 </tbody>
+                                
                             </table>
                             <input type="hidden" name="usos-INITIAL_FORMS" id="id_usos-INITIAL_FORMS" value="0">
                             <input type="hidden" name="usos-TOTAL_FORMS" id="id_usos-TOTAL_FORMS" value="3">
