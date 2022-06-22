@@ -215,6 +215,7 @@ function reset_fields(
     return k;
 }
 
+<<<<<<< HEAD
 function gera_estiagem(id, chunk_meses) {
     const estiagem = $(`#${id}`);
     for (let i = 0; i < chunk_meses.length; i++) {
@@ -238,3 +239,10 @@ function gera_estiagem(id, chunk_meses) {
                         </div>`);
     }
 }
+=======
+function sumForms(
+    
+){
+    
+}
+>>>>>>> da98a84 (mudanças nas templates)
