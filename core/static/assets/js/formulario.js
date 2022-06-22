@@ -43,6 +43,23 @@ function addFields({
                     class="form-control"
                     required `;
 
+    let consumo = `type="numeric" 
+                    id="id_${interesse}${k}-consumo"
+                    name="${interesse}-${k}-consumo"
+                    min="1e-8"
+                    value="1"
+                    class="form-control"
+                    required `;
+
+    let porcentagem = `type="text" 
+                    id="id_${interesse}${k}-nome"
+                    name="${interesse}-${k}-nome"
+                    maxlength="100"
+                    value="10,89"
+                    class="form-control"
+                    style="position: relative; font-weight: bold; min-width: 3.5em; padding-left: 6px; padding-right: 6px"
+                    required `;
+
     let unidade_de_medida = "";
     if (initial) {
         uso =
@@ -93,6 +110,24 @@ function addFields({
                                                     </select>
                                                 </div>
                                             </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input ${consumo}>
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">m³/mês</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input ${porcentagem}>
+                                            <div class="input-group">
+                                                
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text" style="min-width: 3.5em;">%</span>
+                                                </div>
+                                            </div>
+                                            
                                         </td>
                                         <td>
                                             <button id="del_${interesse}${k}" class="btn btn-light" type="button">Deletar</button>
