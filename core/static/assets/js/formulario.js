@@ -52,8 +52,8 @@ function addFields({
                     required `;
 
     let porcentagem = `type="text" 
-                    id="id_${interesse}${k}-nome"
-                    name="${interesse}-${k}-nome"
+                    id="id_${interesse}${k}-%"
+                    name="${interesse}-${k}-%"
                     maxlength="100"
                     value="10,89"
                     class="form-control"
