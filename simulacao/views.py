@@ -90,8 +90,7 @@ def edificacao(request):
     novos_consumos = consumo_factory
     nova_edificacao = EdificacaoForm
     context["nova_edificacao"] = nova_edificacao
-
-    if request.is_ajax():
+    if request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest":
         related = request.GET.get("related")
         if related == "uf":
             uf = request.GET.get("uf")
