@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} 
+{% load custom_filters %}
+{% block content %}
 <section
     class="clean-block features"
     style="border-top-style: solid; padding: 0; background: rgb(207, 231, 248)"
@@ -17,7 +19,7 @@
             <div class="d-flex justify-content-center">
                 <div class="input-group-prepend">
                     <div class="input-group-text">
-                        <input name="{{uso}}" type="checkbox" checked="true" />
+                        <input name="{{uso}}" type="checkbox" {{ uso|potavel:categoria }}/>
                     </div>
                 </div>
                 <span

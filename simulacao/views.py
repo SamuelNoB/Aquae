@@ -67,8 +67,11 @@ def AAP_RAC_form(request, pk, titulo, categoria, re_path):
                 usos,
             )
         )
+
     context["usos"] = usos
+    context["categoria"] = categoria
     context["titulo"] = titulo
+
     if request.method == "POST":
         if len(request.POST) == 1 or len(request.POST) - 1 > len(usos):
             return render(request, "OD-form.html", context)
