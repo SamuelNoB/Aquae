@@ -52,6 +52,21 @@ def AAP_RAC_form(request, pk, titulo, categoria, re_path):
         return redirect(re_path, pk=pk)
 
     usos = [uso.nome for uso in usos]
+    if categoria == "oferta":
+        usos = list(
+            filter(
+                lambda uso: uso
+                not in [
+                    "Descarga sanitária",
+                    "Irrigação de jardins",
+                    "Lavagem de pisos",
+                    "Ducha higiênica/Bidet",
+                    "Filtro de água",
+                    "Piscina",
+                ],
+                usos,
+            )
+        )
     context["usos"] = usos
     context["titulo"] = titulo
     if request.method == "POST":
