@@ -27,7 +27,7 @@ ESTADOS_BR = (
     ("RJ", "RJ"),
     ("RN", "RN"),
     ("RS", "RS"),
-    ("RO ", "RO"),
+    ("RO", "RO"),
     ("RR", "RR"),
     ("SC", "SC"),
     ("SP", "SP"),
