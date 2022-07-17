@@ -45,24 +45,24 @@
                             
                             <div class="form-group col-md-4" id="div_n_moradores" style="padding: 0px 5px;">
                                 <label class="text-left" id="aptMoradores" style="font-weight: bold;">Número de moradores</label>
-                                {%  render_field nova_edificacao.n_pessoas class="form-control col-md-10" min="1"  %}
+                                {%  render_field nova_edificacao.n_pessoas class="form-control col-md-10" min="1" value='1'  %}
                             </div>
                             <div class="form-group col-md-7" style="padding: 0px 5px; margin-right: -18%;"><label style="font-weight: bold;">Área de Cobertura&nbsp;</label>
                                 <div class="input-group">
-                                    {% render_field nova_edificacao.area_cobertura class="form-control col-md-6" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="0.1" title="Área de cobertura" step=".01" value="0" %}
+                                    {% render_field nova_edificacao.area_cobertura class="form-control col-md-6" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="0.1" title="Área de cobertura" step=".01" value="1" %}
                                     <div class="input-group-append"><span class="input-group-text">m²</span></div>
                                 </div><small class="form-text text-muted">Área de cobertura da residência para coleta.</small>
                             </div>
                             
                             <div class="form-group col-md-6" style="padding: 0px 5px;"><label style="font-weight: bold;">Área de pisos</label>
                                 <div class="input-group">
-                                    {% render_field nova_edificacao.area_pisos class="form-control col-md-7" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="0.01" title="Área de pisos" step=".01" value="0" %}
+                                    {% render_field nova_edificacao.area_pisos class="form-control col-md-7" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="0.01" title="Área de pisos" step=".01" value="1" %}
                                     <div class="input-group-append"><span class="input-group-text">m²<br></span></div>
                                 </div><small class="form-text text-muted">Área de pisos para lavagem da residência em m².</small>
                             </div>
                             <div id="div_irrigacao" class="form-group col-md-2"><label id="lab_irrigacao" style="font-weight: bold;">Área para irrigação</label>
                                 <div class="input-group">
-                                    {% render_field nova_edificacao.area_irrigacao class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="0.01" title="Área para irrigação" step=".01" value="0" %}
+                                    {% render_field nova_edificacao.area_irrigacao class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="0.01" title="Área para irrigação" step=".01" value="1" %}
                                     <div class="input-group-append"><span class="input-group-text">m²<br></span></div>
                                 </div><small class="form-text text-muted">Área para irrigação do jardim da residência em m².</small>
                             </div>
@@ -117,7 +117,7 @@
                             </div>
                             <div class="form-group col-md-6" style="padding: 0px 5px;"><label style="font-weight: bold;">Consumo mensal de água</label>
                                 <div class="input-group">
-                                    {% render_field nova_edificacao.consumo_mensal class="form-control col-md-12" value="0" min="0" step="0.1" %}
+                                    {% render_field nova_edificacao.consumo_mensal class="form-control col-md-12" value="5" min="0" step="0.1" %}
                                     <div class="input-group-append"><span class="input-group-text">m³<br></span></div>
                                 </div><small class="form-text text-muted">Consumo mensal médio de água em m³.</small>
                             </div>
@@ -204,14 +204,17 @@
         const vazoes = ["20", "20", "9", "135", "6"];
         const Ddiario = ["1", "1", "32", "31", "19"];
         const freq =  ["30", "4", "30", "8", "30"];
-        const escalas = ["Litros/m²/dia", "Litros/m²/dia", "Litros/pessoa/dia", "Litros/pessoa/dia", "Litros/pessoa/dia"]
+        const escalas = ["Litros/m²/dia", "Litros/m²/dia", "Litros/pessoa/dia", "Litros/pessoa/dia", "Litros/pessoa/dia"];
+        const freq_diaria = ["0.1","0.1","6","0.7","3.2"];
 
         let k = 0
-        k = InitFields(k, demanda, vazoes, freq, Ddiario, escalas, id="table_body", interesse="usos");
+        k = InitFields(k, demanda, vazoes, freq, Ddiario, escalas, freq_diaria, id="table_body", interesse="usos");
         let btn = document.getElementById("edificacaoForm")
         btn.addEventListener("submit", function (){readdres(id="table_body", interesse="usos")}, false)
 
         const reset = document.getElementById("restaurar")
         reset.addEventListener("click", function (){reset_fields(demanda, freq, Ddiario, escalas)}, false)
+
+        
     </script>
 {% endblock %}
