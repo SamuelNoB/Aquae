@@ -48,6 +48,7 @@ function addFields({
                     name="${interesse}-${k}-consumo"
                     min="1e-8"
                     value="1"
+                    data="1"
                     class="form-control"
                     required `;
 
@@ -56,6 +57,7 @@ function addFields({
                     name="${interesse}-${k}-porcento"
                     maxlength="100"
                     value="20"
+                    id_linha = "${k}"
                     class="form-control"
                     style="position: relative; font-weight: bold; min-width: 3.5em; padding-left: 6px; padding-right: 6px"
                     required `;
@@ -209,18 +211,23 @@ function addFields({
     });
 
     $(`#id_usos${k}-consumo`).change(function () {
+        array_linhas = [];
+        array_linhas.push($("input[id_linha]"));
         var soma = 0;
-        for (let i = 0; i < $(`td`).length / 7; i++) {
-            var soma = parseFloat($(`#id_usos${i}-consumo`).val()) + soma;
-        }
+        $.each(array_linhas[0], function () {
+            soma =
+                parseFloat(
+                    $(`#id_usos${$(this).attr("id_linha")}-consumo`).val()
+                ) + soma;
+        });
         $(`#id_consumo_mensal`).val(soma);
-        soma = 0;
-        var consumo_total = $(`#id_consumo_mensal`).val();
-        for (let i = 0; i < $(`td`).length / 7; i++) {
-            var consumo = $(`#id_usos${i}-consumo`).val();
-            var total = (parseFloat(consumo) / parseFloat(consumo_total)) * 100;
-            $(`#id_usos${i}-porcento`).val(total);
-        }
+        var consumo_total = parseFloat($(`#id_consumo_mensal`).val());
+        $.each(array_linhas[0], function () {
+            var total =
+                $(`#id_usos${$(this).attr("id_linha")}-consumo`).val() /
+                consumo_total;
+            $(`#id_usos${$(this).attr("id_linha")}-porcento`).val(total);
+        });
     });
 
     $(`#del_${interesse}${k}`).click(function () {
