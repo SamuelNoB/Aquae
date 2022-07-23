@@ -154,6 +154,9 @@ def AAP_form(request, pk):
 
 
 def seleciona_simulacao(request, pk):
+    usos = UsosDeAgua.objects.filter(simulacao=pk)
+    if not usos:
+        return redirect("simulacao:edificacao")
     return render(request, "seleciona_simulacao.html", {"pk": pk})
 
 
