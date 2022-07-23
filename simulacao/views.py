@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, reverse, HttpResponse, get_object_or_404
+from django.views.decorators.cache import cache_control
 from django.views.generic import TemplateView, View
 from django.http import JsonResponse
 from django.forms import inlineformset_factory, formset_factory
@@ -143,6 +144,7 @@ def edificacao(request):
     return render(request, "edificacao.html", context)
 
 
+@cache_control(no_store=True)
 def AAP_form(request, pk):
     return AAP_RAC_form(
         request,
@@ -160,6 +162,7 @@ def seleciona_simulacao(request, pk):
     return render(request, "seleciona_simulacao.html", {"pk": pk})
 
 
+@cache_control(no_store=True)
 def RACform(request, pk):
     return AAP_RAC_form(
         request,
