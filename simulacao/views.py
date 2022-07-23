@@ -147,7 +147,7 @@ def AAP_form(request, pk):
     return AAP_RAC_form(
         request,
         pk,
-        "Demandas de água a serem economizadas",
+        "Demanda de água não potável",
         "demanda",
         "simulacao:seleciona_simulacao",
     )
