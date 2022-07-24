@@ -107,7 +107,7 @@ function addFields({
                                             <div class="input-group">
                                                 <input ${freq}>
                                                 <div class="input-group-append">
-                                                    <span class="input-group-text">&#10006;mês</span>
+                                                    <span class="input-group-text">&#10006; ao mês</span>
                                                 </div>
                                             </div>
                                         </td>
@@ -151,63 +151,48 @@ function addFields({
                                      </tr>`);
 
     $(`#id_usos${k}-vazao`).change(function () {
-        var vazao = $(`#id_usos${k}-vazao`).val();
-        var freq_diaria = $(`#id_usos${k}-freq_diaria`).val();
-        var total = parseFloat(vazao) * parseFloat(freq_diaria);
+        const vazao = $(`#id_usos${k}-vazao`).val();
+        const freq_diaria = $(`#id_usos${k}-freq_diaria`).val();
+        const indicador = parseFloat(vazao) * parseFloat(freq_diaria);
 
-        $(`#id_usos${k}-indicador`).val(total);
+        $(`#id_usos${k}-indicador`).val(indicador);
         $(`#id_usos${k}-frequencia_mensal`).change();
     });
 
     $(`#id_usos${k}-frequencia_mensal`).change(function () {
-        if (
-            $(`#id_usos${k}-nome`).val() == "Maquina de Lavar Roupa" ||
-            $(`#id_usos${k}-nome`).val() == "Maquina de Lavar Louça"
-        ) {
-            var freq_mensal = $(`#id_usos${k}-frequencia_mensal`).val();
-            var vazao = $(`#id_usos${k}-vazao`).val();
-            var total = (parseFloat(freq_mensal) * parseFloat(vazao)) / 1000;
+        const freq_mensal = parseFloat(
+            $(`#id_usos${k}-frequencia_mensal`).val()
+        );
+        const indicador = parseFloat($(`#id_usos${k}-indicador`).val());
+        const unid = $(`#id_usos${k}-unidade option:selected`).val();
+        let consumo = 0;
 
-            $(`#id_usos${k}-consumo`).val(total);
-        } else if (
-            $(`#id_usos${k}-unidade option:selected`).val() ==
-            "Litros/pessoa/dia"
-        ) {
-            var freq_mensal = $(`#id_usos${k}-frequencia_mensal`).val();
-            var indicador = $(`#id_usos${k}-indicador`).val();
-            var n_pessoas = $(`#id_n_pessoas`).val();
-            var total =
-                (parseFloat(freq_mensal) / 1000) *
-                parseFloat(n_pessoas) *
-                parseFloat(indicador);
-
-            $(`#id_usos${k}-consumo`).val(total);
-        } else if ($(`#id_usos${k}-nome`).val() == "Lavagem de pisos") {
-            var freq_mensal = $(`#id_usos${k}-frequencia_mensal`).val();
-            var indicador = $(`#id_usos${k}-indicador`).val();
-            var area = $(`#id_area_pisos`).val();
-            var total =
-                (parseFloat(freq_mensal) / 1000) *
-                parseFloat(area) *
-                parseFloat(indicador);
-
-            $(`#id_usos${k}-consumo`).val(total);
-        } else {
-            var freq_mensal = $(`#id_usos${k}-frequencia_mensal`).val();
-            var indicador = $(`#id_usos${k}-indicador`).val();
-            var area = $(`#id_area_irrigacao`).val();
-            var total =
-                (parseFloat(freq_mensal) / 1000) *
-                parseFloat(area) *
-                parseFloat(indicador);
-
-            $(`#id_usos${k}-consumo`).val(total);
+        if (unid == "Litros/pessoa/dia") {
+            const n_pessoas = $(`#id_n_pessoas`).val();
+            consumo = (freq_mensal * indicador * n_pessoas) / 1000;
+        } else if (unid == "Litros/m²/dia") {
+            const uso = $(`#id_usos${k}-nome`);
+            let area = 0;
+            if (uso == "Irrigação de jardins") {
+                area = $(`#id_area_irrigacao`).val();
+            } else {
+                area = $(`#id_area_pisos`).val();
+            }
+            area = parseFloat(area);
+            consumo = (freq_mensal * indicador * area) / 1000;
         }
+        $(`#id_usos${k}-consumo`).val(consumo);
         $(`#id_usos${k}-consumo`).change();
     });
 
-    $(`#id_usos${k}-indicador`).change(function () {
+    $(`#id_usos${k}-indicador`).on("keyup propertychange", function (event) {
         $(`#id_usos${k}-frequencia_mensal`).change();
+        if (event.type == "keyup") {
+            const vazao = $(`#id_usos${k}-vazao`).val();
+            const indicador = $(`#id_usos${k}-indicador`).val();
+            const freq_diaria = indicador / vazao;
+            $(`#id_usos${k}-freq_diaria`).val(freq_diaria);
+        }
     });
 
     $(`#id_usos${k}-consumo`).change(function () {
