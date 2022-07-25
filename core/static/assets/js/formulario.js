@@ -150,6 +150,26 @@ function addFields({
                                         </td>
                                      </tr>`);
 
+    function fator_unid(k) {
+        /*
+        Obtém o fator respectivo à unidade de medida,
+        i.e. L/p/d retorna o número de pessoas e L/m²/d retorna
+        a área de adequada (irrigação ou pisos).
+        */
+        const unid = $(`#id_usos${k}-unidade option:selected`).val();
+        if (unid == "Litros/pessoa/dia") {
+            fator = $(`#id_n_pessoas`).val();
+        } else if (unid == "Litros/m²/dia") {
+            const uso = $(`#id_usos${k}-nome`);
+            if (uso == "Irrigação de jardins") {
+                fator = $(`#id_area_irrigacao`).val();
+            } else {
+                fator = $(`#id_area_pisos`).val();
+            }
+        }
+        return fator;
+    }
+
     $(`#id_usos${k}-vazao`).change(function () {
         const vazao = $(`#id_usos${k}-vazao`).val();
         const freq_diaria = $(`#id_usos${k}-freq_diaria`).val();
@@ -164,38 +184,33 @@ function addFields({
             $(`#id_usos${k}-frequencia_mensal`).val()
         );
         const indicador = parseFloat($(`#id_usos${k}-indicador`).val());
-        const unid = $(`#id_usos${k}-unidade option:selected`).val();
-        let consumo = 0;
+        const fator = fator_unid(k);
+        const consumo = (indicador * fator * freq_mensal) / 1000;
 
-        if (unid == "Litros/pessoa/dia") {
-            const n_pessoas = $(`#id_n_pessoas`).val();
-            consumo = (freq_mensal * indicador * n_pessoas) / 1000;
-        } else if (unid == "Litros/m²/dia") {
-            const uso = $(`#id_usos${k}-nome`);
-            let area = 0;
-            if (uso == "Irrigação de jardins") {
-                area = $(`#id_area_irrigacao`).val();
-            } else {
-                area = $(`#id_area_pisos`).val();
-            }
-            area = parseFloat(area);
-            consumo = (freq_mensal * indicador * area) / 1000;
-        }
         $(`#id_usos${k}-consumo`).val(consumo);
         $(`#id_usos${k}-consumo`).change();
     });
 
-    $(`#id_usos${k}-indicador`).on("keyup propertychange", function (event) {
+    $(`#id_usos${k}-indicador`).on("keyup", function () {
         $(`#id_usos${k}-frequencia_mensal`).change();
-        if (event.type == "keyup") {
-            const vazao = $(`#id_usos${k}-vazao`).val();
-            const indicador = $(`#id_usos${k}-indicador`).val();
-            const freq_diaria = indicador / vazao;
-            $(`#id_usos${k}-freq_diaria`).val(freq_diaria);
-        }
+
+        const vazao = $(`#id_usos${k}-vazao`).val();
+        const indicador = $(`#id_usos${k}-indicador`).val();
+        const freq_diaria = indicador / vazao;
+        $(`#id_usos${k}-freq_diaria`).val(freq_diaria);
     });
 
-    $(`#id_usos${k}-consumo`).change(function () {
+    $(`#id_usos${k}-consumo`).on("keyup", function () {
+        // TODO mudar a porcentagem
+        const vazao = $(`#id_usos${k}-vazao`).val();
+        const freq_mensal = parseFloat(
+            $(`#id_usos${k}-frequencia_mensal`).val()
+        );
+        const consumo = $(`#id_usos${k}-consumo`).val();
+        const fator = fator_unid(k);
+        const freq_diaria = (consumo * 1000) / freq_mensal / fator / vazao;
+        $(`#id_usos${k}-freq_diaria`).val(freq_diaria);
+
         array_linhas = [];
         array_linhas.push($("input[id_linha]"));
         var soma = 0;
@@ -211,7 +226,7 @@ function addFields({
             var total =
                 $(`#id_usos${$(this).attr("id_linha")}-consumo`).val() /
                 consumo_total;
-            $(`#id_usos${$(this).attr("id_linha")}-porcento`).val(total);
+            $(`#id_usos${$(this).attr("id_linha")}-porcento`).val(total * 100);
         });
     });
 
