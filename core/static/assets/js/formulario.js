@@ -160,7 +160,7 @@ function addFields({
         if (unid == "Litros/pessoa/dia") {
             fator = $(`#id_n_pessoas`).val();
         } else if (unid == "Litros/m²/dia") {
-            const uso = $(`#id_usos${k}-nome`);
+            const uso = $(`#id_usos${k}-nome`).val();
             if (uso == "Irrigação de jardins") {
                 fator = $(`#id_area_irrigacao`).val();
             } else {
