@@ -160,16 +160,16 @@ function addFields({
         return fator;
     }
 
-    $(`#id_usos${k}-vazao`).change(function () {
+    $(`#id_usos${k}-vazao`).on("keyup", function () {
         const vazao = $(`#id_usos${k}-vazao`).val();
         const freq_diaria = $(`#id_usos${k}-freq_diaria`).val();
         const indicador = parseFloat(vazao) * parseFloat(freq_diaria);
 
         $(`#id_usos${k}-indicador`).val(indicador);
-        $(`#id_usos${k}-frequencia_mensal`).change();
+        $(`#id_usos${k}-frequencia_mensal`).trigger("js_trigger");
     });
 
-    $(`#id_usos${k}-frequencia_mensal`).change(function () {
+    $(`#id_usos${k}-frequencia_mensal`).on("js_trigger keyup", function () {
         const freq_mensal = parseFloat(
             $(`#id_usos${k}-frequencia_mensal`).val()
         );
@@ -177,12 +177,11 @@ function addFields({
         const fator = fator_unid(k);
         const consumo = (indicador * fator * freq_mensal) / 1000;
 
-        $(`#id_usos${k}-consumo`).val(consumo);
-        $(`#id_usos${k}-consumo`).change();
+        $(`#id_usos${k}-consumo`).val(consumo).trigger("js_trigger");
     });
 
     $(`#id_usos${k}-indicador`).on("keyup", function () {
-        $(`#id_usos${k}-frequencia_mensal`).change();
+        $(`#id_usos${k}-frequencia_mensal`).trigger("js_trigger");
 
         const vazao = $(`#id_usos${k}-vazao`).val();
         const indicador = $(`#id_usos${k}-indicador`).val();
@@ -190,33 +189,26 @@ function addFields({
         $(`#id_usos${k}-freq_diaria`).val(freq_diaria);
     });
 
-    $(`#id_usos${k}-consumo`).on("keyup", function () {
-        // TODO mudar a porcentagem
-        const vazao = $(`#id_usos${k}-vazao`).val();
-        const freq_mensal = parseFloat(
-            $(`#id_usos${k}-frequencia_mensal`).val()
-        );
-        const consumo = $(`#id_usos${k}-consumo`).val();
-        const fator = fator_unid(k);
-        const freq_diaria = (consumo * 1000) / freq_mensal / fator / vazao;
-        $(`#id_usos${k}-freq_diaria`).val(freq_diaria);
+    $(`#id_usos${k}-consumo`).on("js_trigger keyup", function (event) {
+        const tab_body = $(this).parents()[3];
+        let consumo_total = 0;
+        $(tab_body)
+            .children("tr")
+            .each(function () {
+                consumo_total += parseFloat($($(this).find("input")[4]).val());
+            });
+        $("#id_consumo_mensal").val(consumo_total);
 
-        array_linhas = [];
-        array_linhas.push($("input[id_linha]"));
-        var soma = 0;
-        $.each(array_linhas[0], function () {
-            soma =
-                parseFloat(
-                    $(`#id_usos${$(this).attr("id_linha")}-consumo`).val()
-                ) + soma;
-        });
-        $(`#id_consumo_mensal`).val(soma);
-        var consumo_total = parseFloat($(`#id_consumo_mensal`).val());
-        $.each(array_linhas[0], function () {
-            var total =
-                $(`#id_usos${$(this).attr("id_linha")}-consumo`).val() /
-                consumo_total;
-        });
+        if (event.type == "keyup") {
+            const vazao = $(`#id_usos${k}-vazao`).val();
+            const freq_mensal = parseFloat(
+                $(`#id_usos${k}-frequencia_mensal`).val()
+            );
+            const consumo = $(`#id_usos${k}-consumo`).val();
+            const fator = fator_unid(k);
+            const freq_diaria = (consumo * 1000) / freq_mensal / fator / vazao;
+            $(`#id_usos${k}-freq_diaria`).val(freq_diaria);
+        }
     });
 
     $(`#del_${interesse}${k}`).click(function () {
