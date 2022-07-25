@@ -135,16 +135,6 @@ function addFields({
                                             </div>
                                         </td>
                                         <td>
-                                            <input ${porcentagem}>
-                                            <div class="input-group">
-                                                
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text" style="min-width: 3.5em;">%</span>
-                                                </div>
-                                            </div>
-                                            
-                                        </td>
-                                        <td>
                                             <button id="del_${interesse}${k}" class="btn btn-light" type="button">Deletar</button>
                                             <input ${freq_diaria}>
                                         </td>
@@ -226,7 +216,6 @@ function addFields({
             var total =
                 $(`#id_usos${$(this).attr("id_linha")}-consumo`).val() /
                 consumo_total;
-            $(`#id_usos${$(this).attr("id_linha")}-porcento`).val(total * 100);
         });
     });
 
