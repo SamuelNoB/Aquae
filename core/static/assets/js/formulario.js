@@ -69,16 +69,6 @@ function addFields({
                     class="form-control"
                     required `;
 
-    let porcentagem = `type="text" 
-                    id="id_${interesse}${k}-porcento"
-                    name="${interesse}-${k}-porcento"
-                    maxlength="100"
-                    value="20"
-                    id_linha = "${k}"
-                    class="form-control"
-                    style="position: relative; font-weight: bold; min-width: 3.5em; padding-left: 6px; padding-right: 6px"
-                    required `;
-
     let freq_diaria = `type="hidden" 
                     id="id_${interesse}${k}-freq_diaria"
                     name="${interesse}-${k}-freq_diaria"
