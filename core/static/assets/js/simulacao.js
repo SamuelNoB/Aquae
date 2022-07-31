@@ -116,7 +116,7 @@ function addData(chart, labels, data) {
     chart.data.datasets.forEach((dataset) => {
         dataset.data.push(...data);
     });
-    chart.update("none");
+    chart.update("");
 }
 
 function removeData(chart) {
@@ -124,7 +124,7 @@ function removeData(chart) {
     chart.data.datasets.forEach((dataset) => {
         dataset.data.length = 0;
     });
-    chart.update("none");
+    chart.update("");
 }
 
 function fixMEP(chart, index) {

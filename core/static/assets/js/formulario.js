@@ -216,6 +216,9 @@ function addFields({
             const freq_diaria = (consumo * 1000) / freq_mensal / fator / vazao;
             $(`#id_usos${k}-freq_diaria`).val(freq_diaria);
         }
+        const ds = percent_ds();
+        removeData(pizza);
+        addData(pizza, ds.lab, ds.data);
     });
 
     $(`#del_${interesse}${k}`).click(function () {

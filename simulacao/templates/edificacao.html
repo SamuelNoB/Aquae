@@ -137,6 +137,8 @@
         </section>
 {% endblock content%}
 {% block scripts %}
+    <script src={% static 'assets/js/simulacao.js' %}>
+    </script>
     <script type="text/javascript">
         $(window).resize(function () {
             const heig1 = $("#lab_n_pavimentos").height();
@@ -223,22 +225,23 @@
         const ds = percent_ds()
         
         const data = {
-            labels: ds.lab,
+            labels: [...ds.lab],
             datasets: [{
               label: 'Porcentagem do consumo por uso',
-              data: ds.data,
+              data: [...ds.data],
               backgroundColor: 
                 'rgb(54, 162, 235)',
               hoverOffset: 4
             }]
           };
+        
         const config = {
             type: 'doughnut',
             data: data
         }
-
+        
         const canvas = document.getElementById('usos_percent')
         const ctx = canvas.getContext('2d')
-        const pizza = new Chart(ctx, config) 
+        const pizza = new Chart(ctx, config)        
     </script>
 {% endblock %}
