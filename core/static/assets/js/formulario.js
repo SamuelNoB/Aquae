@@ -3,6 +3,23 @@ function realFloat(real) {
     return parseFloat(valor);
 }
 
+function percent_ds() {
+    const labels = [];
+    const data = [];
+    const consumo = $("#id_consumo_mensal").val();
+    $("#table_body")
+        .children("tr")
+        .each(function () {
+            const inputs = $(this).find("input");
+            const uso = $(inputs[0]).val();
+            const percent = (parseFloat($(inputs[4]).val()) / consumo) * 100;
+
+            labels.push(uso);
+            data.push(percent);
+        });
+    return { lab: labels, data: data };
+}
+
 /*Funcao que adiciona todos os campos de uma linha do formulario*/
 function addFields({
     k,
