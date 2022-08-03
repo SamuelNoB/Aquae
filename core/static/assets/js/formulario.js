@@ -167,6 +167,19 @@ function addFields({
         return fator;
     }
 
+    function pizza_no_forno() {
+        /* Atualiza o gráfico de pizza no formulário geral.
+         */
+        const ds = percent_ds();
+        removeData(pizza);
+        addData(pizza, ds.lab, ds.data);
+    }
+
+    // TODO Se for necessário mexer na irrigação, os meses de irrigação devem ser avaliados
+    // TODO Se ocorrer mudança nos fatores (areas) ou nos meses de estiagem, então a tabela deve ser atualizada
+    // TODO Se o consumo total for alterado, então deve haver algum tipo de "backpropagation"
+    // TODO Adionar o consumo total em L/p/d
+    // TODO O gráfico de pizza precisa de indicação do uso, título e unidade de medida %
     $(`#id_usos${k}-vazao`).on("keyup", function () {
         const vazao = $(`#id_usos${k}-vazao`).val();
         const freq_diaria = $(`#id_usos${k}-freq_diaria`).val();
@@ -216,9 +229,12 @@ function addFields({
             const freq_diaria = (consumo * 1000) / freq_mensal / fator / vazao;
             $(`#id_usos${k}-freq_diaria`).val(freq_diaria);
         }
-        const ds = percent_ds();
-        removeData(pizza);
-        addData(pizza, ds.lab, ds.data);
+
+        pizza_no_forno();
+    });
+
+    $(`#id_usos${k}-nome`).on("keyup", function () {
+        pizza_no_forno();
     });
 
     $(`#del_${interesse}${k}`).click(function () {
