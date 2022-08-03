@@ -180,10 +180,10 @@ function addFields({
     // TODO Se o consumo total for alterado, então deve haver algum tipo de "backpropagation"
     // TODO Adionar o consumo total em L/p/d
     // TODO O gráfico de pizza precisa de indicação do uso, título e unidade de medida %
-    $(`#id_usos${k}-vazao`).on("keyup", function () {
+    $(`#id_usos${k}-vazao`).on("keyup js_trigger", function () {
         const vazao = $(`#id_usos${k}-vazao`).val();
         const freq_diaria = $(`#id_usos${k}-freq_diaria`).val();
-        const indicador = parseFloat(vazao) * parseFloat(freq_diaria);
+        const indicador = round_x(parseFloat(vazao) * parseFloat(freq_diaria));
 
         $(`#id_usos${k}-indicador`).val(indicador);
         $(`#id_usos${k}-frequencia_mensal`).trigger("js_trigger");
@@ -195,7 +195,7 @@ function addFields({
         );
         const indicador = parseFloat($(`#id_usos${k}-indicador`).val());
         const fator = fator_unid(k);
-        const consumo = (indicador * fator * freq_mensal) / 1000;
+        const consumo = round_x((indicador * fator * freq_mensal) / 1000);
 
         $(`#id_usos${k}-consumo`).val(consumo).trigger("js_trigger");
     });
@@ -205,8 +205,9 @@ function addFields({
 
         const vazao = $(`#id_usos${k}-vazao`).val();
         const indicador = $(`#id_usos${k}-indicador`).val();
-        const freq_diaria = indicador / vazao;
-        $(`#id_usos${k}-freq_diaria`).val(freq_diaria);
+        const freq_diaria = round_x(indicador / vazao);
+
+        $(`#id_usos${k}-freq_diaria`).val(freq_diaria, 1);
     });
 
     $(`#id_usos${k}-consumo`).on("js_trigger keyup", function (event) {
@@ -217,7 +218,7 @@ function addFields({
             .each(function () {
                 consumo_total += parseFloat($($(this).find("input")[4]).val());
             });
-        $("#id_consumo_mensal").val(consumo_total);
+        $("#id_consumo_mensal").val(round_x(consumo_total));
 
         if (event.type == "keyup") {
             const vazao = $(`#id_usos${k}-vazao`).val();
@@ -226,8 +227,12 @@ function addFields({
             );
             const consumo = $(`#id_usos${k}-consumo`).val();
             const fator = fator_unid(k);
-            const freq_diaria = (consumo * 1000) / freq_mensal / fator / vazao;
+            const freq_diaria = round_x(
+                (consumo * 1000) / freq_mensal / fator / vazao
+            );
+
             $(`#id_usos${k}-freq_diaria`).val(freq_diaria);
+            $(`#id_usos${k}-vazao`).trigger("js_trigger");
         }
 
         pizza_no_forno();

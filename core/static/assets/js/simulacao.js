@@ -4,7 +4,7 @@ function add(accumulator, a) {
 }
 
 /*Arredonda um valor para x casas decimais*/
-function round_x(float, decimals) {
+function round_x(float, decimals = 1) {
     const p10 = 10 ** decimals;
     return Math.round(float * p10 + Number.EPSILON) / p10;
 }
