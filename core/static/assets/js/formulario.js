@@ -159,7 +159,14 @@ function addFields({
         } else if (unid == "Litros/m²/dia") {
             const uso = $(`#id_usos${k}-nome`).val();
             if (uso == "Irrigação de jardins") {
-                fator = $(`#id_area_irrigacao`).val();
+                const area = $(`#id_area_irrigacao`).val();
+                let meses_irr = 0;
+                $("#div_estiagem")
+                    .find("input")
+                    .each(function () {
+                        meses_irr += this.checked;
+                    });
+                fator = (area * meses_irr) / 12;
             } else {
                 fator = $(`#id_area_pisos`).val();
             }
@@ -175,6 +182,7 @@ function addFields({
         addData(pizza, ds.lab, ds.data);
     }
 
+    // TODO Fazer algum tipo de sanitize nos valores que entram no form
     // TODO Se for necessário mexer na irrigação, os meses de irrigação devem ser avaliados
     // TODO Se ocorrer mudança nos fatores (areas) ou nos meses de estiagem, então a tabela deve ser atualizada
     // TODO Se o consumo total for alterado, então deve haver algum tipo de "backpropagation"
