@@ -111,7 +111,26 @@ function re_plot(id) {
     ).value;
 }
 
-function addData(chart, labels, data) {
+function addData(chart, labels, data, color = false) {
+    let azul = 235;
+    let verde = 162;
+    let vermelho = 54;
+    if (color) {
+        const colors = [`rgb(${vermelho}, ${verde}, ${azul})`];
+        for (let i = 0; i < data.length - 1; i++) {
+            verde += 10;
+            vermelho += 5;
+            colors.push(`rgb(${vermelho}, ${verde}, ${azul})`);
+        }
+        chart.data.datasets.forEach((dataset) => {
+            dataset.backgroundColor = [...colors];
+        });
+    } else {
+        chart.data.datasets.forEach((dataset) => {
+            dataset.backgroundColor = `rgb(${vermelho}, ${verde}, ${azul})`;
+        });
+    }
+
     chart.data.labels.push(...labels);
     chart.data.datasets.forEach((dataset) => {
         dataset.data.push(...data);

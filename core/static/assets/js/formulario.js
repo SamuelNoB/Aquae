@@ -213,7 +213,7 @@ function addFields({
          */
         const ds = percent_ds();
         removeData(pizza);
-        addData(pizza, ds.lab, ds.data);
+        addData(pizza, ds.lab, ds.data, true);
     }
 
     // TODO Fazer algum tipo de sanitize nos valores que entram no form
