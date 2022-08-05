@@ -1,6 +1,40 @@
+function geid(id) {
+    // Macro para o document.getElementById quando jQuery causar problemas
+    return document.getElementById(id);
+}
+
+function sFloat(num, format = "f", digits = 1) {
+    /* 
+    Limpa os floats de forma a remover NaNs ou valores invalídos
+    Além de também converter para valores com vírgula ou o contrário
+    */
+    const normal_num_re = /^[0-9.,]/g;
+
+    if (Number.isNaN(num) || !normal_num_re.test(String(num))) return 0;
+
+    if (format === "f") return round_x(realFloat(num), digits);
+    if (format === "r") return floatReal(round_x(num, digits));
+
+    return num;
+}
+
+function delay(fn, ms = 300) {
+    let timer = 0;
+    return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(fn.bind(this, ...args), ms || 0);
+    };
+}
+
+function floatReal(float) {
+    return String(float).replace(".", ",");
+}
+
 function realFloat(real) {
-    const valor = String(real).replace(".", "").replace(",", ".");
-    return parseFloat(valor);
+    let valor_str = String(real);
+    if (valor_str.includes(","))
+        valor_str = valor_str.replace(".", "").replace(",", ".");
+    return parseFloat(valor_str);
 }
 
 function percent_ds() {
@@ -224,24 +258,26 @@ function addFields({
         $(tab_body)
             .children("tr")
             .each(function () {
-                consumo_total += parseFloat($($(this).find("input")[4]).val());
+                consumo_total += sFloat(
+                    this.querySelectorAll("input")[4].value
+                );
             });
-        $("#id_consumo_mensal").val(round_x(consumo_total));
 
+        geid("id_consumo_mensal").value = consumo_total;
+
+        // prettier-ignore
         if (event.type == "keyup") {
-            const vazao = $(`#id_usos${k}-vazao`).val();
-            const freq_mensal = parseFloat(
-                $(`#id_usos${k}-frequencia_mensal`).val()
-            );
-            const consumo = $(`#id_usos${k}-consumo`).val();
-            const fator = fator_unid(k);
-            const freq_diaria = round_x(
-                (consumo * 1000) / freq_mensal / fator / vazao
-            );
+                const vazao = sFloat(geid(`id_usos${k}-vazao`).value);
+                const freq_mensal = sFloat(geid(`id_usos${k}-frequencia_mensal`).value);
+                const consumo = sFloat(geid(`id_usos${k}-consumo`).value);
+                const fator = fator_unid(k);
 
-            $(`#id_usos${k}-freq_diaria`).val(freq_diaria);
-            $(`#id_usos${k}-vazao`).trigger("js_trigger");
-        }
+                const freq_diaria = (consumo * 1000) / freq_mensal / fator / vazao;
+                const indicador = vazao * freq_diaria;
+
+                $(`#id_usos${k}-freq_diaria`).val(freq_diaria);
+                $(`#id_usos${k}-indicador`).val(indicador);
+            }
 
         pizza_no_forno();
     });
