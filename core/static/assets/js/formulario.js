@@ -3,7 +3,7 @@ function geid(id) {
     return document.getElementById(id);
 }
 
-function sFloat(num, format = "f", digits = 1) {
+function sFloat(num, digits = 2, format = "f") {
     /* 
     Limpa os floats de forma a remover NaNs ou valores invalídos
     Além de também converter para valores com vírgula ou o contrário
@@ -40,13 +40,14 @@ function realFloat(real) {
 function percent_ds() {
     const labels = [];
     const data = [];
-    const consumo = $("#id_consumo_mensal").val();
+    const consumo_mensal = sFloat($("#id_consumo_mensal").val());
     $("#table_body")
         .children("tr")
         .each(function () {
             const inputs = $(this).find("input");
             const uso = $(inputs[0]).val();
-            const percent = (parseFloat($(inputs[4]).val()) / consumo) * 100;
+            const consumo_i = sFloat($(inputs[4]).val());
+            const percent = sFloat((consumo_i / consumo_mensal) * 100);
 
             labels.push(uso);
             data.push(percent);
@@ -70,7 +71,7 @@ function addFields({
                 class="form-control"
                 required `;
 
-    let vazao = `type="numeric" 
+    let vazao = `type="text" inputmode="numeric" pattern="\d*"
                 id="id_${interesse}${k}-vazao"
                 name="${interesse}-${k}-vazao"
                 min="1"
@@ -78,7 +79,7 @@ function addFields({
                 class="form-control"
                 required `;
 
-    let freq = `type="numeric" 
+    let freq = `type="text" inputmode="numeric" pattern="\d*" 
                 id="id_${interesse}${k}-frequencia_mensal"
                 name="${interesse}-${k}-frequencia_mensal"
                 min="1"
@@ -86,7 +87,7 @@ function addFields({
                 class="form-control"
                 required `;
 
-    let indicador = `type="numeric" 
+    let indicador = `type="text" inputmode="numeric" pattern="\d*" 
                     id="id_${interesse}${k}-indicador"
                     name="${interesse}-${k}-indicador"
                     min="1"
@@ -94,7 +95,7 @@ function addFields({
                     class="form-control"
                     required `;
 
-    let consumo = `type="numeric" 
+    let consumo = `type="text" inputmode="numeric" pattern="\d*" 
                     id="id_${interesse}${k}-consumo"
                     name="${interesse}-${k}-consumo"
                     min="1e-8"
@@ -193,7 +194,8 @@ function addFields({
         } else if (unid == "Litros/m²/dia") {
             const uso = $(`#id_usos${k}-nome`).val();
             if (uso == "Irrigação de jardins") {
-                const area = $(`#id_area_irrigacao`).val();
+                const area = sFloat($(`#id_area_irrigacao`).val());
+
                 let meses_irr = 0;
                 $("#div_estiagem")
                     .find("input")
@@ -205,7 +207,7 @@ function addFields({
                 fator = $(`#id_area_pisos`).val();
             }
         }
-        return fator;
+        return sFloat(fator);
     }
 
     function pizza_no_forno() {
@@ -216,6 +218,7 @@ function addFields({
         addData(pizza, ds.lab, ds.data, true);
     }
 
+    // TODO colocar a freq diaria real
     // TODO Fazer algum tipo de sanitize nos valores que entram no form
     // TODO Se for necessário mexer na irrigação, os meses de irrigação devem ser avaliados
     // TODO Se ocorrer mudança nos fatores (areas) ou nos meses de estiagem, então a tabela deve ser atualizada
@@ -223,33 +226,33 @@ function addFields({
     // TODO Adionar o consumo total em L/p/d
     // TODO O gráfico de pizza precisa de indicação do uso, título e unidade de medida %
     $(`#id_usos${k}-vazao`).on("keyup js_trigger", function () {
-        const vazao = $(`#id_usos${k}-vazao`).val();
-        const freq_diaria = $(`#id_usos${k}-freq_diaria`).val();
-        const indicador = round_x(parseFloat(vazao) * parseFloat(freq_diaria));
+        const vazao = sFloat($(`#id_usos${k}-vazao`).val());
+        const freq_diaria = sFloat($(`#id_usos${k}-freq_diaria`).val());
+        const indicador = vazao * freq_diaria;
 
-        $(`#id_usos${k}-indicador`).val(indicador);
+        $(`#id_usos${k}-indicador`).val(sFloat(indicador, 2, "r"));
         $(`#id_usos${k}-frequencia_mensal`).trigger("js_trigger");
     });
 
     $(`#id_usos${k}-frequencia_mensal`).on("js_trigger keyup", function () {
-        const freq_mensal = parseFloat(
-            $(`#id_usos${k}-frequencia_mensal`).val()
-        );
-        const indicador = parseFloat($(`#id_usos${k}-indicador`).val());
+        const freq_mensal = sFloat($(`#id_usos${k}-frequencia_mensal`).val());
+        const indicador = sFloat($(`#id_usos${k}-indicador`).val());
         const fator = fator_unid(k);
-        const consumo = round_x((indicador * fator * freq_mensal) / 1000);
+        const consumo = (indicador * fator * freq_mensal) / 1000;
 
-        $(`#id_usos${k}-consumo`).val(consumo).trigger("js_trigger");
+        $(`#id_usos${k}-consumo`)
+            .val(sFloat(consumo, 2, "r"))
+            .trigger("js_trigger");
     });
 
     $(`#id_usos${k}-indicador`).on("keyup", function () {
         $(`#id_usos${k}-frequencia_mensal`).trigger("js_trigger");
 
-        const vazao = $(`#id_usos${k}-vazao`).val();
-        const indicador = $(`#id_usos${k}-indicador`).val();
-        const freq_diaria = round_x(indicador / vazao);
+        const vazao = sFloat($(`#id_usos${k}-vazao`).val());
+        const indicador = sFloat($(`#id_usos${k}-indicador`).val());
+        const freq_diaria = sFloat(indicador / vazao);
 
-        $(`#id_usos${k}-freq_diaria`).val(freq_diaria, 1);
+        $(`#id_usos${k}-freq_diaria`).val(freq_diaria);
     });
 
     $(`#id_usos${k}-consumo`).on("js_trigger keyup", function (event) {
@@ -263,20 +266,20 @@ function addFields({
                 );
             });
 
-        geid("id_consumo_mensal").value = consumo_total;
+        $("#id_consumo_mensal").val(consumo_total);
 
         // prettier-ignore
         if (event.type == "keyup") {
-                const vazao = sFloat(geid(`id_usos${k}-vazao`).value);
-                const freq_mensal = sFloat(geid(`id_usos${k}-frequencia_mensal`).value);
-                const consumo = sFloat(geid(`id_usos${k}-consumo`).value);
+                const vazao = sFloat($(`#id_usos${k}-vazao`).val());
+                const freq_mensal = sFloat($(`#id_usos${k}-frequencia_mensal`).val());
+                const consumo = sFloat($(`#id_usos${k}-consumo`).val());
                 const fator = fator_unid(k);
 
                 const freq_diaria = (consumo * 1000) / freq_mensal / fator / vazao;
                 const indicador = vazao * freq_diaria;
 
-                $(`#id_usos${k}-freq_diaria`).val(freq_diaria);
-                $(`#id_usos${k}-indicador`).val(indicador);
+                $(`#id_usos${k}-freq_diaria`).val(sFloat(freq_diaria, 2, "r"));
+                $(`#id_usos${k}-indicador`).val(sFloat(indicador, 2, "r"));
             }
 
         pizza_no_forno();
