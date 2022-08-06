@@ -219,8 +219,6 @@ function addFields({
     }
 
     // TODO colocar a freq diaria real
-    // TODO Fazer algum tipo de sanitize nos valores que entram no form
-    // TODO Se for necessário mexer na irrigação, os meses de irrigação devem ser avaliados
     // TODO Se ocorrer mudança nos fatores (areas) ou nos meses de estiagem, então a tabela deve ser atualizada
     // TODO Se o consumo total for alterado, então deve haver algum tipo de "backpropagation"
     // TODO Adionar o consumo total em L/p/d

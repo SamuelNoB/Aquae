@@ -2,7 +2,6 @@
 {% load static %}
 {% load widget_tweaks %}
 {% block content %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
     <section class="clean-block features" style="border-top-style: solid;padding: 0;background: rgb(207,231,248);">
         <div class="container flex-calc" style="background: #eeeeee;padding-bottom: 100px;">
             <div class="block-heading" style="padding: 40px 0px 0px;">
@@ -132,6 +131,8 @@
             </div>
         </div>
     </section>
+{% endblock content%}
+{% block scripts %}
     <script src={% static 'assets/js/simulacao.js' %}>
     </script>
     <script src={% static 'assets/js/simulacaoRAC.js' %}>

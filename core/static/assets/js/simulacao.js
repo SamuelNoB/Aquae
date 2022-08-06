@@ -128,17 +128,15 @@ function plotBg(n) {
 }
 
 function addData(chart, labels, data, color = false) {
+    let colors = "";
     if (color) {
-        const colors = plotBg(data.length);
-        chart.data.datasets.forEach((dataset) => {
-            dataset.backgroundColor = [...colors];
-        });
+        colors = plotBg(data.length);
     } else {
-        const colors = plotBg(1);
-        chart.data.datasets.forEach((dataset) => {
-            dataset.backgroundColor = `rgb(${vermelho}, ${verde}, ${azul})`;
-        });
+        colors = plotBg(1);
     }
+    chart.data.datasets.forEach((dataset) => {
+        dataset.backgroundColor = colors;
+    });
 
     chart.data.labels.push(...labels);
     chart.data.datasets.forEach((dataset) => {

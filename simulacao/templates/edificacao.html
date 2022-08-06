@@ -128,7 +128,9 @@
                             </div><small class="form-text text-muted">Consumo mensal médio de água em m³.</small>
                         </div>
                     </div>
-                    <canvas id="usos_percent"></canvas>
+                    <div id="ChartDiv">
+                        <canvas id="usos_percent" width="600" height="600"></canvas>
+                    </div>
                     <div class="text-right col-md-12">
                         <button class="btn btn-danger" type="button" data-dismiss="edificacaoForm" id="restaurar">Restaurar</button>
                         <button id="submit" class="btn btn-primary" type="submit" style="margin: 1em;">Próximo</button></div>
@@ -219,8 +221,6 @@
 
         const reset = document.getElementById("restaurar")
         reset.addEventListener("click", function (){reset_fields(demanda, freq, Ddiario, escalas)}, false)
-
-        
     </script>
     <script>
         const ds = percent_ds()
@@ -235,9 +235,33 @@
             }]
           };
         
+        const plot_opts = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                datalabels: {
+                    formatter: (value) => {
+                        if (value < 5) return ""
+                        return value + '%';
+                    },
+                    font: {
+                        size: 18,
+                        weight: 'bold'
+                    }
+                },
+                title: {
+                    display: true,
+                    text: "Contribuição relativa de cada uso para o consumo mensal"
+                } 
+            }  
+        }
+    
+
         const config = {
             type: 'pie',
-            data: data
+            data: data,
+            options: plot_opts,
+            plugins: [ChartDataLabels],
         }
         
         const canvas = document.getElementById('usos_percent')
