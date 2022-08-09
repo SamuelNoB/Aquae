@@ -392,4 +392,5 @@ function gera_estiagem(id, chunk_meses) {
                             ${row}
                         </div>`);
     }
+    estiagem.append("<small>Meses com pouca ou nenhuma chuva.</small>");
 }
