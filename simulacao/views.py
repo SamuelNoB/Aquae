@@ -95,6 +95,31 @@ def usos_update(pk, escolhas, categoria):
         uso.save()
 
 
+def _edificacao_ajax(request):
+    """
+    Separação da parte que lida com a estiagem na página
+    do fomrulário geral, apenas para a view não ficar muito sobrecarregada
+    """
+    # TODO mudar para class view invés de função
+    related = request.GET.get("related")
+    if related == "uf":
+        uf = request.GET.get("uf")
+        nomes = list(map(lambda cidade: cidade.nome, Cidade.objects.filter(uf=uf)))
+        return JsonResponse({"cidades": nomes}, status=200)
+    elif related == "pluviometria":
+        uf = request.GET.get("uf")
+        cidade = request.GET.get("cidade")
+
+        cidade_obj = Cidade.objects.get(uf=uf, nome=cidade)
+        indices = IndicePluviometrico.objects.filter(cidade=cidade_obj)
+
+        mesMes = [[] for _ in range(12)]
+        for i in indices:
+            mesMes[i.mes - 1].append(i.media_pluviometrica)
+        estiagem = [median(mes) < 50 for mes in mesMes]
+        return JsonResponse({"estiagem": estiagem}, status=200)
+
+
 # Create your views here.
 
 
@@ -110,24 +135,7 @@ def edificacao(request):
     nova_edificacao = EdificacaoForm
     context["nova_edificacao"] = nova_edificacao
     if request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest":
-        related = request.GET.get("related")
-        if related == "uf":
-            uf = request.GET.get("uf")
-            nomes = list(map(lambda cidade: cidade.nome, Cidade.objects.filter(uf=uf)))
-            return JsonResponse({"cidades": nomes}, status=200)
-        elif related == "pluviometria":
-            uf = request.GET.get("uf")
-            cidade = request.GET.get("cidade")
-
-            cidade_obj = Cidade.objects.get(uf=uf, nome=cidade)
-            indices = IndicePluviometrico.objects.filter(cidade=cidade_obj)
-
-            mesMes = [[] for _ in range(12)]
-            for i in indices:
-                mesMes[i.mes - 1].append(i.media_pluviometrica)
-            estiagem = [median(mes) < 50 for mes in mesMes]
-
-            return JsonResponse({"estiagem": estiagem}, status=200)
+        return _edificacao_ajax(request)
 
     if request.method == "POST":
         nova_edificacao = nova_edificacao(request.POST)
