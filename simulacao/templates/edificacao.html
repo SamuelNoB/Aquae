@@ -196,7 +196,7 @@
                 success: function(response) {
                     const estiagem = response.estiagem
                     for (let mes=0; mes < estiagem.length; mes++){
-                        $(`#estiagem-${mes}`).attr("checked", estiagem[mes])
+                        $(`#estiagem-${mes}`).prop("checked", estiagem[mes])
                     }
                 }
             })
