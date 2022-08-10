@@ -283,6 +283,7 @@ function addFields({
     });
 
     $(`#id_usos${k}-nome`).on("keyup", function () {
+        $(`#id_usos${k}-consumo`).trigger("js_trigger");
         pizza_no_forno();
     });
 
