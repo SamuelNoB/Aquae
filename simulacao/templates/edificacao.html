@@ -204,6 +204,7 @@
                     for (let mes=0; mes < estiagem.length; mes++){
                         $(`#estiagem-${mes}`).prop("checked", estiagem[mes])
                     }
+                    update_tab_fator()
                 }
             })
         })
@@ -261,8 +262,6 @@
                 } 
             }  
         }
-    
-
         const config = {
             type: 'pie',
             data: data,
@@ -272,6 +271,18 @@
         
         const canvas = document.getElementById('usos_percent')
         const ctx = canvas.getContext('2d')
-        const pizza = new Chart(ctx, config)        
+        const pizza = new Chart(ctx, config)
+        
+        function update_tab_fator(){
+            $("#table_body")
+                .children("tr")
+                .each(function () {
+                    const unid_tag = this.querySelectorAll("input")[1]
+                    $(unid_tag).trigger("js_trigger")
+                });
+        }
+        $("#id_n_pessoas").on("keyup", update_tab_fator())
+        $("#id_area_pisos").on("keyup", update_tab_fator())
+        $("#id_area_irrigacao").on("keyup", update_tab_fator())
     </script>
 {% endblock %}

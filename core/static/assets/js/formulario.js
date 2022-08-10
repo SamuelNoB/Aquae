@@ -219,9 +219,7 @@ function addFields({
     }
 
     // TODO colocar a freq diaria real
-    // TODO Se ocorrer mudança nos fatores (areas) ou nos meses de estiagem, então a tabela deve ser atualizada
     // TODO Se o consumo total for alterado, então deve haver algum tipo de "backpropagation"
-    // TODO Adionar o consumo total em L/p/d
     $(`#id_usos${k}-vazao`).on("keyup js_trigger", function () {
         const vazao = sFloat($(`#id_usos${k}-vazao`).val());
         const freq_diaria = sFloat($(`#id_usos${k}-freq_diaria`).val());
@@ -275,8 +273,8 @@ function addFields({
                 const consumo = sFloat($(`#id_usos${k}-consumo`).val());
                 const fator = fator_unid(k);
 
-                const freq_diaria = (consumo * 1000) / freq_mensal / fator / vazao;
-                const indicador = vazao * freq_diaria;
+                const freq_diaria = round_x((consumo * 1000) / freq_mensal / fator / vazao, 2);
+                const indicador = vazao * freq_diaria;               
 
                 $(`#id_usos${k}-freq_diaria`).val(sFloat(freq_diaria, 2, "r"));
                 $(`#id_usos${k}-indicador`).val(sFloat(indicador, 2, "r"));
