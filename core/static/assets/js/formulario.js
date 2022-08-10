@@ -71,7 +71,7 @@ function addFields({
                 class="form-control"
                 required `;
 
-    let vazao = `type="text" inputmode="numeric" pattern="\d*"
+    let vazao = `type="text" inputmode="numeric" pattern="[0-9]*"
                 id="id_${interesse}${k}-vazao"
                 name="${interesse}-${k}-vazao"
                 min="1"
@@ -79,7 +79,7 @@ function addFields({
                 class="form-control"
                 required `;
 
-    let freq = `type="text" inputmode="numeric" pattern="\d*" 
+    let freq = `type="text" inputmode="numeric" pattern="[0-9]*" 
                 id="id_${interesse}${k}-frequencia_mensal"
                 name="${interesse}-${k}-frequencia_mensal"
                 min="1"
@@ -87,7 +87,7 @@ function addFields({
                 class="form-control"
                 required `;
 
-    let indicador = `type="text" inputmode="numeric" pattern="\d*" 
+    let indicador = `type="text" inputmode="numeric" pattern="[0-9]*" 
                     id="id_${interesse}${k}-indicador"
                     name="${interesse}-${k}-indicador"
                     min="1"
@@ -95,7 +95,7 @@ function addFields({
                     class="form-control"
                     required `;
 
-    let consumo = `type="text" inputmode="numeric" pattern="\d*" 
+    let consumo = `type="text" inputmode="numeric" pattern="[0-9]*" 
                     id="id_${interesse}${k}-consumo"
                     name="${interesse}-${k}-consumo"
                     min="1e-8"
@@ -222,7 +222,6 @@ function addFields({
     // TODO Se ocorrer mudança nos fatores (areas) ou nos meses de estiagem, então a tabela deve ser atualizada
     // TODO Se o consumo total for alterado, então deve haver algum tipo de "backpropagation"
     // TODO Adionar o consumo total em L/p/d
-    // TODO O gráfico de pizza precisa de indicação do uso, título e unidade de medida %
     $(`#id_usos${k}-vazao`).on("keyup js_trigger", function () {
         const vazao = sFloat($(`#id_usos${k}-vazao`).val());
         const freq_diaria = sFloat($(`#id_usos${k}-freq_diaria`).val());
