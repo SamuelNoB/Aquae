@@ -274,15 +274,16 @@
         const pizza = new Chart(ctx, config)
         
         function update_tab_fator(){
+            console.log(1)
             $("#table_body")
                 .children("tr")
                 .each(function () {
-                    const unid_tag = this.querySelectorAll("input")[1]
-                    $(unid_tag).trigger("js_trigger")
+                    const vazao = this.querySelectorAll("input")[1]
+                    $(vazao).trigger("js_trigger")
                 });
         }
-        $("#id_n_pessoas").on("keyup", update_tab_fator())
-        $("#id_area_pisos").on("keyup", update_tab_fator())
-        $("#id_area_irrigacao").on("keyup", update_tab_fator())
+        $("#id_n_pessoas").on("keyup", function() {update_tab_fator()})
+        $("#id_area_pisos").on("keyup", function() {update_tab_fator()})
+        $("#id_area_irrigacao").on("keyup", function() {update_tab_fator()})
     </script>
 {% endblock %}
