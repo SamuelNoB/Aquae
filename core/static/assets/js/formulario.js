@@ -263,7 +263,10 @@ function addFields({
                 );
             });
 
+        const pessoas = sFloat($("#id_n_pessoas").val());
+        const cm_lpd = sFloat((consumo_total * 1000) / pessoas / 30);
         $("#id_consumo_mensal").val(consumo_total);
+        $("#id_cm_lpd").val(cm_lpd);
 
         // prettier-ignore
         if (event.type == "keyup") {
