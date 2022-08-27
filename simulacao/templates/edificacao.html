@@ -117,19 +117,19 @@
                     <div class="border rounded-0 form-row" style="margin: 0px 0px;">
                         <div class="form-group col-md-4" style="padding: 0px 5px;"><label style="font-weight: bold;">Tarifa de esgoto</label>
                             <div class="input-group">
-                                {% render_field nova_edificacao.tarifa_esgoto class="form-control col-md-12" type="number" value="100" step="0.1" min="0" max="100" %}
+                                {% render_field nova_edificacao.tarifa_esgoto class="form-control col-md-12" type="number" value="100" step="0.01" min="0" max="100" %}
                                 <div class="input-group-append"><span class="input-group-text">%</span></div>
                             </div><small class="form-text text-muted">Porcentagem da tarifa de esgoto cobrada</small>
                         </div>
                         <div class="form-group col-md-4" style="padding: 0px 5px;"><label style="font-weight: bold;">Consumo mensal de água</label>
                             <div class="input-group">
-                                {% render_field nova_edificacao.consumo_mensal class="form-control col-md-12" value="5" min="0" step="0.1" %}
+                                {% render_field nova_edificacao.consumo_mensal class="form-control col-md-12" value="5" min="0" step="0.01" %}
                                 <div class="input-group-append"><span class="input-group-text">m³<br></span></div>
                             </div><small class="form-text text-muted">Consumo mensal médio de água em m³.</small>
                         </div>
                         <div class="form-group col-md-4" style="padding: 0px 5px;"><label style="font-weight: bold;">Consumo diário de água</label>
                             <div class="input-group">
-                                <input type="number" name="cm_lpd" step="0.1" min="0" value="166.67" class="form-control col-md-12" required="" id="id_cm_lpd">
+                                <input type="number" name="cm_lpd" step="0.01" min="0" value="166.67" class="form-control col-md-12" required="" id="id_cm_lpd">
                                 <div class="input-group-append"><span class="input-group-text">L/pessoa<br></span></div>
                             </div><small class="form-text text-muted">Consumo diário médio de água em L/pessoa.</small>
                         </div>
