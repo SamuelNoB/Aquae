@@ -63,6 +63,10 @@ function addFields({
     initial = Boolean(false),
     interesse,
 } = {}) {
+    // prettier-ignore
+    const num_field =
+        'type="text" inputmode="numeric" pattern="[0-9]*[,\.]?[0-9]*"';
+
     let uso = `type="text" 
                 id="id_${interesse}${k}-nome"
                 name="${interesse}-${k}-nome"
@@ -71,7 +75,7 @@ function addFields({
                 class="form-control"
                 required `;
 
-    let vazao = `type="text" inputmode="numeric" pattern="[0-9]*"
+    let vazao = `${num_field}
                 id="id_${interesse}${k}-vazao"
                 name="${interesse}-${k}-vazao"
                 min="1"
@@ -79,7 +83,7 @@ function addFields({
                 class="form-control"
                 required `;
 
-    let freq = `type="text" inputmode="numeric" pattern="[0-9]*" 
+    let freq = `${num_field}
                 id="id_${interesse}${k}-frequencia_mensal"
                 name="${interesse}-${k}-frequencia_mensal"
                 min="1"
@@ -87,7 +91,7 @@ function addFields({
                 class="form-control"
                 required `;
 
-    let indicador = `type="text" inputmode="numeric" pattern="[0-9]*" 
+    let indicador = `${num_field}
                     id="id_${interesse}${k}-indicador"
                     name="${interesse}-${k}-indicador"
                     min="1"
@@ -95,7 +99,7 @@ function addFields({
                     class="form-control"
                     required `;
 
-    let consumo = `type="text" inputmode="numeric" pattern="[0-9]*" 
+    let consumo = `${num_field}
                     id="id_${interesse}${k}-consumo"
                     name="${interesse}-${k}-consumo"
                     min="1e-8"
@@ -340,13 +344,11 @@ function readdres(id = "table_body", interesse = "ofertas") {
         cells[0].setAttribute("name", `usos-${index}-nome`);
         /*Valores fracionarios devem ser informados com '.' e nao com ','*/
         /*Valores de frequencia mensal devem ser inteiros*/
-        cells[1].setAttribute("name", `usos-${index}-frequencia_mensal`);
-        cells[1].setAttribute(
-            "value",
-            `${Math.ceil(realFloat(cells[1].value))}`
-        );
-        cells[2].setAttribute("name", `usos-${index}-indicador`);
-        cells[2].setAttribute("value", `${realFloat(cells[2].value)}`);
+        cells[2].setAttribute("name", `usos-${index}-frequencia_mensal`);
+        cells[2].value = `${Math.ceil(realFloat(cells[2].value))}`;
+
+        cells[3].setAttribute("name", `usos-${index}-indicador`);
+        cells[3].value = `${realFloat(cells[3].value)}`;
         const sel = $(this).find("select")[0];
         sel.setAttribute("name", `usos-${index}-unidade`);
     });
