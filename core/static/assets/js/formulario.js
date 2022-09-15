@@ -104,7 +104,7 @@ function addFields({
                     name="${interesse}-${k}-consumo"
                     min="1e-8"
                     value="1"
-                    data="1"
+                    data="${k}"
                     class="form-control"
                     required `;
 
@@ -139,7 +139,7 @@ function addFields({
     };
 
     // prettier-ignore
-    const $row = $(`#${id}`).append(`<tr id="${interesse}${k}">
+    const $row = $(`#${id}`).append(`<tr id="${interesse}${k}" data="${k}">
                                         <td><input ${uso}></td>
                                         <td>
                                             <div class="input-group">
@@ -221,9 +221,40 @@ function addFields({
         removeData(pizza);
         addData(pizza, ds.lab, ds.data, true);
     }
-
-    // TODO colocar a freq diaria real
+    
+    
     // TODO Se o consumo total for alterado, então deve haver algum tipo de "backpropagation"
+    $(`#id_consumo_mensal`).on("keyup js_trigger",function() {
+        let array_linhas = []
+        $.each($(`tr`),function(){
+            array_linhas.push($(this).attr("data"))
+    })
+        array_linhas.shift()
+        const valor_anterior = sFloat($(`#id_consumo_mensal`).attr("data"))
+        const valor_mudado = sFloat($(`#id_consumo_mensal`).val())
+        $(`#id_consumo_mensal`).attr("data", $(`#id_consumo_mensal`).val())
+        if(valor_anterior == 0){
+            const novo_valor = valor_mudado / array_linhas.length
+            $.each(array_linhas, function (){
+                
+                $(`#id_usos${this}-consumo`).val(novo_valor)
+            })
+            
+        }
+        else if(valor_mudado != 0 ) { 
+            const pcento = valor_mudado / valor_anterior
+            $.each(array_linhas, function (){
+                let novo_valor = sFloat($(`#id_usos${this}-consumo`).val()) * pcento
+                $(`#id_usos${this}-consumo`).val(novo_valor)
+            })}
+        
+        else{
+            $.each(array_linhas, function (){
+                $(`#id_usos${this}-consumo`).val(0)
+            })}
+        console.log(1)    
+    });
+    
     $(`#id_usos${k}-vazao`).on("keyup js_trigger", function () {
         const vazao = sFloat($(`#id_usos${k}-vazao`).val());
         const freq_diaria = sFloat($(`#id_usos${k}-freq_diaria`).val());
@@ -238,7 +269,6 @@ function addFields({
         const indicador = sFloat($(`#id_usos${k}-indicador`).val());
         const fator = fator_unid(k);
         const consumo = (indicador * fator * freq_mensal) / 1000;
-
         $(`#id_usos${k}-consumo`)
             .val(sFloat(consumo, 2, "r"))
             .trigger("js_trigger");
@@ -293,7 +323,22 @@ function addFields({
     });
 
     $(`#del_${interesse}${k}`).click(function () {
-        $(`#${interesse}${k}`).remove();
+        const tab_body = $(this).parents()[2];
+        $(`#${interesse}${k}`).remove(); 
+        let consumo_total = 0;
+        $(tab_body)
+            .children("tr")
+            .each(function () {
+                consumo_total += sFloat(
+                    this.querySelectorAll("input")[4].value
+                );
+            });
+
+        const pessoas = sFloat($("#id_n_pessoas").val());
+        const cm_lpd = sFloat((consumo_total * 1000) / pessoas / 30);
+        $("#id_consumo_mensal").val(sFloat(consumo_total));
+        $("#id_cm_lpd").val(cm_lpd);
+        pizza_no_forno();
     });
 }
 
