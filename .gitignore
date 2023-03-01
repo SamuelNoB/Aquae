@@ -10,6 +10,7 @@ Aquae/local_settings.py
 .idea/
 
 venv/
+.venv/
 
 simulacao/base_de_dados/__pycache__/
 

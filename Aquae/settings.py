@@ -22,6 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
+DATABASE_URL = config('DATABASE_URL')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
@@ -83,7 +84,7 @@ WSGI_APPLICATION = 'Aquae.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 # heroku settings
 import dj_database_url
-DATABASES = {'default': dj_database_url.config()}
+DATABASES = {'default': dj_database_url.config(engine='django.db.backends.postgresql')}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
