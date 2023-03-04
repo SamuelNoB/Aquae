@@ -52,7 +52,7 @@ class Simulacao(models.Model):
 
     RESIDENCIA_CHOICES = ((0, "casa"), (1, "apartamento"))
     ESTADO_CHOICES = ESTADOS_BR
-    CIDADES_NOME = []#list(map(lambda cidade: cidade.nome, Cidade.objects.all()))
+    CIDADES_NOME = list(map(lambda cidade: cidade.nome, Cidade.objects.all()))
     CIDADE_CHOICES = zip(CIDADES_NOME, CIDADES_NOME)
 
     estado = models.CharField(
