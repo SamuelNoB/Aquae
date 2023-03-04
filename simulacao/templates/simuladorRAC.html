@@ -15,13 +15,11 @@
             </ol>
             <div class="row align-content-center" style="border: 1px none rgb(33,37,41);background: #eeeeee;margin-left: 0;margin-right: 0;"> 
                 <div class="col-md-6">
-                    <h4 style="font-weight: bold;">Oferta de água cinza</h4>
+                    <h4 style="font-weight: bold;">Oferta de Água Cinza</h4>
                     <table class="table">
                         <thead>
                             <tr>
-                                <th data-checkbox="true"></th>
-                                <th>Nome</th>
-                                <th>Consumo</th>
+                                <th data-checkbox="true">
                             </tr>
                         </thead>
                         <tbody id="oferta-items">
@@ -45,13 +43,11 @@
                     </table>
                 </div>
                 <div class="col-md-6">
-                <h4 style="font-weight: bold;">Demanda de água cinza</h4>
+                <h4 style="font-weight: bold;">Demanda de Água Cinza</h4>
                     <table class="table">
                         <thead>
                             <tr>
-                                <th data-checkbox="true"></th>
-                                <th>Nome</th>
-                                <th>Demanda</th>
+                                <th data-checkbox="true">
                             </tr>
                         </thead>
                         <tbody id="demanda-items">
@@ -91,7 +87,7 @@
                                 %
                             </span>
                             <button type="button" class="btn btn-primary" id="juros-btn">Calcular</button>
-                        </div><small class="form-text text-muted">Adicione uma taxa de júros para ser calculada juntamente a simulação financeira</small>
+                        </div><small class="form-text text-muted">Taxa de juros utilizada na simulação financeira.</small>
                     </div>
                         <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-toggle="tab" href="#tab-3">Geral</a></li>
@@ -108,9 +104,9 @@
                             </div>
                             <div class="tab-pane" role="tabpanel" id="tab-4">
                                 <ul class="list-group text-capitalize" style="background: #e1e1e1;">
-                                    <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Sucção: </span><span class="text-lowercase"> {{ bomba.Dimensoes.succao }} mm</span></li>
-                                    <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Recalque: </span><span class="text-lowercase"> {{ bomba.Dimensoes.recalque }} mm</span></li>
-                                    <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água potência: </span><span class="text-lowercase"> {{ bomba.Dimensoes.potencia }} cv</span></li>
+                                    <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Mangueira Flutuante (Sucção): </span><span class="text-lowercase"> {{ bomba.Dimensoes.succao }} mm</span></li>
+                                    <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Recalque: </span><span class="text-lowercase"> {{ bomba.Dimensoes.recalque }} mm</span></li>
+                                    <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Potência da Bomba D'Água: </span><span class="text-lowercase"> {{ bomba.Dimensoes.potencia }} cv</span></li>
                                     <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" class="normal">Reservatório de Distribuição: </span><span class="normal" id="Caixa_volume" > </span> </li>
                                 </ul>
                             </div>
@@ -119,7 +115,7 @@
                                     <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" class="normal">Capacidade de Tratamento (L): </span><span class="text-lowercase" id="Capacidade"> </span></li>
                                     <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" data-bss-tooltip data-toggle="tooltip" data-original-title="Custo médio de implementação do sistema">Custo (R$): </span><span class="text-lowercase" id="Custo_cap"> </span></li>
                                     <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" data-bss-tooltip data-toggle="tooltip" data-original-title="Valor da economia anual gerada com o sistema">Benefício (R$/ano): </span><span class="text-lowercase" id="Beneficio"> </span></li>
-                                    <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" data-bss-tooltip data-toggle="tooltip" data-original-title="Razão entre o custo e o benefício anual. Custo ÷ Benefício">Payback (anos): </span><span class="text-uppercase" id="Payback"> </span></li>
+                                    <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" data-bss-tooltip data-toggle="tooltip" data-original-title="Tempo de retorno do investimento">Payback (anos): </span><span class="text-uppercase" id="Payback"> </span></li>
                                     <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" data-bss-tooltip data-toggle="tooltip" data-original-title="Valor presente Líquido, calculado para 30 anos">VPL (R$): </span><span id="VPL"> </span></li>
                                 </ul>
                             </div>
@@ -127,7 +123,7 @@
                 </div> 
             </div>
             <div class="d-md-flex justify-content-md-center align-items-md-center" style="padding: 1em;">
-                <a class="btn btn-info vanish" role="button" href="{% url 'simulacao:simulacao-aap' pk %}" style="margin: 1em;">Verificar AAP</a>
+                <a class="btn btn-info vanish" role="button" href="{% url 'simulacao:simulacao-aap' pk %}" style="margin: 1em;">Verificar AAC</a>
             </div>
         </div>
     </section>
@@ -169,7 +165,7 @@
                 autocolors: false,
                 title: {
                     display: true,
-                    text: 'Economia anual possível de água por demanda'
+                    text: 'Economia anual por demanda'
                 }
             },
             scales: {
@@ -177,13 +173,13 @@
                     ticks: {},
                     title: {
                         display: true,
-                        text: 'Demanda de água'
+                        text: 'Demanda de Água Cinza'
                     } 
                 },
                 y: {
                     title: {
                         display: true,
-                        text: 'Economia de água (m³/ano)'
+                        text: 'Economia de Água Potável (m³/ano)'
                     }
                 },
             }
@@ -194,7 +190,7 @@
             data: {
                 labels: data_demanda.nomes.slice(),
                 datasets: [{
-                    label: 'Economia de água m³/ano',
+                    label: 'Economia de Água Potável (m³/ano)',
                     data: economia,
                     backgroundColor: 'rgba(54, 162, 235, 1)',
                     borderColor: 'rgba(54, 162, 235, 1)',
@@ -212,6 +208,7 @@
         create_tabs(demanda_possivel * 1000 / 30, demanda_total, oferta_total, tarifa)
         const juros_btn = document.getElementById("juros-btn")
         juros_btn.addEventListener('click', function () {create_tabs(demanda_possivel * 1000 / 30, demanda_total, demanda_total, tarifa)}, false)
+        console.log(volumes_caixa)
     </script>
 
 {% endblock %}

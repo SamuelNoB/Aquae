@@ -5,8 +5,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Aquae</title>
-    <link rel="shortcut icon" href="{% static 'assets/img/drop.png' %}" type="image/x-icon">
+    <title>aquae</title>
+    <link rel="shortcut icon" href="{% static 'assets/img/LOGO_GOTA.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
     <link rel="stylesheet" href="{% static 'assets/fonts/simple-line-icons.min.css' %}">
@@ -18,7 +18,7 @@
 
     <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
         <div class="container">
-            <a class="navbar-brand logo" href="{% url 'core:home' %}"><img src={% static 'assets/img/drop.png' %} style="width: 25px"> <i>aquae</i></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <a class="navbar-brand logo" href="{% url 'core:home' %}"><img src={% static 'assets/img/LOGO_COMPLETA.png' %} style="width: 150px; padding-left:30px"></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item"><a class="nav-link active" href="{% url 'core:home' %}">Home</a></li>
@@ -30,21 +30,31 @@
         </div>
     </nav>
     <main class="page landing-page flex-content">
-        <div id="watermark"><img src={% static 'assets/img/drop.png' %} style="width: 25px"> Aquae</div>
+        <div id="watermark"><img src={% static 'assets/img/LOGO_GOTA.png' %} style="width: 60px; padding-left:10px"> Aquae</div>
         {% block content %} {% endblock %}
     </main>
     <footer class="page-footer dark vanish">
         <div class="our-clients">
-            <h2 style="color: white">Apoiadores</h2>
-            <hr />
-            <ul class"list-unstyled">
-                <li>
-                    <img src="{% static 'assets/img/UnB_logo.svg' %}" alt="UnB logo">
-                </li>
-                <li>
-                    <img src="{% static 'assets/img/CNPQ_logo.svg' %}" alt="CNPq logo">
-                </li>
-            </ul>
+            <div class="row">
+                <div class="col-sm">
+                    <h3 style="color: white">Realização</h3>
+                    <br/>
+                        <div>
+                            <img src="{% static 'assets/img/UnB_logo.svg' %}" alt="UnB logo" style="width:200px; padding-right:50px">
+                            <img src="{% static 'assets/img/LOGO_AAC.svg' %}" alt="AAC logo" style="width:550px; padding-left:100px; padding-top:10px">
+                        </div>
+                </div>
+                <div class="vr vr-blurry; bg-white" style="width:2.5px"></div>
+                <div class="col-sm">
+                    <h3 style="color: white">Financiamento</h3>
+                    <br/>
+                    <div>
+                        <img src="{% static 'assets/img/CNPQ_logo.svg' %}" alt="CNPq logo" style="padding-right:100px">
+                        <img src="{% static 'assets/img/logobranca.png' %}" alt="sigfap logo" style="width:200px">
+                    </div>
+                </div>  
+            
+               
         </div>
 
         <div class="footer-copyright">
@@ -57,7 +67,7 @@
     <script src="{% static 'assets/js/bs-init.js '%}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
     <script src="{% static 'assets/js/smoothproducts.min.js'%}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.0.1/chart.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.1.0/chartjs-plugin-datalabels.min.js" integrity="sha512-Tfw6etYMUhL4RTki37niav99C6OHwMDB2iBT5S5piyHO+ltK2YX8Hjy9TXxhE1Gm/TmAV0uaykSpnHKFIAif/A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/1.1.0/chartjs-plugin-annotation.min.js" integrity="sha512-uxcl+YXF0LbFyZFEb6HHmxl1NEI4X/5rjojm/13M1CBXBDj8wkmM99cKADkmtuky28pC/EpNTDHOEb/c3nDZsA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     {% block scripts %}

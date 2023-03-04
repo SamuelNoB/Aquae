@@ -3,7 +3,7 @@
         <section class="clean-block features" style="border-top-style: solid;padding: 0;background: rgb(207,231,248);">
             <div class="container flex-calc" style="background: #eeeeee;">
                 <div class="block-heading">
-                    <h2 class="text-info" style="font-weight: 800;">Selecione a simulação</h2>
+                    <h2 class="text-info" style="font-weight: 800;">Selecione o tipo de simulação</h2>
                 </div>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'core:home' %}"><span>Home</span></a></li>
@@ -11,10 +11,10 @@
                     <li class="breadcrumb-item"><a href="#"><span>Selecionar simulação</span></a></li>
                 </ol>
                 <section>
-                    <p>Selecione AAP para&nbsp; Aproveitamento de água pluvial ou RAC para Reúso de águas cinzas.</p>
+                    <p>Selecione <label style="font-weight: bold">[AAC]</label> para simular o Aproveitamento de Água de Chuva ou <label style="font-weight: bold">[RAC]</label> para simular o Reúso de Água Cinza.</p>
                     <div class="d-md-flex justify-content-md-center align-items-md-center" style="padding: 1em;">
                         <a class="btn btn-secondary" role="button" href="{% url 'simulacao:edificacao' %}" style="margin: 1em;">Voltar</a>
-                        <a class="btn btn-primary" role="button" href="{% url 'simulacao:simulacao-aap' pk %}" style="margin: 1em;">AAP</a>
+                        <a class="btn btn-primary" role="button" href="{% url 'simulacao:simulacao-aap' pk %}" style="margin: 1em;">AAC</a>
                         <a class="btn btn-primary" role="button" href="{% url 'simulacao:formulario-rac' pk %}" style="margin: 1em;">RAC</a>
                     </div>
                 </section>

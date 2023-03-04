@@ -18,6 +18,8 @@
                         <div class="form-group col-md-12">
                             <div class="form-check form-check-inline" id="casa-radio">
                                 <input onclick="document.getElementById('id_n_apts').disabled = true;
+                                document.getElementById('id_consumo_predial').disabled = true;
+                                document.getElementById('id_consumo_predial').value = null;
                                 document.getElementById('aptMoradores').innerHTML = 'Número de moradores';
                                 window.dispatchEvent(new Event('resize'));"
                                 class="form-check-input" type="radio" id="formCheck-1" value="0" name="tipo_residencia" checked="">
@@ -25,6 +27,7 @@
                             </div>
                             <div class="form-check form-check-inline" id="apartamento-radio">
                                 <input onclick="document.getElementById('id_n_apts').disabled = false;
+                                document.getElementById('id_consumo_predial').disabled = false;
                                 document.getElementById('aptMoradores').innerHTML = 'Número médio de moradores por apartamento';
                                 window.dispatchEvent(new Event('resize'));"
                                 class="form-check-input" type="radio" id="formCheck-2" value="1" name="tipo_residencia">
@@ -54,17 +57,17 @@
                                 </div><small class="form-text text-muted">Área disponível para coleta de água de chuva.</small>
                             </div>
                             
-                            <div class="form-group col-md-6" style="padding: 0px 5px;"><label style="font-weight: bold;">Área de pisos</label>
+                            <div class="form-group col-md-6" style="padding: 0px 5px;"><label style="font-weight: bold;">Área para lavagem de pisos</label>
                                 <div class="input-group">
                                     {% render_field nova_edificacao.area_pisos class="form-control col-md-7" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="0.01" step=".01" value="1" %}
                                     <div class="input-group-append"><span class="input-group-text">m²<br></span></div>
-                                </div><small class="form-text text-muted">Área prevista para lavagem.</small>
+                                </div>
                             </div>
                             <div id="div_irrigacao" class="form-group col-md-2"><label id="lab_irrigacao" style="font-weight: bold;">Área de jardim</label>
                                 <div class="input-group">
                                     {% render_field nova_edificacao.area_irrigacao class="form-control col-md-8" data-toggle="tooltip" data-bss-tooltip="" data-placement="bottom" min="0.01" step=".01" value="1" %}
                                     <div class="input-group-append"><span class="input-group-text">m²<br></span></div>
-                                </div><small class="form-text text-muted">Área para irrigação.</small>
+                                </div><small class="form-text text-muted">Área para irrigação paisagística.</small>
                             </div>
                             <div id="div_uf" class="form-group col-md-2"><label id="lab_uf" style="font-weight: bold;">Estado (UF)</label>
                                 <div class="input-group">
@@ -86,17 +89,34 @@
                         </div>
                     <h3 style="font-weight: bold;margin: 0px 16px;">Consumo de água</h3>
                     <div id="consumoAgua" style="margin: 0px 16px;">
-                        <div class="table-responsive">
+                        <div class="table-responsive" style="margin: 10px -15px">
+                            <div class="form-group col-md-12">
+                                <div class="form-check form-check-inline" id="renda-alta-radio">
+                                    <input onclick="renda_alta()"
+                                    class="form-check-input" type="radio" id="formCheck-3" value="true" name="renda-residencial" checked="">
+                                    <label class="form-check-label" for="formCheck-3">Residência Padrão Alto</label>
+                                </div>
+                                <div class="form-check form-check-inline" id="renda-media-radio">
+                                    <input onclick="renda_media()"
+                                    class="form-check-input" type="radio" id="formCheck-4" value="false" name="renda-residencial">
+                                    <label class="form-check-label" for="formCheck-4">Residência Padrão Médio</label>
+                                </div> 
+                                <div class="form-check form-check-inline" id="renda-baixa-radio">
+                                    <input onclick="renda_baixa()"
+                                    class="form-check-input" type="radio" id="formCheck-5" value="false" name="renda-residencial">
+                                    <label class="form-check-label" for="formCheck-5">Residência Padrão Baixo</label>
+                                </div>    
+                            </div>     
                             <table class="table">
                                 <thead>
                                     <!-- TODO Ajustar os tamanhos dos headers para garantir que todas as colunas sejam bem vistas -->
                                     <tr>
-                                        <th data-toggle="tooltip" data-bss-tooltip="" style="width: 1%; min-width: 215px">Tipo de uso</th>
+                                        <th data-toggle="tooltip" data-bss-tooltip="" style="width: 1%; min-width: 215px">Uso final de água</th>
                                         <th data-toggle="tooltip" data-bss-tooltip="" style="width: 5%; min-width: 50px">Vazão estimada</th>
                                         <th data-toggle="tooltip" data-bss-tooltip="" style="width: 5%; min-width: 100px">Frequência mensal de uso</th>
                                         <th data-toggle="tooltip" data-bss-tooltip="" style="width: 5%; min-width: 50px">Indicador de uso final</th>
                                         <th data-toggle="tooltip" data-bss-tooltip="" style="width: 5%; min-width: 50px">Consumo estimado</th>
-                                        <th style="width: 1%; min-width: 40px">Deletar</th>
+                                        <th style="width: 1%; min-width: 40px"></th>
                                     </tr>
                                 </thead>
                                 <tbody id="table_body">
@@ -115,23 +135,29 @@
                         <span class="d-md-flex align-items-md-center">&nbsp;Outro uso de água.</span>
                     </div>
                     <div class="border rounded-0 form-row" style="margin: 0px 0px;">
-                        <div class="form-group col-md-4" style="padding: 0px 5px;"><label style="font-weight: bold;">Tarifa de esgoto</label>
+                        <div class="form-group col-md-6" style="padding: 0px 5px;"><label style="font-weight: bold;">Tarifa de esgoto</label>
                             <div class="input-group">
                                 {% render_field nova_edificacao.tarifa_esgoto class="form-control col-md-12" type="number" value="100" step="0.01" min="0" max="100" %}
                                 <div class="input-group-append"><span class="input-group-text">%</span></div>
                             </div><small class="form-text text-muted">Porcentagem da tarifa de esgoto cobrada</small>
                         </div>
-                        <div class="form-group col-md-4" style="padding: 0px 5px;"><label style="font-weight: bold;">Consumo mensal de água</label>
+                        <div class="form-group col-md-6" style="padding: 0px 5px;"><label style="font-weight: bold;">Consumo mensal de água</label>
                             <div class="input-group">
-                                {% render_field nova_edificacao.consumo_mensal class="form-control col-md-12" value="5" min="0" step="0.01" %}
-                                <div class="input-group-append"><span class="input-group-text">m³<br></span></div>
-                            </div><small class="form-text text-muted">Consumo mensal médio de água em m³.</small>
+                                {% render_field nova_edificacao.consumo_mensal class="form-control col-md-12" value="10" data="10" min="0" step="0.01" %}
+                                <div class="input-group-append"><span class="input-group-text">m³/mês<br></span></div>
+                            </div><small class="form-text text-muted">Consumo médio mensal de água.</small>
                         </div>
-                        <div class="form-group col-md-4" style="padding: 0px 5px;"><label style="font-weight: bold;">Consumo diário de água</label>
+                        <div class="form-group col-md-6" style="padding: 0px 5px;"><label style="font-weight: bold;">Consumo per capita</label>
                             <div class="input-group">
-                                <input type="number" name="cm_lpd" step="0.01" min="0" value="166.67" class="form-control col-md-12" required="" id="id_cm_lpd">
-                                <div class="input-group-append"><span class="input-group-text">L/pessoa<br></span></div>
-                            </div><small class="form-text text-muted">Consumo diário médio de água em L/pessoa.</small>
+                                <input type="number" name="cm_lpd" step="0.01" min="0" value="333.33" data="333.33" class="form-control col-md-12" required="" id="id_cm_lpd">
+                                <div class="input-group-append"><span class="input-group-text">L/pessoa/dia<br></span></div>
+                            </div><small class="form-text text-muted">Consumo médio diário de água por pessoa por dia.</small>
+                        </div>
+                        <div class="form-group col-md-6" style="padding: 0px 5px;"><label style="font-weight: bold;">Consumo mensal no prédio</label>
+                            <div class="input-group">
+                                <input type="number" name="consumo_predial" step="0.01" min="0" value="" data="10" class="form-control col-md-12" required="" id="id_consumo_predial" disabled="">
+                                <div class="input-group-append"><span class="input-group-text">m³/mês<br></span></div>
+                            </div><small class="form-text text-muted">Consumo médio mensal de água.</small>
                         </div>
                     </div>
                     <div id="ChartDiv">
@@ -214,20 +240,20 @@
     <script>
         const chunk_meses = {{ chunk_meses|safe }}
         gera_estiagem("div_estiagem", chunk_meses)
-        const demanda = ["Irrigação de jardins", "Lavagem de pisos", "Descarga sanitária", "Lavagem de roupas", "Tanque"];
-        const vazoes = ["20", "20", "9", "135", "6"];
-        const Ddiario = ["1", "1", "32", "31", "19"];
-        const freq =  ["30", "4", "30", "8", "30"];
-        const escalas = ["Litros/m²/dia", "Litros/m²/dia", "Litros/pessoa/dia", "Litros/pessoa/dia", "Litros/pessoa/dia"];
-        const freq_diaria = ["0.1","0.1","6","0.7","3.2"];
-
+        const demanda = ['Torneira de Banheiro', 'Chuveiro', 'Descarga Sanitária', 'Bidet/Ducha Higiênica', 'Torneira de Cozinha', 'Filtro de Água', 'Máquina de Lavar Louça', 'Tanque', 'Máquina Lavar Roupa', 'Lavagem de Pisos', 'Irrigação Paisagística', 'Piscina'];
+        const vazoes = ['6', '12', '9', '5', '6', '2', '15', '10', '177', '20', '20', '30'];
+        const Ddiario = ['24', '90', '54', '3', '36', '3', '1', '32', '26', '2', '2', '0,1'];
+        const freq =  ['30', '30', '30', '30', '30', '30', '8', '20', '20', '4', '15', '0,003'];
+        const escalas = ['Litros/pessoa/dia', 'Litros/pessoa/dia', 'Litros/pessoa/dia', 'Litros/pessoa/dia', 'Litros/pessoa/dia', 'Litros/pessoa/dia', 'Litros/pessoa/dia', 'Litros/pessoa/dia', 'Litros/pessoa/dia', 'Litros/m²/dia', 'Litros/m²/dia', 'Litros/m²/dia'];
+        const freq_diaria = ['4,0', '7,5', '6,0', '0,6', '6,0', '1,3', '0,3', '3,2', '0,7', '0,1', '0,1', '1,1'];
+        const medidas = ['l/min', 'l/min', 'l/desc', 'l/min', 'l/min', 'l/min', 'l/ciclo', 'l/min', 'l/ciclo', 'l/min', 'l/min', 'l/min'];
         let k = 0
-        k = InitFields(k, demanda, vazoes, freq, Ddiario, escalas, freq_diaria, id="table_body", interesse="usos");
+        k = InitFields(k, demanda, vazoes, freq, Ddiario, escalas, freq_diaria, medidas, id="table_body", interesse="usos");
         let btn = document.getElementById("edificacaoForm")
         btn.addEventListener("submit", function (){readdres(id="table_body", interesse="usos")}, false)
 
         const reset = document.getElementById("restaurar")
-        reset.addEventListener("click", function (){reset_fields(demanda, freq, Ddiario, escalas)}, false)
+        reset.addEventListener("click", function (){reset_fields(demanda, freq, Ddiario, escalas, medidas)}, false)
     </script>
     <script>
         const ds = percent_ds()
@@ -258,7 +284,7 @@
                 },
                 title: {
                     display: true,
-                    text: "Contribuição relativa de cada uso para o consumo mensal"
+                    text: "USOS FINAIS DE ÁGUA"
                 } 
             }  
         }
@@ -273,17 +299,21 @@
         const ctx = canvas.getContext('2d')
         const pizza = new Chart(ctx, config)
         
-        function update_tab_fator(){
-            console.log(1)
-            $("#table_body")
-                .children("tr")
-                .each(function () {
-                    const vazao = this.querySelectorAll("input")[1]
-                    $(vazao).trigger("js_trigger")
-                });
-        }
+        
+        
         $("#id_n_pessoas").on("keyup", function() {update_tab_fator()})
         $("#id_area_pisos").on("keyup", function() {update_tab_fator()})
         $("#id_area_irrigacao").on("keyup", function() {update_tab_fator()})
+    
+        
+        
+    $(`#id_usos6-consumo`).val(0.1)
+    
+           
+        
+    update_tab_fator()
+    
+    
+    
     </script>
 {% endblock %}

@@ -5,13 +5,13 @@
         <section class="clean-block features" style="border-top-style: solid;padding: 0;background: rgb(207,231,248);">
             <div class="container flex-calc" style="background: #eeeeee;padding-bottom: 100px;">
                 <div class="block-heading" style="padding: 40px 0px 0px;">
-                    <h2 class="text-info" style="font-weight: 800;">Aproveitamento de águas pluviais</h2>
+                    <h2 class="text-info" style="font-weight: 800;">Aproveitamento de Água de Chuva</h2>
                 </div>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'core:home' %}"><span>Home</span></a></li>
                     <li class="breadcrumb-item"><a href="{% url 'simulacao:edificacao' %}"><span>Características gerais</span></a></li>
                     <li class="breadcrumb-item"><a href="{% url 'simulacao:seleciona_simulacao' pk %}"><span>Selecionar simulação</span></a></li>
-                    <li class="breadcrumb-item"><a href="#"><span>Simulação AAP</span></a></li>
+                    <li class="breadcrumb-item"><a href="#"><span>Simulação AAC</span></a></li>
                 </ol>
                 <div class="row align-content-center" style="border: 1px none rgb(33,37,41);background: #eeeeee;margin-left: 0;margin-right: 0;">
                     <div class="col-md-5">
@@ -21,7 +21,7 @@
                                 <div class="input-group-prepend"><span class="input-group-text">Intervalo</span></div>
                                     <input type="number" name="intervalos_de_cisterna" id="id_intervalos_de_cisterna" value="10" min="1" class="form-control" required>
                                 <div class="input-group-append"><button id="change_interval" class="btn btn-primary" type="button">Alterar</button></div>
-                            </div><small class="form-text text-muted">Intervalos em m³ da cisterna a ser mostrado na aba financeiro e no gráfico.</small>
+                            </div><small class="form-text text-muted">Intervalos em m³ de cisterna.</small>
                         </div>
 
                         <h4 style="font-weight: bold;">Análise financeira</h4>
@@ -35,18 +35,12 @@
                                     %
                                 </span>
                             <button type="button" class="btn btn-primary" id="juros-btn">Calcular</button>
-                            </div><small class="form-text text-muted">Adicione uma taxa de júros para ser calculada juntamente a simulação financeira</small>
+                            </div><small class="form-text text-muted">Taxa de juros utilizada na simulação financeira.</small>
                         </div>
-                        <h4 style="font-weight: bold;">Demanda de água pluvial</h4>
+                        <h4 style="font-weight: bold;">Demanda de Água de Chuva</h4>
                         <div class="table-responsive">
                             <table class="table">
-                                <thead>
-                                <tr>
-                                    <th data-checkbox="true"></th>
-                                    <th>Nome</th>
-                                    <th>Consumo</th>
-                                </tr>
-                                </thead>
+                                
                                 <tbody id="demanda-items">
                                 {% for i in individual_d.items %}
                                     <tr>
@@ -72,7 +66,6 @@
                         <h4 style="font-weight: 700;">Resultados</h4>
                         <div>
                             <div id="ChartDiv"><canvas id="SimulChart"></canvas></div>
-                            <p>MEP* - Máxima Economia Possível</p>
                         </div>
                         <div>
                             <ul class="nav nav-tabs" role="tablist">
@@ -94,9 +87,9 @@
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Freio d'água: </span><span class="text-lowercase" id="freio__dagua">mm</span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);;"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Sifão ladrão: </span><span class="text-lowercase" id="sifao__ladrao">mm</span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" class="normal">Capacidade do Filtro: </span><span class="text-lowercase" id="filtro__dagua">m² de cobertura</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Sucção: </span><span class="text-lowercase">{{ bomba.dimensoes.succao }} mm</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água Recalque: </span><span class="text-lowercase">{{ bomba.dimensoes.recalque }} mm</span></li>
-                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Bomba d'água potência: </span><span class="text-lowercase">{{ bomba.dimensoes.potencia }} cv</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Mangueira Flutuante (Sucção): </span><span class="text-lowercase">{{ bomba.dimensoes.succao }} mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Recalque: </span><span class="text-lowercase">{{ bomba.dimensoes.recalque }} mm</span></li>
+                                        <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;">Potência da Bomba D'Água: </span><span class="text-lowercase">{{ bomba.dimensoes.potencia }} cv</span></li>
                                         <li class="list-group-item" style="background: #e1e1e1;color: var(--dark);"><span style="background: #e1e1e1;color: var(--dark);font-weight: 600;" class="normal">Reservatório de Distribuição: </span><span id="reservatorio__volume"> L</span></li>
                                     </ul>
                                 </div>
@@ -108,7 +101,7 @@
                                                     <th>Cisterna (m³)</th>
                                                     <th data-bss-tooltip data-toggle="tooltip" data-original-title="Valor da economia anual gerada com o sistema">Benefício (R$/ano)</th>
                                                     <th data-bss-tooltip data-toggle="tooltip" data-original-title="Custo médio de implementação do sistema">Custo (R$)</th>
-                                                    <th data-bss-tooltip data-toggle="tooltip" data-original-title="Razão entre o custo e o benefício anual Custo ÷ Benefício">Payback (Ano)</th>
+                                                    <th data-bss-tooltip data-toggle="tooltip" data-original-title="Tempo de retorno do investimento">Payback (Ano)</th>
                                                     <th data-bss-tooltip data-toggle="tooltip" data-original-title="Valor presente Líquido, calculado para 30 anos">VPL<br>(R$)</th>
                                                 </tr>
                                             </thead>
@@ -455,9 +448,8 @@
                                 mode: "vertical",
                                 scaleID: "x-axis-0",
                                 
-                                borderColor: "black",
+                                borderColor: "white",
                                 label: {
-                                    content: "*MEP",
                                     enabled: true,
                                     position: "top"
                                 }
@@ -479,7 +471,7 @@
                     y: {
                         title: {
                             display: true,
-                            text: 'Economia de agua potável (m³/ano)'
+                            text: 'Economia de Água Potável (m³/ano)'
                         }
                     }
                 }
@@ -490,7 +482,7 @@
                 data: {
                     labels: simulados.x_values,
                     datasets: [{
-                        label: 'Economia de Água m³/ano',
+                        label: 'Economia de Água Potável (m³/ano)',
                         data: simulados.y_values,
                         fill: false,
                         backgroundColor: 'rgb(65,125,178)',
