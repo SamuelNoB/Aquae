@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'Aquae.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 # heroku settings
 import dj_database_url
-DATABASES = {'default': dj_database_url.config(engine='django.db.backends.postgresql')}
+DATABASES = {'default': dj_database_url.config(default=DATABASE_URL, engine='django.db.backends.postgresql')}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

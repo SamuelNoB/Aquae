@@ -116,8 +116,8 @@ def get_ni_ipca():
 
     response = requests.post(url, data=payload, verify="simulacao/CAs/ibge.pem")
     response__list__ = json.loads(response.content.decode())
-    ni = float(response__list__[0]["V"])
-    return ni
+    numero_indice = float(response__list__[0]["V"])
+    return numero_indice
 
 
 def get_tarifa():
