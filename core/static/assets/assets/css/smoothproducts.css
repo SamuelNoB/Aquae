@@ -254,7 +254,7 @@ span.normal {
 }
 
 .flex-calc {
-  min-height: calc(100vh - 215px);
+  min-height: calc(100vh - 390px);
 }
 
 #watermark {
@@ -267,6 +267,7 @@ span.normal {
  display: none;
 }
 
+/*Ao tentar imprimir a página obtém-se uma versão mais limpa e com tabelas expandidas*/
 @media print {
   @page {
     margin-top: -20px;
@@ -275,11 +276,10 @@ span.normal {
   .tab-content > .tab-pane {
     display: block;
   }
-  footer {
+  .vanish {
     display: none;
   }
   #watermark {
     display: block;
-  }
-  
+  }  
 }
