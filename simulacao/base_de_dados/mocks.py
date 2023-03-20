@@ -8,6 +8,7 @@ from .models import (
     TarifaDeAgua,
     CapacidadeDeTratamento,
 )
+import pandas as pd
 import json
 import django
 from ..utils import get_ni_ipca, get_tarifa
@@ -185,7 +186,8 @@ def create_indices_pluviometricos():
 
 # TODO reorganizar funcoes semelhantes para evitar multiplos requests do IPCA
 def create_tarifas():
-    for row in get_tarifa().iterrows():
+    df = pd.read_pickle("taixas")
+    for row in df.iterrows():
         uf, tarifa = row[1][0], row[1][1]
         cidades = Cidade.objects.filter(uf=uf)
         for cidade in cidades:
