@@ -127,6 +127,7 @@ def get_tarifa():
         input_path=snis,
         pages=4,
         area=[290, 80, 800, 600],
+        encoding='latin-1'
     )[0]
 
     df = df.iloc[:, 0:2]
