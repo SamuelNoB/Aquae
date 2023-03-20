@@ -121,7 +121,7 @@ def get_ni_ipca():
 
 
 def get_tarifa():
-    ano = date.today().year - 3
+    ano = date.today().year - 4
     snis = f"http://www.snis.gov.br/downloads/diagnosticos/ae/{ano}/Diagnostico-SNIS-AE-{ano}-Capitulo-12.pdf"
     df = read_pdf(
         input_path=snis,
