@@ -198,7 +198,7 @@ class SimulacaoAAP(TemplateView):
     def get_equips(self, area_coleta):
         todas = Equipamentos.objects.all()
 
-        possiveis = list(todas.filter(area_de_coleta__lt=area_coleta))
+        possiveis = list(todas)
         if len(possiveis) < len(todas):
             possiveis.append(todas[len(possiveis)])
 
