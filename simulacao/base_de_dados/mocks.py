@@ -208,7 +208,7 @@ def create_areas_coleta():
 
 
 def create_equipamentos():
-    IPCA = get_ni_ipca() / IPCA_o
+    IPCA = 6563.07 / IPCA_o
     Equipamentos.objects.all().delete()
     for area_de_coleta, equipamento in equipamentos.items():
         uma_area = AreaDeColeta.objects.get(area_max=int(area_de_coleta))
@@ -240,7 +240,7 @@ def create_bombas_dagua():
 
 
 def create_caixas_dagua():
-    IPCA = get_ni_ipca() / IPCA_o
+    IPCA = 6563.07 / IPCA_o
     CaixaDAgua.objects.all().delete()
     for caixa in caixas_dagua:
         nova_caixa = CaixaDAgua.objects.create(
@@ -253,7 +253,7 @@ def create_caixas_dagua():
 
 
 def create_capacidades_de_tratamento():
-    IPCA = get_ni_ipca() / IPCA_o
+    IPCA = 6563.07 / IPCA_o
     CapacidadeDeTratamento.objects.all().delete()
     for capacidade in capacidades_de_tratamento:
         nova_capacidade = CapacidadeDeTratamento.objects.create(
