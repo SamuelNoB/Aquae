@@ -15,7 +15,18 @@ def currency(value):
 @register.filter(name="potavel")
 def potavel(uso, categoria):
     if categoria == "oferta":
-        return "checked"
+        potable = uso.lower() in [
+        "chuveiro",
+        "máquina de lavar louça",
+        "tanque",
+        "torneira de banheiro",
+        ]
+
+        if potable:
+            return "checked"
+        else:
+            return ""
+
     potable = uso.lower() in [
         "torneira de lavatório",
         "chuveiro",
@@ -24,8 +35,11 @@ def potavel(uso, categoria):
         "filtro de água",
         "máquina de lavar louça",
         "piscina",
+        "torneira de banheiro",
     ]
     if potable:
         return ""
     else:
         return "checked"
+    
+    
