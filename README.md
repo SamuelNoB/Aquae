@@ -1,4 +1,4 @@
-# <i>aquae</i>
+# Aquae
 
 Projeto de Iniciação Tecnológica em conjunto com o Doutor Daniel Sant'Anna.
 
@@ -6,14 +6,14 @@ O <i>aquae</i> é um programa que tem o intuito de realizar simulações de apro
 
 ## Tecnologias utilizadas
 
--   Python
--   Django
--   Postgres
--   JavaScript
--   Bootstrap
+- Python
+- Django
+- Postgres
+- JavaScript
+- Bootstrap
 
 ## Features em desenvolvimento
 
--   Dados de pluviometria para diversas cidades do Brasil;
--   Cálculo do benefício financeiro com tarifas adequadas para cada cidade;
--   Simulação para prédios comerciais.
+- Dados de pluviometria para diversas cidades do Brasil;
+- Cálculo do benefício financeiro com tarifas adequadas para cada cidade;
+- Simulação para prédios comerciais.
