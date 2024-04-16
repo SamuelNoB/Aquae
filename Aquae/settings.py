@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+import dj_database_url
 import os
 from pathlib import Path
 
@@ -23,6 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 DATABASE_URL = config('DATABASE_URL')
+if not DATABASE_URL:
+    DATABASE_URL = config('DATABASE_PRIVATE_URL')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -83,8 +86,8 @@ WSGI_APPLICATION = 'Aquae.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 # heroku settings
-import dj_database_url
-DATABASES = {'default': dj_database_url.config(default=DATABASE_URL, engine='django.db.backends.postgresql')}
+DATABASES = {'default': dj_database_url.config(
+    default=DATABASE_URL, engine='django.db.backends.postgresql')}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -122,7 +125,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-#PROJECT_ROOT = os.path.join(os.path.abspath(__file__))
+# PROJECT_ROOT = os.path.join(os.path.abspath(__file__))
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'core', 'static/assets')
 
