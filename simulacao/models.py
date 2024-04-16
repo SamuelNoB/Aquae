@@ -8,9 +8,11 @@ from .base_de_dados.models import Cidade
 
 class UsosDeAgua(models.Model):
     nome = models.CharField(verbose_name="Nome do consumo", max_length=100)
-    frequencia_mensal = models.IntegerField(verbose_name="Frequencia mensal de uso")
+    frequencia_mensal = models.IntegerField(
+        verbose_name="Frequencia mensal de uso")
 
-    indicador = models.FloatField(verbose_name="Indicador de uso final", blank=True)
+    indicador = models.FloatField(
+        verbose_name="Indicador de uso final", blank=True)
     METROS_QUADRADOS = "Litros/m²/dia"
     PESSOA = "Litros/pessoa/dia"
     UNIDADE_CHOICES = [
@@ -24,8 +26,10 @@ class UsosDeAgua(models.Model):
         default=PESSOA,
     )
 
-    demanda = models.BooleanField(verbose_name="Utilizado como demanda", blank=True)
-    oferta = models.BooleanField(verbose_name="Utilizado como oferta", blank=True)
+    demanda = models.BooleanField(
+        verbose_name="Utilizado como demanda", blank=True)
+    oferta = models.BooleanField(
+        verbose_name="Utilizado como oferta", blank=True)
 
     simulacao = models.ForeignKey(
         "simulacao",
@@ -52,7 +56,7 @@ class Simulacao(models.Model):
 
     RESIDENCIA_CHOICES = ((0, "casa"), (1, "apartamento"))
     ESTADO_CHOICES = ESTADOS_BR
-    CIDADES_NOME = list(map(lambda cidade: cidade.nome, Cidade.objects.all()))
+    # CIDADES_NOME = list(map(lambda cidade: cidade.nome, Cidade.objects.all()))
     CIDADE_CHOICES = zip(CIDADES_NOME, CIDADES_NOME)
 
     estado = models.CharField(
@@ -73,26 +77,35 @@ class Simulacao(models.Model):
     n_apts = models.IntegerField(
         verbose_name="Número de apartamentos", blank=True, null=True
     )
-    n_pavimentos = models.IntegerField(verbose_name="Número de pavimentos", default=1)
-    n_pessoas = models.IntegerField(verbose_name="Número de residentes", null=False)
-    tarifa_esgoto = models.FloatField(verbose_name="Porcentagem da tarifa de esgoto")
+    n_pavimentos = models.IntegerField(
+        verbose_name="Número de pavimentos", default=1)
+    n_pessoas = models.IntegerField(
+        verbose_name="Número de residentes", null=False)
+    tarifa_esgoto = models.FloatField(
+        verbose_name="Porcentagem da tarifa de esgoto")
     consumo_mensal = models.FloatField(verbose_name="Consumo mensal de água")
     area_cobertura = models.FloatField(verbose_name="Área de cobertura")
     area_pisos = models.FloatField(verbose_name="Área de pisos")
     area_irrigacao = models.FloatField(verbose_name="Área de irrigação")
 
-    jan = models.BooleanField(verbose_name="Estiagem em janeiro", default=False)
-    fev = models.BooleanField(verbose_name="Estiagem em fevereiro", default=False)
+    jan = models.BooleanField(
+        verbose_name="Estiagem em janeiro", default=False)
+    fev = models.BooleanField(
+        verbose_name="Estiagem em fevereiro", default=False)
     mar = models.BooleanField(verbose_name="Estiagem em março", default=False)
     abr = models.BooleanField(verbose_name="Estiagem em abril", default=False)
     mai = models.BooleanField(verbose_name="Estiagem em maio", default=True)
     jun = models.BooleanField(verbose_name="Estiagem em junho", default=True)
     jul = models.BooleanField(verbose_name="Estiagem em julho", default=True)
     ago = models.BooleanField(verbose_name="Estiagem em agosto", default=True)
-    set = models.BooleanField(verbose_name="Estiagem em setembro", default=True)
-    out = models.BooleanField(verbose_name="Estiagem em outubro", default=False)
-    nov = models.BooleanField(verbose_name="Estiagem em novembro", default=False)
-    dez = models.BooleanField(verbose_name="Estiagem em dezembro", default=False)
+    set = models.BooleanField(
+        verbose_name="Estiagem em setembro", default=True)
+    out = models.BooleanField(
+        verbose_name="Estiagem em outubro", default=False)
+    nov = models.BooleanField(
+        verbose_name="Estiagem em novembro", default=False)
+    dez = models.BooleanField(
+        verbose_name="Estiagem em dezembro", default=False)
 
     def __str__(self):
         return f"Simulação {self.id}"
