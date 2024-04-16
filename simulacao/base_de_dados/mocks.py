@@ -144,10 +144,14 @@ capacidades_de_tratamento = [
     {"min": 3001, "max": 6000, "volume": 6000, "valor": 30500.0, "custo_o": 3.0},
     {"min": 6001, "max": 10000, "volume": 10000, "valor": 41500.0, "custo_o": 5.0},
     {"min": 10001, "max": 15000, "volume": 15000, "valor": 50300.0, "custo_o": 7.5},
-    {"min": 15001, "max": 20000, "volume": 20000, "valor": 52500.0, "custo_o": 10.0},
-    {"min": 20001, "max": 30000, "volume": 30000, "valor": 65000.0, "custo_o": 15.0},
-    {"min": 30001, "max": 50000, "volume": 50000, "valor": 87000.0, "custo_o": 25.0},
-    {"min": 50001, "max": 80000, "volume": 80000, "valor": 100900.0, "custo_o": 40.0},
+    {"min": 15001, "max": 20000, "volume": 20000,
+        "valor": 52500.0, "custo_o": 10.0},
+    {"min": 20001, "max": 30000, "volume": 30000,
+        "valor": 65000.0, "custo_o": 15.0},
+    {"min": 30001, "max": 50000, "volume": 50000,
+        "valor": 87000.0, "custo_o": 25.0},
+    {"min": 50001, "max": 80000, "volume": 80000,
+        "valor": 100900.0, "custo_o": 40.0},
 ]
 
 
