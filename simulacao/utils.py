@@ -1,7 +1,11 @@
-import requests
+import os
 from datetime import date, timedelta
-from lxml import html
 import json
+
+import requests
+from decouple import config
+
+from lxml import html
 from tabula import read_pdf
 
 
@@ -89,7 +93,12 @@ def chunk_list(lst, n=3):
 
 
 def get_dollar():
-    res = requests.get("https://economia.awesomeapi.com.br/json/all/USD-BRL")
+    AWESOME_API_KEY = config("AWESOME_API_KEY", default=False)
+    headers = {
+        "x-api-key": AWESOME_API_KEY
+    }
+
+    res = requests.get("https://economia.awesomeapi.com.br/json/all/USD-BRL", headers=headers)
     dollar_data = res.json()
     dollar = float(dollar_data["USD"]["low"])
     return round(dollar, 2)
