@@ -22,7 +22,7 @@ from .base_de_dados.models import (
     TarifaDeAgua,
     Cidade,
 )
-from .utils import chunk_list, get_dollar, meses
+from .utils import chunk_list, meses
 
 from .controllers.dimensionamentoController import DimensionamentoController
 from .controllers.demandaController import DemandaController
@@ -284,7 +284,6 @@ class SimulacaoAAP(TemplateView):
         meses_est = list(meses_est[0])
         pluviometria = list(pluviometria)
 
-        dolar = get_dollar()
         bomba, co = simuladorController.get_bomba_e_co(n_pavimentos)
         equips = self.get_equips(area_coleta)
         # m³ para litros / dia
@@ -311,7 +310,6 @@ class SimulacaoAAP(TemplateView):
             "bomba": {"dimensoes": bomba, "custo_op": co, "preco": bomba.preco / 3.77},
             "caixa": {"volumes": volumes_caixa, "financeiro": financeiro_caixa},
             "tarifa": tarifa,
-            "dolar": dolar,
         }
 
         return render(request, self.template_name, context)

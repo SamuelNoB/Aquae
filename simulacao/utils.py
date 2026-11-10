@@ -3,7 +3,6 @@ from datetime import date, timedelta
 import json
 
 import requests
-from decouple import config
 
 from lxml import html
 from tabula import read_pdf
@@ -90,18 +89,6 @@ def chunk_list(lst, n=3):
     Divide a lista em grupos de tamanho n
     """
     return [lst[i : i + n] for i in range(0, len(lst), n)]
-
-
-def get_dollar():
-    AWESOME_API_KEY = config("AWESOME_API_KEY", default=False)
-    headers = {
-        "x-api-key": AWESOME_API_KEY
-    }
-
-    res = requests.get("https://economia.awesomeapi.com.br/json/all/USD-BRL", headers=headers)
-    dollar_data = res.json()
-    dollar = float(dollar_data["USD"]["low"])
-    return round(dollar, 2)
 
 
 def get_ni_ipca():
